@@ -1,26 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Navbar from "./component/Navbar";
-import Slider from "./component/Slider"; // optional here
 import Home from "./component/Home";
 import Shop from "./component/Shop";
 import Footer from "./component/Footer";
-import LoginModal from "./component/LoginModal";
+import Login from "./Hooks/Login";
 
 function App() {
-  const [showModal, setShowModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem("customer_token");
+  });
+
+  const [refreshNavbar, setRefreshNavbar] = useState(0);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("customer_token");
+      setIsLoggedIn(!!token);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <BrowserRouter>
-      <Navbar onLoginClick={() => setShowModal(true)} />
-      <LoginModal isOpen={showModal} onClose={() => setShowModal(false)} />
-
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+        refreshNavbar={refreshNavbar}
+      />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/shop" element={<Shop />} />
+        <Route path="/shop/category/:categoryId" element={<Shop key="category" />} />
+        <Route path="/shop/subcategorycategory/:subcategoryId" element={<Shop key="subcategory" />} />
+        <Route path="/shop/category/:categoryId/subcategory/:subcategoryId" element={<Shop />} />
+        <Route path="/shop/brand/:brandId" element={<Shop />} />
+        <Route path="/shop/search" element={<Shop />} />
+        <Route path="*" element={<h2 className="text-center mt-5">404 - Page Not Found</h2>} />
       </Routes>
-
+      <Login
+        setIsLoggedIn={setIsLoggedIn}
+        setRefreshNavbar={setRefreshNavbar}
+      />
       <Footer />
     </BrowserRouter>
   );

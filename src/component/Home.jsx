@@ -1,682 +1,285 @@
-import Slider from "./Slider";
+import React, { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import Carousel from "react-bootstrap/Carousel";
+import axios from "axios";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { LIVE_URL } from "../Api/Route";
 
 export default function Home() {
+  const [categories, setCategories] = useState([]);
+  const [groupedCategories, setGroupedCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const carouselRef = useRef(null);
+
+  const chunkArray = (arr, size) => {
+    const chunked = [];
+    for (let i = 0; i < arr.length; i += size) {
+      chunked.push(arr.slice(i, i + size));
+    }
+    return chunked;
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(`${LIVE_URL}/get-category`);
+      const categoryList = response.data.data || [];
+      setCategories(categoryList);
+      setGroupedCategories(chunkArray(categoryList, 12));
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const fetchBrands = async () => {
+    try {
+      const response = await axios.get(`${LIVE_URL}/get-brands`);
+      setBrands(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching brands:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchBrands();
+  }, []);
+
+  const groupedBrands = chunkArray(brands, 6);
+
+  const handlePrev = () => {
+    if (carouselRef.current) {
+      carouselRef.current.prev();
+    }
+  };
+
+  const handleNext = () => {
+    if (carouselRef.current) {
+      carouselRef.current.next();
+    }
+  };
+
   return (
     <>
-      <Slider/>
-      <div className="container">
-        <div className="banners-container mb-2">
-          <div
-            className="banners-slider owl-carousel owl-theme"
-            data-owl-options="{
-						'dots': false
-					}"
-          >
+      <section className="hero-slider" style={{ padding: "0" }}>
+        <Swiper
+          modules={[Navigation, Pagination, Autoplay]}
+          navigation
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 5000 }}
+          loop
+          className="mySwiper"
+        >
+          <SwiperSlide>
             <div
-              className="banner banner1 banner-sm-vw d-flex align-items-center appear-animate"
-              style={{ backgroundColor: "#ccc" }}
-              data-animation-name="fadeInLeftShorter"
-              data-animation-delay={500}
-            >
-              <figure className="w-100">
-                <img
-                  src="assets/images/banner-11.jpg"
-                  alt="banner"
-                  width={380}
-                  height={175}
-                />
-              </figure>
-              <div className="banner-layer">
-                <h3 className="m-b-2">Porto Watches</h3>
-                <h4 className="m-b-3 text-primary">
-                  <sup className="text-dark">
-                    <del>20%</del>
-                  </sup>
-                  30%<sup>OFF</sup>
-                </h4>
-                <a href="category.html" className="btn btn-sm btn-dark">
-                  Shop Now
-                </a>
-              </div>
-            </div>
-            {/* End .banner */}
-            <div
-              className="banner banner2 banner-sm-vw text-uppercase d-flex align-items-center appear-animate"
-              data-animation-name="fadeInUpShorter"
-              data-animation-delay={200}
-            >
-              <figure className="w-100">
-                <img
-                  src="assets/images/banner-22.jpg"
-                  style={{ backgroundColor: "#ccc" }}
-                  alt="banner"
-                  width={380}
-                  height={175}
-                />
-              </figure>
-              <div className="banner-layer text-center">
-                <div className="row align-items-lg-center">
-                  <div className="col-lg-7 text-lg-right">
-                    <h3>Deal Promos</h3>
-                    <h4 className="pb-4 pb-lg-0 mb-0 text-body">
-                      Starting at $99
-                    </h4>
-                  </div>
-                  <div className="col-lg-5 text-lg-left px-0 px-xl-3">
-                    <a href="category.html" className="btn btn-sm btn-dark">
-                      Shop Now
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* End .banner */}
-            <div
-              className="banner banner3 banner-sm-vw d-flex align-items-center appear-animate"
-              style={{ backgroundColor: "#ccc" }}
-              data-animation-name="fadeInRightShorter"
-              data-animation-delay={500}
-            >
-              <figure className="w-100">
-                <img
-                  src="assets/images/banner-33.jpg"
-                  alt="banner"
-                  width={380}
-                  height={175}
-                />
-              </figure>
-              <div className="banner-layer text-right">
-                <h3 className="m-b-2">Handbags</h3>
-                <h4 className="m-b-2 text-secondary text-uppercase">
-                  Starting at $99
-                </h4>
-                <a href="category.html" className="btn btn-sm btn-dark">
-                  Shop Now
-                </a>
-              </div>
-            </div>
-            {/* End .banner */}
-          </div>
-        </div>
-      </div>
+              className="slider-content"
+              style={{ backgroundImage: "url('/assets/images/s2.webp')" }}
+            ></div>
+          </SwiperSlide>
+        </Swiper>
+      </section>
 
-      <section className="featured-products-section">
-        <div className="container">
-          <h2 className="section-title heading-border ls-20 border-0">
-            Shop By Category
-          </h2>
+      {/* Category Section Fixed */}
+      <section
+        className="section-b-space"
+        style={{ backgroundColor: "#fff2f2" }}
+      >
+        <div className="container-fluid-lg">
           <div className="row">
-            <div
-              className="col-lg-3 col-sm-6 pb-5 pb-md-0 appear-animate"
-              data-animation-delay={500}
-              data-animation-name="fadeInLeftShorter"
-            >
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat1.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Blue Backpack for the Young - S</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      <span className="tooltiptext tooltip-top">5.00</span>
-                    </div>
-                  </div>
-                </div>
+            <div className="col-xxl-12 col-lg-12">
+              <div className="title d-block">
+                <h2 className="text-theme font-sm">SHOP BY CATEGORIES</h2>
+                <p>A virtual assistant collects the products from your list</p>
               </div>
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat2.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Casual Spring Blue Shoes</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      {/* End .ratings */}
-                      <span className="tooltiptext tooltip-top"></span>
+              {groupedCategories.map((group, i) => (
+                <div
+                  key={i}
+                  className="row row-cols-xxl-5 row-cols-xl-6 row-cols-md-4 row-cols-2 g-sm-4 g-3 no-arrow section-b-space"
+                >
+                  {group.map((category, index) => (
+                    <div key={index}>
+                      <div className="product-box product-white-bg">
+                        <div className="product-image" style={{ padding: "0" }}>
+                          <Link to={`/shop/category/${category.id}`}>
+                            <img
+                              src={
+                                category.image || "/assets/images/default.png"
+                              }
+                              className="img-fluid blur-up lazyload"
+                              alt={category.name}
+                            />
+                          </Link>
+                        </div>
+                        <div className="product-detail position-relative">
+                          <Link to={`/shop/category/${category.id}`}>
+                            <h6 className="name">{category.name}</h6>
+                          </Link>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat5.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Men Black Gentle Belt</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      <span className="tooltiptext tooltip-top">5.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="col-lg-3 col-sm-6 pb-5 pb-md-0 appear-animate"
-              data-animation-delay={800}
-              data-animation-name="fadeInLeftShorter"
-            >
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat1.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Blue Backpack for the Young - S</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      <span className="tooltiptext tooltip-top">5.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat2.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Casual Spring Blue Shoes</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      {/* End .ratings */}
-                      <span className="tooltiptext tooltip-top"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat5.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Men Black Gentle Belt</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      <span className="tooltiptext tooltip-top">5.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="col-lg-3 col-sm-6 pb-5 pb-md-0 appear-animate"
-              data-animation-delay={1100}
-              data-animation-name="fadeInLeftShorter"
-            >
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat1.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Blue Backpack for the Young - S</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      <span className="tooltiptext tooltip-top">5.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat2.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Casual Spring Blue Shoes</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      {/* End .ratings */}
-                      <span className="tooltiptext tooltip-top"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat5.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Men Black Gentle Belt</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      <span className="tooltiptext tooltip-top">5.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="col-lg-3 col-sm-6 pb-5 pb-md-0 appear-animate"
-              data-animation-delay={800}
-              data-animation-name="fadeInLeftShorter"
-            >
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat1.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Blue Backpack for the Young - S</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      <span className="tooltiptext tooltip-top">5.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat2.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Casual Spring Blue Shoes</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      {/* End .ratings */}
-                      <span className="tooltiptext tooltip-top"></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="product-default left-details product-widget">
-                <figure>
-                  <a href="product.html">
-                    <img
-                      alt="product"
-                      height={84}
-                      src="assets/images/cat5.jpg"
-                      width={84}
-                    />
-                  </a>
-                </figure>
-                <div className="product-details">
-                  <h3 className="product-title">
-                    <a href="product.html">Men Black Gentle Belt</a>
-                  </h3>
-                  <div className="ratings-container">
-                    <div className="product-ratings">
-                      <span
-                        className="ratings"
-                        style={{ width: "100%" }}
-                      ></span>
-                      <span className="tooltiptext tooltip-top">5.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <div
-        className="promo-section bg-gray mt-5"
-        data-image-src="assets/images/bannermiddle.jpg"
-        data-parallax="{'speed': 2, 'enableOnMobile': true}"
-      >
-        <div className="promo-banner banner container text-uppercase">
-          <div className="banner-content row align-items-center text-center">
-            <div className="col-md-4 ml-xl-auto text-md-right left-text">
-              <h2 className="mb-md-0" style={{ color: "white" }}>
-                Top electronic
-                <br />
-                Deals
-              </h2>
-            </div>
-            <div className="col-md-3 pb-4 pb-md-0">
-              <a className="btn btn-primary ls-10" href="#">
-                Shop Now
-              </a>
-            </div>
-            <div className="col-md-4 mr-xl-auto text-md-left right-text">
-              <h4 className="mb-1 coupon-sale-text p-0 d-block text-transform-none">
-                <b className="bg-dark text-white font1">Exclusive COUPON</b>
-              </h4>
-              <h5 className="mb-2 coupon-sale-text ls-10 p-0">
-                <i className="ls-0">UP TO</i>
-                <b className="text-white bg-secondary">$100</b>
-                OFF
-              </h5>
-            </div>
+      <section className="section-b-space">
+        <div className="container">
+          <div className="row">
+            <Carousel
+              data-bs-theme="dark"
+              controls={false}
+              indicators={false}
+              interval={3000}
+              pause={false}
+            >
+              <Carousel.Item>
+                <div className="d-flex gap-3">
+                  <img
+                    className="d-block w-50"
+                    src="/assets/images/mban1.png"
+                    alt="Image 1"
+                  />
+                  <img
+                    className="d-block w-50"
+                    src="/assets/images/mban2.png"
+                    alt="Image 2"
+                  />
+                </div>
+              </Carousel.Item>
+
+              <Carousel.Item>
+                <div className="d-flex gap-3">
+                  <img
+                    className="d-block w-50"
+                    src="/assets/images/mban3.png"
+                    alt="Image 3"
+                  />
+                  <img
+                    className="d-block w-50"
+                    src="/assets/images/mban4.png"
+                    alt="Image 4"
+                  />
+                </div>
+              </Carousel.Item>
+            </Carousel>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="home-product-tabs product-slider-tab pt-5 pt-md-0 mt-5">
-        <div className="container">
-          <h2 className="section-title heading-border ls-20 border-0">
-            Shop By Brand
-          </h2>
-          <div className="tab-content m-b-4">
-            <div
-              aria-labelledby="featured-products-tab"
-              className="tab-pane fade show active"
-              id="featured-products"
-              role="tabpanel"
-            >
-              <div
-                className="tab-products-carousel owl-carousel owl-theme quantity-inputs show-nav-hover nav-outer nav-image-center"
-                data-owl-options="{
-									'loop': false
-								}"
-              >
-                <div className="product-default inner-quickview inner-icon quantity-input">
-                  <figure>
-                    <a href="demo14-product.html">
-                      <img
-                        alt="product"
-                        height={280}
-                        src="assets/images/product-6.jpg"
-                        width={280}
-                      />
-                    </a>
-                    <a
-                      className="btn-quickview"
-                      href="ajax/product-quick-view.html"
-                      title="Quick View"
-                    >
-                      Shop Now
-                    </a>
-                  </figure>
-                  <div className="product-details">
-                    <h3 className="product-title">
-                      <a href="demo14-product.html">Headphone Black</a>
-                    </h3>
-                  </div>
+      {/* Brands Section Fixed */}
+      <section
+        className="section-b-space"
+        style={{ backgroundColor: "#fff2f2" }}
+      >
+        <div className="container-fluid-lg">
+          <div className="row">
+            <div className="col-12">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="title d-block">
+                  <h2 className="text-theme font-sm mb-0">SHOP BY BRANDS</h2>
+                  <p className="mb-0">
+                    A virtual assistant collects the products from your list
+                  </p>
                 </div>
-                <div className="product-default inner-quickview inner-icon quantity-input">
-                  <figure>
-                    <a href="demo14-product.html">
-                      <img
-                        alt="product"
-                        height={280}
-                        src="assets/images/product-7.jpg"
-                        width={280}
-                      />
-                    </a>
-                    <a
-                      className="btn-quickview"
-                      href="ajax/product-quick-view.html"
-                      title="Quick View"
-                    >
-                      Quick View
-                    </a>
-                  </figure>
-                  <div className="product-details">
-                    <h3 className="product-title">
-                      <a href="demo14-product.html">Headphone Black</a>
-                    </h3>
-                  </div>
-                </div>
-                <div className="product-default inner-quickview inner-icon quantity-input">
-                  <figure>
-                    <a href="demo14-product.html">
-                      <img
-                        alt="product"
-                        height={280}
-                        src="assets/images/product-8.jpg"
-                        width={280}
-                      />
-                    </a>
-                    <a
-                      className="btn-quickview"
-                      href="ajax/product-quick-view.html"
-                      title="Quick View"
-                    >
-                      Quick View
-                    </a>
-                  </figure>
-                  <div className="product-details">
-                    <h3 className="product-title">
-                      <a href="demo14-product.html">Computer Mouse</a>
-                    </h3>
-                  </div>
-                </div>
-                <div className="product-default inner-quickview inner-icon quantity-input">
-                  <figure>
-                    <a href="demo14-product.html">
-                      <img
-                        alt="product"
-                        height={280}
-                        src="assets/images/product-7.jpg"
-                        width={280}
-                      />
-                    </a>
-                    <a
-                      className="btn-quickview"
-                      href="ajax/product-quick-view.html"
-                      title="Quick View"
-                    >
-                      Quick View
-                    </a>
-                  </figure>
-                  <div className="product-details">
-                    <h3 className="product-title">
-                      <a href="demo14-product.html">Headphone Black</a>
-                    </h3>
-                  </div>
-                </div>
-                <div className="product-default inner-quickview inner-icon quantity-input">
-                  <figure>
-                    <a href="demo14-product.html">
-                      <img
-                        alt="product"
-                        height={280}
-                        src="assets/images/product-8.jpg"
-                        width={280}
-                      />
-                    </a>
-                    <a
-                      className="btn-quickview"
-                      href="ajax/product-quick-view.html"
-                      title="Quick View"
-                    >
-                      Quick View
-                    </a>
-                  </figure>
-                  <div className="product-details">
-                    <h3 className="product-title">
-                      <a href="demo14-product.html">Computer Mouse</a>
-                    </h3>
-                  </div>
-                </div>
-                <div className="product-default inner-quickview inner-icon quantity-input">
-                  <figure>
-                    <a href="demo14-product.html">
-                      <img
-                        alt="product"
-                        height={280}
-                        src="assets/images/product-6.jpg"
-                        width={280}
-                      />
-                    </a>
-                    <a
-                      className="btn-quickview"
-                      href="ajax/product-quick-view.html"
-                      title="Quick View"
-                    >
-                      Shop Now
-                    </a>
-                  </figure>
-                  <div className="product-details">
-                    <h3 className="product-title">
-                      <a href="demo14-product.html">Headphone Black</a>
-                    </h3>
-                  </div>
+                <div className="d-flex gap-2">
+                  <button
+                    onClick={handlePrev}
+                    className="btn btn-animation shadow-sm"
+                  >
+                    <i className="fas fa-chevron-left"></i>
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="btn btn-animation shadow-sm"
+                  >
+                    <i className="fas fa-chevron-right"></i>
+                  </button>
                 </div>
               </div>
+              <Carousel
+                controls={false}
+                indicators={false}
+                interval={null}
+                ref={carouselRef}
+              >
+                {groupedBrands.map((group, i) => (
+                  <Carousel.Item key={i}>
+                    <div className="row row-cols-xxl-6 row-cols-xl-6 row-cols-md-3 row-cols-2 g-sm-4 g-3">
+                      {group.map((brand, index) => (
+                        <div key={index}>
+                          <div className="product-box product-white-bg">
+                            <div
+                              className="product-image"
+                              style={{ padding: "0" }}
+                            >
+                              <Link to={`/shop/brand/${brand.id}`}>
+                                <img
+                                  src={
+                                    brand.image || "/assets/images/default.png"
+                                  }
+                                  className="img-fluid blur-up lazyload"
+                                  alt={brand.name}
+                                />
+                              </Link>
+                            </div>
+                            <div className="product-detail position-relative">
+                              <Link to={`/shop/brand/${brand.id}`}>
+                                <h6 className="name">{brand.name}</h6>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Carousel.Item>
+                ))}
+              </Carousel>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div
-        className="banner banner-big-sale appear-animate"
-        data-animation-delay={200}
-        data-animation-name="fadeInUpShorter"
-        style={{
-          background:
-            '#2A95CB center/cover url("assets/images/bannerline.jpg")',
-        }}
-      >
-        <div className="banner-content row align-items-center mx-0">
-          <div className="col-md-9 col-sm-8">
-            <h2 className="text-white text-uppercase text-center text-sm-left ls-n-20 mb-md-0 px-4">
-              <b className="d-inline-block mr-3 mb-1 mb-md-0">Big Sale</b> All
-              new fashion brands items up to 70% off
-              <small className="text-transform-none align-middle">
-                Online Purchases Only
-              </small>
-            </h2>
-          </div>
-          <div className="col-md-3 col-sm-4 text-center text-sm-right">
-            <a className="btn btn-light btn-white btn-lg" href="category.html">
-              View Sale
-            </a>
+      <section className="section-b-space">
+        <div className="container">
+          <div className="row">
+            <Carousel
+              data-bs-theme="dark"
+              controls={false}
+              indicators={false}
+              interval={3000}
+              pause={false}
+            >
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="/assets/images/ban1.png"
+                  alt="First slide"
+                />
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="/assets/images/ban2.png"
+                  alt="Second slide"
+                />
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="/assets/images/ban1.png"
+                  alt="Third slide"
+                />
+              </Carousel.Item>
+            </Carousel>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 }

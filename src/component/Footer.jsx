@@ -3,187 +3,305 @@ import React from "react";
 export default function Footer() {
   return (
     <>
-      <footer className="footer bg-dark">
-        <div className="footer-middle">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-3 col-sm-6">
-                <div className="widget">
-                  <h4 className="widget-title">Contact Info</h4>
-                  <ul className="contact-info">
+      <footer className="section-t-space">
+        <div className="container-fluid-lg">
+          <div className="main-footer section-b-space">
+            <div className="row g-md-4 g-3">
+              <div className="col-xl-3 col-lg-4 col-sm-6">
+                <div className="footer-logo">
+                  <div className="theme-logo">
+                    <a href="index.html">
+                      <img
+                        src="/assets/images/1_1.png"
+                        className="blur-up lazyload"
+                        alt=""
+                      />
+                    </a>
+                  </div>
+                  <div className="footer-logo-contain">
+                    <p>
+                      We are a friendly bar serving a variety of cocktails,
+                      wines and beers. Our bar is a perfect place for a couple.
+                    </p>
+                    <ul className="address">
+                      <li>
+                        <i data-feather="home" />
+                        <a href="javascript:void(0)">
+                          Sushma infinium, zirakpur
+                        </a>
+                      </li>
+                      <li>
+                        <i data-feather="mail" />
+                        <a href="javascript:void(0)">durga@gmail.com</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                <div className="footer-title">
+                  <h4>Categories</h4>
+                </div>
+                <div className="footer-contain">
+                  <ul>
                     <li>
-                      <span className="contact-info-label">Address:</span>123
-                      Street Name, City, England
-                    </li>
-                    <li>
-                      <span className="contact-info-label">Phone:</span>
-                      <a href="tel:">(123) 456-7890</a>
-                    </li>
-                    <li>
-                      <span className="contact-info-label">Email:</span>{" "}
-                      <a href="/cdn-cgi/l/email-protection#e28f838b8ea2879a838f928e87cc818d8f">
-                        <span
-                          className="__cf_email__"
-                          data-cfemail="4924282025092c31282439252c672a2624"
-                        >
-                          [email&nbsp;protected]
-                        </span>
+                      <a href="#" className="text-content">
+                        Vegetables &amp; Fruit
                       </a>
                     </li>
                     <li>
-                      <span className="contact-info-label">
-                        Working Days/Hours:
-                      </span>{" "}
-                      Mon - Sun / 9:00 AM - 8:00 PM
-                    </li>
-                  </ul>
-                  <div className="social-icons">
-                    <a
-                      href="#"
-                      className="social-icon social-facebook icon-facebook"
-                      target="_blank"
-                      title="Facebook"
-                    />
-                    <a
-                      href="#"
-                      className="social-icon social-twitter icon-twitter"
-                      target="_blank"
-                      title="Twitter"
-                    />
-                    <a
-                      href="#"
-                      className="social-icon social-instagram icon-instagram"
-                      target="_blank"
-                      title="Instagram"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-3 col-sm-6">
-                <div className="widget">
-                  <h4 className="widget-title">Customer Service</h4>
-                  <ul className="links">
-                    <li>
-                      <a href="#">Help &amp; FAQs</a>
+                      <a href="#" className="text-content">
+                        Beverages
+                      </a>
                     </li>
                     <li>
-                      <a href="#">Order Tracking</a>
+                      <a href="#" className="text-content">
+                        Meats &amp; Seafood
+                      </a>
                     </li>
                     <li>
-                      <a href="#">Shipping &amp; Delivery</a>
+                      <a href="#" className="text-content">
+                        Frozen Foods
+                      </a>
                     </li>
                     <li>
-                      <a href="#">Orders History</a>
+                      <a href="#" className="text-content">
+                        Biscuits &amp; Snacks
+                      </a>
                     </li>
                     <li>
-                      <a href="#">Advanced Search</a>
-                    </li>
-                    <li>
-                      <a href="dashboard.html">My Account</a>
-                    </li>
-                    <li>
-                      <a href="#">Careers</a>
-                    </li>
-                    <li>
-                      <a href="about.html">About Us</a>
-                    </li>
-                    <li>
-                      <a href="#">Corporate Sales</a>
-                    </li>
-                    <li>
-                      <a href="#">Privacy</a>
+                      <a href="#" className="text-content">
+                        Grocery &amp; Staples
+                      </a>
                     </li>
                   </ul>
                 </div>
               </div>
-              <div className="col-lg-3 col-sm-6">
-                <div className="widget">
-                  <h4 className="widget-title">Popular Tags</h4>
-                  <div className="tagcloud">
-                    <a href="#">Bag</a>
-                    <a href="#">Black</a>
-                    <a href="#">Blue</a>
-                    <a href="#">Clothes</a>
-                    <a href="#">Fashion</a>
-                    <a href="#">Hub</a>
-                    <a href="#">Shirt</a>
-                    <a href="#">Shoes</a>
-                    <a href="#">Skirt</a>
-                    <a href="#">Sports</a>
-                    <a href="#">Sweater</a>
-                  </div>
+              <div className="col-xl col-lg-2 col-sm-3">
+                <div className="footer-title">
+                  <h4>Useful Links</h4>
+                </div>
+                <div className="footer-contain">
+                  <ul>
+                    <li>
+                      <a href="/" className="text-content">
+                        Home
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="text-content">
+                        Shop
+                      </a>
+                    </li>
+                    <li>
+                      <a href="about-us.html" className="text-content">
+                        About Us
+                      </a>
+                    </li>
+                    <li>
+                      <a href="blog-list.html" className="text-content">
+                        Blog
+                      </a>
+                    </li>
+                    <li>
+                      <a href="contact-us.html" className="text-content">
+                        Contact Us
+                      </a>
+                    </li>
+                  </ul>
                 </div>
               </div>
-              <div className="col-lg-3 col-sm-6">
-                <div className="widget widget-newsletter">
-                  <h4 className="widget-title">Subscribe newsletter</h4>
-                  <p>
-                    Get all the latest information on events, sales and offers.
-                    Sign up for newsletter:
-                  </p>
-                  <form action="#" className="mb-0">
-                    <input
-                      type="email"
-                      className="form-control m-b-3"
-                      placeholder="Email address"
-                      required=""
-                    />
-                    <input
-                      type="submit"
-                      className="btn btn-primary shadow-none"
-                      defaultValue="Subscribe"
-                    />
+              <div className="col-xl-2 col-sm-3">
+                <div className="footer-title">
+                  <h4>Help Center</h4>
+                </div>
+                <div className="footer-contain">
+                  <ul>
+                    <li>
+                      <a href="#" className="text-content">
+                        Your Order
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="text-content">
+                        Your Account
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="text-content">
+                        Track Order
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="text-content">
+                        Search
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="col-xl-3 col-lg-4 col-sm-6">
+                <div className="footer-title">
+                  <h4>Contact Us</h4>
+                </div>
+                <div className="footer-contact">
+                  <ul>
+                    <li>
+                      <div className="footer-number">
+                        <i data-feather="phone" />
+                        <div className="contact-number">
+                          <h6 className="text-content">Hotline 24/7 :</h6>
+                          <h5>+91 1234567890</h5>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="footer-number">
+                        <i data-feather="mail" />
+                        <div className="contact-number">
+                          <h6 className="text-content">Email Address :</h6>
+                          <h5>durga@gmail.com</h5>
+                        </div>
+                      </div>
+                    </li>
+                    <li className="social-app mb-0">
+                      <h5 className="mb-2 text-content">Download App :</h5>
+                      <ul>
+                        <li className="mb-0">
+                          <a
+                            href="https://play.google.com/store/apps"
+                            target="_blank"
+                          >
+                            <img
+                              src="/assets/images/playstore.svg"
+                              className="blur-up lazyload"
+                              alt=""
+                            />
+                          </a>
+                        </li>
+                        <li className="mb-0">
+                          <a
+                            href="https://www.apple.com/in/app-store/"
+                            target="_blank"
+                          >
+                            <img
+                              src="/assets/images/appstore.svg"
+                              className="blur-up lazyload"
+                              alt=""
+                            />
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="sub-footer section-small-space">
+            <div className="reserve">
+              <h6 className="text-content">
+                ©2025 Bulk Basket All rights reserved
+              </h6>
+            </div>
+            <div className="payment">
+              <img
+                src="/assets/images/1_2.png"
+                className="blur-up lazyload"
+                alt=""
+              />
+            </div>
+            <div className="social-link">
+              <h6 className="text-content">Stay connected :</h6>
+              <ul>
+                <li>
+                  <a href="https://www.facebook.com/" target="_blank">
+                    <i className="fa-brands fa-facebook-f" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/" target="_blank">
+                    <i className="fa-brands fa-twitter" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.instagram.com/" target="_blank">
+                    <i className="fa-brands fa-instagram" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://in.pinterest.com/" target="_blank">
+                    <i className="fa-brands fa-pinterest-p" />
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
+      <div
+        className="modal fade theme-modal deal-modal"
+        id="deal-box"
+        tabIndex={-1}
+      >
+        <div className="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div>
+                <h5 className="modal-title w-100" id="deal_today">
+                  Login
+                </h5>
+              </div>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+              >
+                <i className="fa-solid fa-xmark" />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="deal-offer-box">
+               <img src="/assets/images/phone.png" alt="Phone Icon" class="img-fluid" style={{height:"90px"}} />
+                <div className="input-box">
+                  <form className="row g-4">
+                    <h3>Enter Mobile Number</h3>
+                    <div className="col-12">
+                      <div className="form-floating theme-form-floating log-in-form">
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="Phone" required
+                        />
+                        <label htmlFor="phone">Phone</label>
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <div className="form-floating theme-form-floating log-in-form">
+                        <input
+                          type="password"
+                          className="form-control"
+                          id="password"
+                          placeholder="Password" required
+                        />
+                        <label htmlFor="password">Password</label>
+                      </div>
+                    </div>
+                    <div className="col-12">
+                      <button
+                        className="btn btn-animation w-100 justify-content-center"
+                        type="submit"
+                      >
+                        Log In
+                      </button>
+                    </div>
                   </form>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="container">
-          <div className="footer-bottom">
-            <div className="container d-sm-flex align-items-center">
-              <div className="footer-left">
-                <span className="footer-copyright">
-                  © DSP. 20241. All Rights Reserved
-                </span>
-              </div>
-              <div className="footer-right ml-auto mt-1 mt-sm-0">
-                <div className="payment-icons">
-                  <span
-                    className="payment-icon visa"
-                    style={{
-                      backgroundImage:
-                        "url(assets/images/payment-visa.svg)",
-                    }}
-                  />
-                  <span
-                    className="payment-icon paypal"
-                    style={{
-                      backgroundImage:
-                        "url(assets/images/payment-paypal.svg)",
-                    }}
-                  />
-                  <span
-                    className="payment-icon stripe"
-                    style={{
-                      backgroundImage:
-                        "url(assets/images/payment-stripe.png)",
-                    }}
-                  />
-                  <span
-                    className="payment-icon verisign"
-                    style={{
-                      backgroundImage:
-                        "url(assets/images/payment-verisign.svg)",
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* End .footer-bottom */}
-        </div>
-      </footer>
+      </div>
     </>
   );
 }
