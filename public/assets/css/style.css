@@ -23551,7 +23551,7 @@ header .location-box button i {
     bottom: 0;
     padding: 10px;
     width: 100%;
-    background-color: var(--theme-color);
+    background-color: #ff5555;
     z-index: 2;
     overflow: hidden;
     -webkit-box-shadow: 0 -3px 10px 0px rgba(0, 0, 0, .08);

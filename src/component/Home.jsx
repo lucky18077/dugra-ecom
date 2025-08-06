@@ -28,7 +28,7 @@ export default function Home() {
       const response = await axios.get(`${LIVE_URL}/get-category`);
       const categoryList = response.data.data || [];
       setCategories(categoryList);
-      setGroupedCategories(chunkArray(categoryList, 12));
+      setGroupedCategories(chunkArray(categoryList, 18));
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -97,7 +97,7 @@ export default function Home() {
               {groupedCategories.map((group, i) => (
                 <div
                   key={i}
-                  className="row row-cols-xxl-5 row-cols-xl-6 row-cols-md-4 row-cols-2 g-sm-4 g-3 no-arrow section-b-space"
+                  className="row row-cols-xxl-6 row-cols-xl-4 row-cols-md-4 row-cols-2 g-sm-4 g-3 no-arrow section-b-space"
                 >
                   {group.map((category, index) => (
                     <div key={index}>

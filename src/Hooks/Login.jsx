@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { LIVE_URL } from "../api/Route";
+import { LIVE_URL } from "../Api/Route";
 
 export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
   const [number, setNumber] = useState("");

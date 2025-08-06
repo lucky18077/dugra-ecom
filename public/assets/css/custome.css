@@ -387,4 +387,8 @@
   color: rgb(255 99 99) !important;
 }
 
- 
+@media screen and (max-width: 767px) {
+  .mb-mobile {
+    margin-bottom: 10px;
+  }
+}

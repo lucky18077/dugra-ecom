@@ -12,7 +12,7 @@ export default function Footer() {
                   <div className="theme-logo">
                     <a href="index.html">
                       <img
-                        src="/assets/images/1_1.png"
+                        src="/assets/images/logo.png"
                         className="blur-up lazyload"
                         alt=""
                       />

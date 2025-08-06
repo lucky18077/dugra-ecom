@@ -159,7 +159,7 @@ export default function Shop() {
             </button>
           </div>
           <div
-            className="col-xxl-3 col-xl-4 col-lg-5 d-lg-block d-none sidebar-shop sticky-top"
+            className="col-xxl-4 col-xl-4 col-lg-4 d-lg-block d-none sidebar-shop sticky-top"
             style={{ height: "675px", top: "100px", zIndex: 1 }}
           >
             <div className="left-sidebar-box">
@@ -216,12 +216,12 @@ export default function Shop() {
           </div>
 
           <div
-            className="product-section col-xxl-9 col-xl-8 col-lg-7 ratio_50"
+            className="product-section col-xxl-8 col-xl-8 col-lg-8  ratio_50"
             style={{ padding: 0 }}
           >
-            <div className="row g-3">
+            <div className="row ">
               {products.map((product) => (
-                <div className="col-sm-6 col-md-4" key={product.id}>
+                <div className="col-6 col-sm-6 col-md-4 mb-2" key={product.id}>
                   <div className="product-card">
                     <div className="fix-height">
                       <img

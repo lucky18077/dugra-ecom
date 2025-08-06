@@ -25,12 +25,12 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
   return (
     <>
       <header className="sticky-top bg-white z-3">
-        <div className="top-nav top-header sticky-header">
+        <div className="top-nav top-header sticky-header mb-mobile">
           <div className="container-fluid-lg">
             <div className="row">
               <div className="col-12">
                 <div className="navbar-top">
-                  <button
+                  {/* <button
                     className="navbar-toggler d-xl-none d-inline navbar-menu-button"
                     type="button"
                     data-bs-toggle="offcanvas"
@@ -39,7 +39,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                     <span className="navbar-toggler-icon">
                       <i className="fa-solid fa-bars" />
                     </span>
-                  </button>
+                  </button> */}
 
                   <Link to="/" className="web-logo nav-logo">
                     <img
@@ -204,18 +204,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
               <span>Category</span>
             </Link>
           </li>
-          <li>
-            <Link to="/" className="search-box">
-              <i className="iconly-Search icli" />
-              <span>Search</span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/" className="notifi-wishlist">
-              <i className="iconly-Heart icli" />
-              <span>My Wish</span>
-            </Link>
-          </li>
+           
           <li>
             <Link to="/">
               <i className="iconly-Bag-2 icli fly-cate" />
