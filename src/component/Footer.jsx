@@ -1,11 +1,108 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { toTitleCase } from "../Hooks/Helper";
+import Carousel from "react-bootstrap/Carousel";
 
 export default function Footer() {
+
+   const carouselRef = useRef(null);
   return (
     <>
+      {/* Bottom Banner */}
+      <section className="section-b-space">
+        <div className="container">
+          <div className="row">
+            <Carousel
+              data-bs-theme="dark"
+              controls={false}
+              indicators={false}
+              interval={3000}
+              pause={false}
+            >
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="/assets/images/ban1.png"
+                  alt="First slide"
+                />
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="/assets/images/ban2.png"
+                  alt="Second slide"
+                />
+              </Carousel.Item>
+              <Carousel.Item>
+                <img
+                  className="d-block w-100"
+                  src="/assets/images/ban1.png"
+                  alt="Third slide"
+                />
+              </Carousel.Item>
+            </Carousel>
+          </div>
+        </div>
+      </section>
       <footer className="section-t-space">
         <div className="container-fluid-lg">
-          <div className="main-footer section-b-space">
+          <div className="service-section">
+            <div className="row g-3">
+              <div className="col-12">
+                <div className="service-contain">
+                  <div className="service-box">
+                    <div className="service-image">
+                      <img
+                        src="/assets/images/product.svg"
+                        className="blur-up lazyload"
+                        alt=""
+                      />
+                    </div>
+                    <div className="service-detail">
+                      <h5>Every Fresh Products</h5>
+                    </div>
+                  </div>
+                  <div className="service-box">
+                    <div className="service-image">
+                      <img
+                        src="/assets/images/delivery.svg"
+                        className="blur-up lazyload"
+                        alt=""
+                      />
+                    </div>
+                    <div className="service-detail">
+                      <h5>Free Delivery For Order Over $50</h5>
+                    </div>
+                  </div>
+                  <div className="service-box">
+                    <div className="service-image">
+                      <img
+                        src="/assets/images/discount.svg"
+                        className="blur-up lazyload"
+                        alt=""
+                      />
+                    </div>
+                    <div className="service-detail">
+                      <h5>Daily Mega Discounts</h5>
+                    </div>
+                  </div>
+                  <div className="service-box">
+                    <div className="service-image">
+                      <img
+                        src="/assets/images/market.svg"
+                        className="blur-up lazyload"
+                        alt=""
+                      />
+                    </div>
+                    <div className="service-detail">
+                      <h5>Best Price On The Market</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="main-footer section-b-space section-t-space">
             <div className="row g-md-4 g-3">
               <div className="col-xl-3 col-lg-4 col-sm-6">
                 <div className="footer-logo">
@@ -40,38 +137,33 @@ export default function Footer() {
               </div>
               <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6">
                 <div className="footer-title">
-                  <h4>Categories</h4>
+                  <h4>Top Categories</h4>
                 </div>
                 <div className="footer-contain">
                   <ul>
                     <li>
                       <a href="#" className="text-content">
-                        Vegetables &amp; Fruit
+                        {toTitleCase(" EDIBLE OIL & FATS")}
                       </a>
                     </li>
                     <li>
                       <a href="#" className="text-content">
-                        Beverages
+                        {toTitleCase(" ATTA, MAIDA & FLOURS")}
                       </a>
                     </li>
                     <li>
                       <a href="#" className="text-content">
-                        Meats &amp; Seafood
+                        {toTitleCase(" TEA , COFFEE , SUGAR & SALT")}
                       </a>
                     </li>
                     <li>
                       <a href="#" className="text-content">
-                        Frozen Foods
+                        {toTitleCase("  DAIRY & RELATED PRODUCTS")}
                       </a>
                     </li>
                     <li>
                       <a href="#" className="text-content">
-                        Biscuits &amp; Snacks
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="text-content">
-                        Grocery &amp; Staples
+                        {toTitleCase(" SPICES")}
                       </a>
                     </li>
                   </ul>
@@ -262,7 +354,12 @@ export default function Footer() {
             </div>
             <div className="modal-body">
               <div className="deal-offer-box">
-               <img src="/assets/images/phone.png" alt="Phone Icon" class="img-fluid" style={{height:"90px"}} />
+                <img
+                  src="/assets/images/phone.png"
+                  alt="Phone Icon"
+                  class="img-fluid"
+                  style={{ height: "90px" }}
+                />
                 <div className="input-box">
                   <form className="row g-4">
                     <h3>Enter Mobile Number</h3>
@@ -271,7 +368,8 @@ export default function Footer() {
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="Phone" required
+                          placeholder="Phone"
+                          required
                         />
                         <label htmlFor="phone">Phone</label>
                       </div>
@@ -282,7 +380,8 @@ export default function Footer() {
                           type="password"
                           className="form-control"
                           id="password"
-                          placeholder="Password" required
+                          placeholder="Password"
+                          required
                         />
                         <label htmlFor="password">Password</label>
                       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { toTitleCase } from "../Hooks/Helper";
 import { LIVE_URL } from "../Api/Route";
 
 export default function Shop() {
@@ -117,50 +118,71 @@ export default function Shop() {
   const filteredSubcategories = subcategories.filter(
     (sub) => Number(sub.category_id) === Number(selectedCategoryId)
   );
-
   return (
     <section
       className="blog-section section-b-space"
-      style={{ background: "#f8f8f8" }}
+      style={{ background: "#fff" }}
     >
-      <div className="container-fluid-lg">
-        <div className="row g-sm-4 g-3">
-          <div className="category-slider-wrapper d-flex align-items-center sticky-top">
-            <button className="slider-btn left" onClick={scrollLeft}>
-              <img
-                src="/assets/images/leftbtn.png"
-                alt="Scroll Left"
-                style={{ width: "50px", height: "40px" }}
-              />
-            </button>
-            <div
-              className="category-slider flex-nowrap overflow-auto"
-              ref={sliderRef}
-            >
-              {categories.map((cat) => (
-                <span
-                  key={cat.id}
-                  className={`category-item mx-3 ${
-                    Number(categoryId) === cat.id ? "fw-bold text-category" : ""
-                  }`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleCategoryClick(cat.id)}
-                >
-                  {cat.name}
-                </span>
-              ))}
+      {/* Fixed wrapper outside */}
+      <div
+        style={{
+          position: "fixed",
+          top: 100,
+          left: 0,
+          right: 0,
+          zIndex: 99,
+          backgroundColor: "#fff",
+        }}
+      >
+        {/* Fixed Category Slider */}
+        <div className="container-fluid-lg">
+          <div className="row g-sm-4 g-3">
+            <div className="category-slider-wrapper d-flex align-items-center py-2">
+              <button className="slider-btn left" onClick={scrollLeft}>
+                <img
+                  src="/assets/images/leftbtn.png"
+                  alt="Scroll Left"
+                  style={{ width: "50px", height: "40px" }}
+                />
+              </button>
+
+              <div
+                className="category-slider flex-nowrap overflow-auto"
+                ref={sliderRef}
+              >
+                {categories.map((cat) => (
+                  <span
+                    key={cat.id}
+                    className={`category-item mx-3 ${
+                      Number(categoryId) === cat.id
+                        ? "fw-bold text-category"
+                        : ""
+                    }`}
+                    style={{ cursor: "pointer", fontSize: "18px" }}
+                    onClick={() => handleCategoryClick(cat.id)}
+                  >
+                    {toTitleCase(cat.name)}
+                  </span>
+                ))}
+              </div>
+
+              <button className="slider-btn right" onClick={scrollRight}>
+                <img
+                  src="/assets/images/rightbtn.png"
+                  alt="Scroll Right"
+                  style={{ width: "50px", height: "40px" }}
+                />
+              </button>
             </div>
-            <button className="slider-btn right" onClick={scrollRight}>
-              <img
-                src="/assets/images/rightbtn.png"
-                alt="Scroll Right"
-                style={{ width: "50px", height: "40px" }}
-              />
-            </button>
           </div>
+        </div>
+      </div>
+      {/* Subateogy  and Products */}
+      <div className="container-fluid-lg mt-5">
+        <div className="row g-sm-4 g-3">
           <div
             className="col-xxl-4 col-xl-4 col-lg-4 d-lg-block d-none sidebar-shop sticky-top"
-            style={{ height: "675px", top: "100px", zIndex: 1 }}
+            style={{ height: "675px", top: "170px", zIndex: 1 }}
           >
             <div className="left-sidebar-box">
               <div className="accordion left-accordion-box">
@@ -198,7 +220,9 @@ export default function Shop() {
                                 />
                               </div>
                               <div className="recent-detail">
-                                <h5 className="recent-name">{sub.name}</h5>
+                                <h5 className="recent-name">
+                                  {toTitleCase(sub.name)}
+                                </h5>
                               </div>
                             </div>
                           </div>
@@ -233,7 +257,16 @@ export default function Shop() {
                         alt=""
                         className="product-img"
                       />
-                      <h6 className="product-title">{product.name}</h6>
+                      <h6 className="product-title" style={{ color: "gray" }}>
+                        {product.category}
+                      </h6>
+                      <h6
+                        className="product-title"
+                        style={{ fontSize: "15px" }}
+                      >
+                        {" "}
+                        {toTitleCase(product.name)}
+                      </h6>
                       <p className="product-qty">1 pc</p>
                     </div>
                     <div className="line-light"></div>

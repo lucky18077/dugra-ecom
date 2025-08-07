@@ -63,13 +63,25 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                             if (e.key === "Enter") handleSearch();
                           }}
                         />
-                        <button className="btn" type="button" onClick={handleSearch}>
+                        <button
+                          className="btn"
+                          type="button"
+                          onClick={handleSearch}
+                        >
                           <i data-feather="search" />
                         </button>
                       </div>
                     </div>
                   </div>
-
+                  <div className="d-flex mobile-hide" style={{ gap: "50px;" }}>
+                    <div className="delivery-icon">
+                      <i data-feather="phone-call" />
+                    </div>
+                    &nbsp;&nbsp;
+                    <div className="delivery-detail mt-1">
+                      <h5>+91 1234567890</h5>
+                    </div>
+                  </div>
                   {/* Right Side */}
                   <div className="rightside-box">
                     {!isLoggedIn ? (
@@ -108,7 +120,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                                     </Link>
                                     <div className="drop-contain">
                                       <Link to="/">
-                                        <h5>Fantasy Crunchy Choco Chip Cookies</h5>
+                                        <h5>
+                                          Fantasy Crunchy Choco Chip Cookies
+                                        </h5>
                                       </Link>
                                       <h6>
                                         <span>1 x</span> $80.58
@@ -130,7 +144,10 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                                     </Link>
                                     <div className="drop-contain">
                                       <Link to="/">
-                                        <h5>Peanut Butter Bite Premium Cookies 600 g</h5>
+                                        <h5>
+                                          Peanut Butter Bite Premium Cookies 600
+                                          g
+                                        </h5>
                                       </Link>
                                       <h6>
                                         <span>1 x</span> $25.68
@@ -150,7 +167,10 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                                 <Link to="/" className="btn btn-sm cart-button">
                                   View Cart
                                 </Link>
-                                <Link to="/" className="btn btn-sm cart-button theme-bg-color text-white">
+                                <Link
+                                  to="/"
+                                  className="btn btn-sm cart-button theme-bg-color text-white"
+                                >
                                   Checkout
                                 </Link>
                               </div>
@@ -204,7 +224,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
               <span>Category</span>
             </Link>
           </li>
-           
+
           <li>
             <Link to="/">
               <i className="iconly-Bag-2 icli fly-cate" />
