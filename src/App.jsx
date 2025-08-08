@@ -7,6 +7,7 @@ import Shop from "./component/Shop";
 import Footer from "./component/Footer";
 import ProductDetail from "./component/ProductDetail";
 import ViewCart from "./component/ViewCart";
+import CheckOut from "./component/CheckOut";
 import toastr from "toastr";
 import "toastr/build/toastr.min.css";
 import Login from "./Hooks/Login";
@@ -119,6 +120,7 @@ function App() {
           }
         />
         <Route path="/view-cart" element={<ViewCart />} />
+        <Route path="/checkout" element={<CheckOut />} />
         <Route
           path="*"
           element={<h2 className="text-center mt-5">404 - Page Not Found</h2>}

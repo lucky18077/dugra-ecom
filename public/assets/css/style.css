@@ -14927,8 +14927,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .custom-form-check .form-check-input:checked {
-    background-color: var(--theme-color);
-    border-color: var(--theme-color)
+    background-color: #d34b0b;
+    border-color: #d34b0b
 }
 
 .custom-form-check .form-check-input:focus {
@@ -18886,7 +18886,7 @@ span {
 }
 
 .theme-bg-color {
-    background: var(--theme-color) !important
+    background: #d34b0b !important
 }
 
 .banner-contain {
@@ -36425,7 +36425,7 @@ body.rtl .menu-label {
     position: absolute;
     top: 0;
     right: 0;
-    background-color: var(--theme-color);
+    background-color: #d34b0b;
     padding: 2px 8px;
     border-radius: 4px;
     color: #fff;
@@ -36445,8 +36445,8 @@ body.rtl .menu-label {
 }
 
 .checkout-section-2 .left-sidebar-checkout .checkout-detail-box>ul>li .checkout-box .checkout-detail .delivery-address-box>div .form-check .form-check-input:checked {
-    background-color: var(--theme-color);
-    border-color: var(--theme-color)
+    background-color: #d34b0b;
+    border-color: #d34b0b
 }
 
 .checkout-section-2 .left-sidebar-checkout .checkout-detail-box>ul>li .checkout-box .checkout-detail .delivery-address-box>div .form-check .form-check-input:checked[type=radio] {
@@ -36966,12 +36966,13 @@ body.rtl .menu-label {
 
 .checkout-section-2 .right-side-summery-box {
     position: sticky;
-    top: 110px
+    top: 100px
 }
 
 .checkout-section-2 .right-side-summery-box .summery-box-2 {
     border-radius: 7px;
     background-color: #f8f8f8;
+    border: 1px solid #dee2e6;
     padding: calc(14px + 15*(100vw - 320px)/1600)
 }
 
@@ -37207,7 +37208,7 @@ body.rtl .menu-label {
 
 .checkout-section-2 .right-side-summery-box .summery-box-2 .summery-total li:nth-child(4) h4 {
     font-weight: 600;
-    color: var(--theme-color)
+    color: #d34b0b
 }
 
 .checkout-section-2 .right-side-summery-box .summery-box-2 .summery-total li:last-child {

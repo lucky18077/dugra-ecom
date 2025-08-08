@@ -35,14 +35,12 @@ export default function ViewCart() {
 
   useEffect(() => {
     fetchCart();
-  }, []);
-
-  // Update cart item
-  const handleCartUpdate = async (productId, qty) => {
+  }, []); 
+  const handleCartUpdate = async (productId, qty = null, qtyType = null) => {
     try {
       await axios.post(
         `${LIVE_URL}/add-to-cart`,
-        { product_id: productId, qty },
+        { product_id: productId, qty, qtyType },
         {
           headers: {
             "Content-Type": "application/json",
@@ -51,34 +49,24 @@ export default function ViewCart() {
           },
         }
       );
-      await fetchCart(); // Refresh cart after update
+      await fetchCart();  
     } catch (error) {
       console.error("Cart update error:", error);
     }
-  };
-
-  // Increment quantity
+  }; 
   const increment = async (item) => {
     const newQty = item.qty + 1;
     await handleCartUpdate(item.product_id, newQty);
-  };
-
-  // Decrement quantity
+  }; 
   const decrement = async (item) => {
-    if (item.qty > 1) {
-      const newQty = item.qty - 1;
-      await handleCartUpdate(item.product_id, newQty);
-    }
-  };
-
-  // Manual input change
+    await handleCartUpdate(item.product_id, 1, "minus");
+  }; 
   const updateQuantity = async (item, qty) => {
     const qtyNum = parseInt(qty);
     if (!isNaN(qtyNum) && qtyNum > 0) {
       await handleCartUpdate(item.product_id, qtyNum);
     }
   };
-
   return (
     <section className="cart-section section-b-space">
       <div className="container-fluid-lg">
@@ -109,7 +97,9 @@ export default function ViewCart() {
                                   {item.name.length > 30
                                     ? item.name.substring(0, 30) + "..."
                                     : item.name}
-                                  <span className="tooltip-text">{item.name}</span>
+                                  <span className="tooltip-text">
+                                    {item.name}
+                                  </span>
                                 </li>
                               </ul>
                             </div>
@@ -123,7 +113,10 @@ export default function ViewCart() {
 
                         <td className="quantity">
                           <h4 className="table-title text-content">Qty</h4>
-                          <div className="quantity-price" style={{ width: "75%" }}>
+                          <div
+                            className="quantity-price"
+                            style={{ width: "75%" }}
+                          >
                             <div className="cart_qty">
                               <div className="input-group">
                                 <button
