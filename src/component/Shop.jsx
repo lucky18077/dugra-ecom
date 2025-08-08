@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toTitleCase } from "../Hooks/Helper";
 import { LIVE_URL } from "../Api/Route";
 
-export default function Shop() {
+export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
+  const token = localStorage.getItem("customer_token");
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -43,6 +44,7 @@ export default function Shop() {
         console.error("Subcategory fetch error:", err);
       }
     };
+
     fetchCategories();
     fetchSubcategories();
   }, [categoryId]);
@@ -74,6 +76,12 @@ export default function Shop() {
     navigate(`/shop/category/${catId}/subcategory/${subId}`);
   };
 
+  const handleSearch = () => {
+    if (searchTerm.trim() !== "") {
+      navigate(`/shop/search?q=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
+
   const scrollLeft = () => {
     sliderRef.current?.scrollBy({ left: -200, behavior: "smooth" });
   };
@@ -82,48 +90,87 @@ export default function Shop() {
     sliderRef.current?.scrollBy({ left: 200, behavior: "smooth" });
   };
 
-  const increment = (id) => {
+  const increment = async (id) => {
+    if (!isLoggedIn) {
+      openLoginModal();
+      return;
+    }
+
+    const currentProduct = products.find((p) => p.id === id);
+    const newQty = currentProduct.quantity + 1;
+
     setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, quantity: p.quantity + 1 } : p))
+      prev.map((p) => (p.id === id ? { ...p, quantity: newQty } : p))
     );
+
+    await handleCartUpdate(id, newQty, "plus");
   };
 
-  const decrement = (id) => {
+  const decrement = async (id) => {
+    if (!isLoggedIn) {
+      openLoginModal();
+      return;
+    }
+
+    const currentProduct = products.find((p) => p.id === id);
+    const newQty = Math.max(0, currentProduct.quantity - 1);
+
     setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, quantity: Math.max(0, p.quantity - 1) } : p
-      )
+      prev.map((p) => (p.id === id ? { ...p, quantity: newQty } : p))
     );
+
+    await handleCartUpdate(id, newQty, "minus");
   };
 
-  const updateQuantity = (id, qty) => {
+  const handleCartUpdate = async (productId, qty = null, qtyType = null) => {
+    try {
+      await axios.post(
+        `${LIVE_URL}/add-to-cart`,
+        { product_id: productId, qty, qtyType },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setRefreshNavbar((prev) => !prev);
+    } catch (error) {
+      console.error("Cart update error:", error);
+    }
+  };
+
+  const updateQuantity = async (id, qty) => {
+    if (!isLoggedIn) {
+      openLoginModal();
+      return;
+    }
     if (qty < 1 || isNaN(qty)) return;
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, quantity: qty } : p))
     );
+    await handleCartUpdate(id, qty);
   };
 
-  const handleAddToCart = (id) => {
+  const handleAddToCart = async (id) => {
+    if (!isLoggedIn) {
+      openLoginModal();
+      return;
+    }
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, quantity: 1 } : p))
     );
-  };
-
-  const handleSearch = () => {
-    if (searchTerm.trim() !== "") {
-      navigate(`/shop/search?q=${encodeURIComponent(searchTerm.trim())}`);
-    }
+    await handleCartUpdate(id, 1);
   };
 
   const filteredSubcategories = subcategories.filter(
     (sub) => Number(sub.category_id) === Number(selectedCategoryId)
   );
+
   return (
-    <section
-      className="blog-section section-b-space"
-      style={{ background: "#fff" }}
-    >
-      {/* Fixed wrapper outside */}
+    <section className="blog-section section-b-space" style={{ background: "#fff" }}>
+      {/* Category Slider */}
       <div
         style={{
           position: "fixed",
@@ -134,29 +181,19 @@ export default function Shop() {
           backgroundColor: "#fff",
         }}
       >
-        {/* Fixed Category Slider */}
         <div className="container-fluid-lg">
           <div className="row g-sm-4 g-3">
             <div className="category-slider-wrapper d-flex align-items-center py-2">
               <button className="slider-btn left" onClick={scrollLeft}>
-                <img
-                  src="/assets/images/leftbtn.png"
-                  alt="Scroll Left"
-                  style={{ width: "50px", height: "40px" }}
-                />
+                <img src="/assets/images/leftbtn.png" alt="Left" style={{ width: "50px", height: "40px" }} />
               </button>
 
-              <div
-                className="category-slider flex-nowrap overflow-auto"
-                ref={sliderRef}
-              >
+              <div className="category-slider flex-nowrap overflow-auto" ref={sliderRef}>
                 {categories.map((cat) => (
                   <span
                     key={cat.id}
                     className={`category-item mx-3 ${
-                      Number(categoryId) === cat.id
-                        ? "fw-bold text-category"
-                        : ""
+                      Number(categoryId) === cat.id ? "fw-bold text-category" : ""
                     }`}
                     style={{ cursor: "pointer", fontSize: "18px" }}
                     onClick={() => handleCategoryClick(cat.id)}
@@ -167,23 +204,18 @@ export default function Shop() {
               </div>
 
               <button className="slider-btn right" onClick={scrollRight}>
-                <img
-                  src="/assets/images/rightbtn.png"
-                  alt="Scroll Right"
-                  style={{ width: "50px", height: "40px" }}
-                />
+                <img src="/assets/images/rightbtn.png" alt="Right" style={{ width: "50px", height: "40px" }} />
               </button>
             </div>
           </div>
         </div>
       </div>
-      {/* Subateogy  and Products */}
+
+      {/* Subcategory and Products */}
       <div className="container-fluid-lg mt-5">
         <div className="row g-sm-4 g-3">
-          <div
-            className="col-xxl-4 col-xl-4 col-lg-4 d-lg-block d-none sidebar-shop sticky-top"
-            style={{ height: "675px", top: "170px", zIndex: 1 }}
-          >
+          {/* Sidebar for Subcategories */}
+          <div className="col-xxl-4 col-xl-4 col-lg-4 d-lg-block d-none sidebar-shop sticky-top" style={{ height: "675px", top: "170px", zIndex: 1 }}>
             <div className="left-sidebar-box">
               <div className="accordion left-accordion-box">
                 <div className="accordion-item">
@@ -194,16 +226,9 @@ export default function Shop() {
                           <div className="recent-post-box" key={sub.id}>
                             <div
                               className={`recent-box d-flex ${
-                                Number(subcategoryId) === sub.id
-                                  ? "text-category"
-                                  : ""
+                                Number(subcategoryId) === sub.id ? "text-category" : ""
                               }`}
-                              onClick={() =>
-                                handleSubcategoryClick(
-                                  sub.id,
-                                  selectedCategoryId
-                                )
-                              }
+                              onClick={() => handleSubcategoryClick(sub.id, selectedCategoryId)}
                               style={{ cursor: "pointer" }}
                             >
                               <div className="py-1">
@@ -220,17 +245,13 @@ export default function Shop() {
                                 />
                               </div>
                               <div className="recent-detail">
-                                <h5 className="recent-name">
-                                  {toTitleCase(sub.name)}
-                                </h5>
+                                <h5 className="recent-name">{toTitleCase(sub.name)}</h5>
                               </div>
                             </div>
                           </div>
                         ))
                       ) : (
-                        <p className="text-muted">
-                          No subcategories available.
-                        </p>
+                        <p className="text-muted">No subcategories available.</p>
                       )}
                     </div>
                   </div>
@@ -239,71 +260,52 @@ export default function Shop() {
             </div>
           </div>
 
-          <div
-            className="product-section col-xxl-8 col-xl-8 col-lg-8  ratio_50"
-            style={{ padding: 0 }}
-          >
-            <div className="row ">
+          {/* Product Grid */}
+          <div className="product-section col-xxl-8 col-xl-8 col-lg-8 ratio_50" style={{ padding: 0 }}>
+            <div className="row">
               {products.map((product) => (
                 <div className="col-6 col-sm-6 col-md-4 mb-2" key={product.id}>
                   <div className="product-card">
                     <div className="fix-height">
-                      <img
-                        src={
-                          product.image
-                            ? `http://127.0.0.1:8000/product images/${product.image}`
-                            : "/assets/images/shop7.png"
-                        }
-                        alt=""
-                        className="product-img"
-                      />
-                      <h6 className="product-title" style={{ color: "gray" }}>
-                        {product.category}
-                      </h6>
-                      <h6
-                        className="product-title"
-                        style={{ fontSize: "15px" }}
-                      >
-                        {" "}
-                        {toTitleCase(product.name)}
-                      </h6>
+                      <Link to={`/product-detail/${product.id}`}>
+                        <img
+                          src={
+                            product.image
+                              ? `http://127.0.0.1:8000/product images/${product.image}`
+                              : "/assets/images/shop7.png"
+                          }
+                          alt=""
+                          className="product-img"
+                        />
+                      </Link>
+                      <h6 className="product-title" style={{ color: "gray" }}>{product.category}</h6>
+                      <Link to={`/product-detail/${product.id}`} style={{ color: "black" }}>
+                        <h6 className="product-title" style={{ fontSize: "15px" }}>{toTitleCase(product.name)}</h6>
+                      </Link>
                       <p className="product-qty">1 pc</p>
                     </div>
                     <div className="line-light"></div>
                     <div className="price-action-wrap">
                       <div>
-                        <span className="price">
-                          ₹{Number(product.base_price).toFixed(2)}
-                        </span>
+                        <span className="price">₹{Number(product.base_price).toFixed(2)}</span>
                         {Number(product.mrp) > 0 && (
-                          <del className="mrp">
-                            ₹{Number(product.mrp).toFixed(2)}
-                          </del>
+                          <del className="mrp">₹{Number(product.mrp).toFixed(2)}</del>
                         )}
                       </div>
                       {product.quantity === 0 ? (
-                        <button
-                          className="add-btn w-800"
-                          onClick={() => handleAddToCart(product.id)}
-                        >
+                        <button className="add-btn w-800" onClick={() => handleAddToCart(product.id)}>
                           ADD <span className="plus">+</span>
                         </button>
                       ) : (
                         <div className="qty-controls">
-                          <button onClick={() => decrement(product.id)}>
-                            -
-                          </button>
+                          <button onClick={() => decrement(product.id)}>-</button>
                           <input
                             type="number"
                             min="1"
                             value={product.quantity}
-                            onChange={(e) =>
-                              updateQuantity(product.id, Number(e.target.value))
-                            }
+                            onChange={(e) => updateQuantity(product.id, Number(e.target.value))}
                           />
-                          <button onClick={() => increment(product.id)}>
-                            +
-                          </button>
+                          <button onClick={() => increment(product.id)}>+</button>
                         </div>
                       )}
                     </div>

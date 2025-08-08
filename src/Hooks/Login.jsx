@@ -20,7 +20,7 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
       if (result.status && result.token) {
         localStorage.setItem("customer_token", result.token);
         setIsLoggedIn(true);
-        setRefreshNavbar((prev) => prev + 1);  
+        setRefreshNavbar((prev) => prev + 1);
 
         const modalEl = document.getElementById("deal-box");
         const modalInstance = bootstrap.Modal.getInstance(modalEl);
@@ -78,7 +78,12 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                         placeholder="Phone"
                         required
                         value={number}
-                        onChange={(e) => setNumber(e.target.value)}
+                        onChange={(e) => {
+                          const input = e.target.value;
+                          if (input.length <= 10) {
+                            setNumber(input);
+                          }
+                        }}
                       />
                       <label htmlFor="phone">Phone</label>
                     </div>

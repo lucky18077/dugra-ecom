@@ -1,19 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import feather from "feather-icons";
+import axios from "axios";
+import { LIVE_URL } from "../Api/Route";
 
 export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [cartQty, setCartQty] = useState(0);
   const navigate = useNavigate();
+
+  const fetchCartCount = async () => {
+    const token = localStorage.getItem("customer_token");
+
+    if (!token) {
+      setCartQty(0);
+      return;
+    }
+    try {
+      const res = await axios.get(`${LIVE_URL}/get-cart`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.data && typeof res.data.total_qty === "number") {
+        setCartQty(res.data.total_qty);
+      } else {
+        setCartQty(0);
+      }
+    } catch (err) {
+      console.error("Cart fetch error:", err);
+      setCartQty(0);
+    }
+  };
+
+  useEffect(() => {
+    let interval;
+    if (isLoggedIn) {
+      fetchCartCount();  
+      interval = setInterval(fetchCartCount, 2000); 
+    }
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     feather.replace();
-  }, [isLoggedIn, refreshNavbar]);
+  }, [cartQty]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("customer_token");
-    localStorage.removeItem("customer_user");
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("customer_token");
+
+      if (token) {
+        await fetch(`${LIVE_URL}/customer-logout`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+      localStorage.removeItem("customer_token");
+      localStorage.removeItem("customer_user");
+      localStorage.removeItem("customer_id");
+      setIsLoggedIn(false);
+      setCartQty(0);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   const handleSearch = () => {
@@ -24,23 +77,13 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
 
   return (
     <>
-      <header className="sticky-top bg-white z-3">
+      <header className="sticky-top bg-white z-3 nab-bottom">
         <div className="top-nav top-header sticky-header mb-mobile">
           <div className="container-fluid-lg">
             <div className="row">
               <div className="col-12">
                 <div className="navbar-top">
-                  {/* <button
-                    className="navbar-toggler d-xl-none d-inline navbar-menu-button"
-                    type="button"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#primaryMenu"
-                  >
-                    <span className="navbar-toggler-icon">
-                      <i className="fa-solid fa-bars" />
-                    </span>
-                  </button> */}
-
+                  {/* Logo */}
                   <Link to="/" className="web-logo nav-logo">
                     <img
                       src="/assets/images/logo.png"
@@ -49,7 +92,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                     />
                   </Link>
 
-                  {/* ✅ SEARCH BOX */}
+                  {/* Search Box */}
                   <div className="middle-box">
                     <div className="search-box">
                       <div className="input-group">
@@ -73,16 +116,18 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                       </div>
                     </div>
                   </div>
-                  <div className="d-flex mobile-hide" style={{ gap: "50px;" }}>
+
+                  {/* Contact Number */}
+                  <div className="d-flex mobile-hide" style={{ gap: "20px" }}>
                     <div className="delivery-icon">
                       <i data-feather="phone-call" />
                     </div>
-                    &nbsp;&nbsp;
                     <div className="delivery-detail mt-1">
                       <h5>+91 1234567890</h5>
                     </div>
                   </div>
-                  {/* Right Side */}
+
+                  {/* Right Side Navigation */}
                   <div className="rightside-box">
                     {!isLoggedIn ? (
                       <div
@@ -95,98 +140,39 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                       </div>
                     ) : (
                       <ul className="right-side-menu">
-                        {/* Cart */}
                         <li className="right-side">
-                          <div className="onhover-dropdown header-badge">
-                            <button
-                              type="button"
-                              className="btn p-0 position-relative header-wishlist"
-                            >
-                              <i data-feather="shopping-cart" />
-                              <span className="position-absolute top-0 start-100 translate-middle badge">
-                                2
-                              </span>
-                            </button>
-                            <div className="onhover-div">
-                              <ul className="cart-list">
-                                <li className="product-box-contain">
-                                  <div className="drop-cart">
-                                    <Link to="/" className="drop-image">
-                                      <img
-                                        src="/assets/images/1.png"
-                                        className="blur-up lazyload"
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <div className="drop-contain">
-                                      <Link to="/">
-                                        <h5>
-                                          Fantasy Crunchy Choco Chip Cookies
-                                        </h5>
-                                      </Link>
-                                      <h6>
-                                        <span>1 x</span> $80.58
-                                      </h6>
-                                      <button className="close-button close_button">
-                                        <i className="fa-solid fa-xmark" />
-                                      </button>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li className="product-box-contain">
-                                  <div className="drop-cart">
-                                    <Link to="/" className="drop-image">
-                                      <img
-                                        src="/assets/images/2.png"
-                                        className="blur-up lazyload"
-                                        alt=""
-                                      />
-                                    </Link>
-                                    <div className="drop-contain">
-                                      <Link to="/">
-                                        <h5>
-                                          Peanut Butter Bite Premium Cookies 600
-                                          g
-                                        </h5>
-                                      </Link>
-                                      <h6>
-                                        <span>1 x</span> $25.68
-                                      </h6>
-                                      <button className="close-button close_button">
-                                        <i className="fa-solid fa-xmark" />
-                                      </button>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                              <div className="price-box">
-                                <h5>Total :</h5>
-                                <h4 className="theme-color fw-bold">$106.58</h4>
-                              </div>
-                              <div className="button-group">
-                                <Link to="/" className="btn btn-sm cart-button">
-                                  View Cart
-                                </Link>
-                                <Link
-                                  to="/"
-                                  className="btn btn-sm cart-button theme-bg-color text-white"
-                                >
-                                  Checkout
-                                </Link>
+                          <div className="delivery-login-box">
+                            <div className="delivery-icon">
+                              <div className="search-box">
+                                <i data-feather="search" />
                               </div>
                             </div>
                           </div>
                         </li>
 
-                        {/* User */}
+                        {/* Cart Icon */}
+                        <li className="right-side">
+                          <Link
+                            to="/view-cart"
+                            className="btn p-0 position-relative header-wishlist"
+                          >
+                            <i data-feather="shopping-cart" />
+                            {cartQty > 0 && (
+                              <span className="position-absolute top-0 start-100 translate-middle badge">
+                                {cartQty}
+                                <span className="visually-hidden">
+                                  cart quantity
+                                </span>
+                              </span>
+                            )}
+                          </Link>
+                        </li>
+
+                        {/* User Dropdown */}
                         <li className="right-side onhover-dropdown">
                           <div className="delivery-login-box">
                             <div className="delivery-icon">
                               <i data-feather="user" />
-                            </div>
-                            <div className="delivery-detail">
-                              <h6>Hello,</h6>
-                              <h5>My Account</h5>
                             </div>
                           </div>
                           <div className="onhover-div onhover-div-login">
@@ -209,7 +195,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Bottom Menu */}
       <div className="mobile-menu d-md-none d-block mobile-cart">
         <ul>
           <li className="active">
@@ -219,14 +205,13 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
             </Link>
           </li>
           <li className="mobile-category">
-            <Link to="/">
+            <Link to="/categories">
               <i className="iconly-Category icli js-link" />
               <span>Category</span>
             </Link>
           </li>
-
           <li>
-            <Link to="/">
+            <Link to="/view-cart">
               <i className="iconly-Bag-2 icli fly-cate" />
               <span>Cart</span>
             </Link>

@@ -18882,7 +18882,7 @@ span {
 }
 
 .theme-color {
-    color: var(--theme-color) !important
+    color: #d34b0b !important
 }
 
 .theme-bg-color {
@@ -30732,7 +30732,7 @@ body.rtl .menu-label {
 
 .qty-box .input-group button i {
     font-size: 13px;
-    color: var(--theme-color);
+    color: black;
     margin-top: 1px
 }
 
@@ -34932,7 +34932,9 @@ body.rtl .menu-label {
 }
 
 .cart-table {
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8; */
+    border: 1px solid #a9a9a9;
+    background-color: #ffffff;
     padding: calc(18px + 17*(100vw - 320px)/1600) calc(12px + 13*(100vw - 320px)/1600)
 }
 
@@ -35323,7 +35325,9 @@ body.rtl .menu-label {
 
 .summery-box {
     border-radius: 5px;
-    background-color: #f8f8f8
+    background-color: #ffffff;
+    border: 1px solid #a9a9a9;
+
 }
 
 .summery-box .summery-header {
@@ -44267,7 +44271,7 @@ body.rtl .question-answer li .question-box .link-dislike-box {
 .vendor-box .vendor-list ul li .address-contact .feather {
     width: 20px;
     height: 20px;
-    color: var(--theme-color)
+    color: #d34b0b;
 }
 
 .vendor-box .vendor-list ul li .address-contact h5 {
@@ -47001,7 +47005,7 @@ body.rtl .theme-product-section .right-box-contain .license-list .accordion-item
 }
 
 .share-option ul li a:hover {
-    color: var(--theme-color);
+    color: #d34b0b;
     -webkit-transition: all .5s ease;
     transition: all .5s ease
 }

@@ -5,6 +5,10 @@ import Navbar from "./component/Navbar";
 import Home from "./component/Home";
 import Shop from "./component/Shop";
 import Footer from "./component/Footer";
+import ProductDetail from "./component/ProductDetail";
+import ViewCart from "./component/ViewCart";
+import toastr from "toastr";
+import "toastr/build/toastr.min.css";
 import Login from "./Hooks/Login";
 
 function App() {
@@ -12,7 +16,15 @@ function App() {
     return !!localStorage.getItem("customer_token");
   });
 
-  const [refreshNavbar, setRefreshNavbar] = useState(0);
+ const [refreshNavbar, setRefreshNavbar] = useState(false);
+
+  const openLoginModal = () => {
+    const modalEl = document.getElementById("deal-box");
+    if (modalEl) {
+      const modalInstance = new window.bootstrap.Modal(modalEl);
+      modalInstance.show();
+    }
+  };
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -32,16 +44,87 @@ function App() {
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
         refreshNavbar={refreshNavbar}
+        openLoginModal={openLoginModal}
       />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/shop/category/:categoryId" element={<Shop key="category" />} />
-        <Route path="/shop/subcategorycategory/:subcategoryId" element={<Shop key="subcategory" />} />
-        <Route path="/shop/category/:categoryId/subcategory/:subcategoryId" element={<Shop />} />
-        <Route path="/shop/brand/:brandId" element={<Shop />} />
-        <Route path="/shop/search" element={<Shop />} />
-        <Route path="*" element={<h2 className="text-center mt-5">404 - Page Not Found</h2>} />
+        <Route
+          path="/shop/category/:categoryId"
+          element={
+            <Shop
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              refreshNavbar={refreshNavbar}
+              openLoginModal={openLoginModal}
+            />
+          }
+        />
+        <Route
+          path="/shop/subcategorycategory/:subcategoryId"
+          element={
+            <Shop
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              refreshNavbar={refreshNavbar}
+              openLoginModal={openLoginModal}
+              setRefreshNavbar={setRefreshNavbar}
+            />
+          }
+        />
+        <Route
+          path="/shop/category/:categoryId/subcategory/:subcategoryId"
+          element={
+            <Shop
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              setRefreshNavbar={setRefreshNavbar}
+              refreshNavbar={refreshNavbar}
+              openLoginModal={openLoginModal}
+            />
+          }
+        />
+        <Route
+          path="/shop/brand/:brandId"
+          element={
+            <Shop
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              refreshNavbar={refreshNavbar}
+              openLoginModal={openLoginModal}
+              setRefreshNavbar={setRefreshNavbar}
+            />
+          }
+        />
+        <Route
+          path="/shop/search"
+          element={
+            <Shop
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              refreshNavbar={refreshNavbar}
+              openLoginModal={openLoginModal}
+            />
+          }
+        />
+        <Route
+          path="/product-detail/:id"
+          element={
+            <ProductDetail
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              refreshNavbar={refreshNavbar}
+              openLoginModal={openLoginModal}
+              setRefreshNavbar={setRefreshNavbar}
+            />
+          }
+        />
+        <Route path="/view-cart" element={<ViewCart />} />
+        <Route
+          path="*"
+          element={<h2 className="text-center mt-5">404 - Page Not Found</h2>}
+        />
       </Routes>
+
       <Login
         setIsLoggedIn={setIsLoggedIn}
         setRefreshNavbar={setRefreshNavbar}
