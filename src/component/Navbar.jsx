@@ -36,8 +36,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
   useEffect(() => {
     let interval;
     if (isLoggedIn) {
-      fetchCartCount();  
-      interval = setInterval(fetchCartCount, 2000); 
+      fetchCartCount();
+      interval = setInterval(fetchCartCount, 2000);
     }
     return () => clearInterval(interval);
   }, [isLoggedIn]);
@@ -93,23 +93,36 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                   </Link>
 
                   {/* Search Box */}
-                  <div className="middle-box">
+                  <div className="middle-box" style={{ marginRight: "233px" }}>
                     <div className="search-box">
-                      <div className="input-group">
+                      <div
+                        className="position-relative"
+                        style={{
+                          width: "440px",
+                          borderRadius: "12px",
+                        }}
+                      >
                         <input
                           type="search"
-                          className="form-control"
-                          placeholder="I'm searching for..."
+                          className="form-control pe-5" // padding right for button
+                          placeholder="Search By Product Name, Category, SKU"
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") handleSearch();
                           }}
+                          style={{
+                            borderRadius: "12px",
+                          }}
                         />
                         <button
-                          className="btn"
+                          className="btn position-absolute top-0 end-0 h-100"
                           type="button"
                           onClick={handleSearch}
+                          style={{
+                            borderTopLeftRadius: 0,
+                            borderBottomLeftRadius: 0,
+                          }}
                         >
                           <i data-feather="search" />
                         </button>
@@ -118,14 +131,14 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                   </div>
 
                   {/* Contact Number */}
-                  <div className="d-flex mobile-hide" style={{ gap: "20px" }}>
+                  {/* <div className="d-flex mobile-hide" style={{ gap: "20px" }}>
                     <div className="delivery-icon">
                       <i data-feather="phone-call" />
                     </div>
                     <div className="delivery-detail mt-1">
                       <h5>+91 1234567890</h5>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Right Side Navigation */}
                   <div className="rightside-box">
@@ -135,7 +148,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                         data-bs-toggle="modal"
                         data-bs-target="#deal-box"
                       >
-                        Login/Signup
+                        Login/Register
                         <i className="fa-solid fa-right-long icon"></i>
                       </div>
                     ) : (
@@ -150,6 +163,15 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                           </div>
                         </li>
 
+                        <li className="right-side">
+                          <Link
+                            to="/view-wishlist"
+                            className="btn p-0 position-relative header-wishlist"
+                          >
+                            <i data-feather="heart" />
+                          </Link>
+                        </li>
+
                         {/* Cart Icon */}
                         <li className="right-side">
                           <Link
@@ -157,19 +179,26 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                             className="btn p-0 position-relative header-wishlist"
                           >
                             <i data-feather="shopping-cart" />
-                            {cartQty > 0 && (
-                              <span className="position-absolute top-0 start-100 translate-middle badge">
-                                {cartQty}
-                                <span className="visually-hidden">
-                                  cart quantity
-                                </span>
+                            <span className="position-absolute top-0 start-100 translate-middle badge">
+                              {cartQty || 0}{" "}
+                              <span className="visually-hidden">
+                                cart quantity
                               </span>
-                            )}
+                            </span>
                           </Link>
                         </li>
 
                         {/* User Dropdown */}
-                        <li className="right-side onhover-dropdown">
+
+                        <li className="right-side">
+                          <Link
+                            to="/profile"
+                            className="btn p-0 position-relative header-wishlist"
+                          >
+                            <i data-feather="user" />
+                          </Link>
+                        </li>
+                        {/* <li className="right-side onhover-dropdown">
                           <div className="delivery-login-box">
                             <div className="delivery-icon">
                               <i data-feather="user" />
@@ -184,7 +213,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                               </li>
                             </ul>
                           </div>
-                        </li>
+                        </li> */}
                       </ul>
                     )}
                   </div>

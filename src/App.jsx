@@ -8,16 +8,22 @@ import Footer from "./component/Footer";
 import ProductDetail from "./component/ProductDetail";
 import ViewCart from "./component/ViewCart";
 import CheckOut from "./component/CheckOut";
+import Invocie from "./component/Invocie";
 import toastr from "toastr";
 import "toastr/build/toastr.min.css";
 import Login from "./Hooks/Login";
+import ScrollToTop from "./Hooks/ScrollToTop";
+import Profile from "./component/Profile";
+import Signup from "./component/Signup";
+import Wishlist from "./component/Wishlist";
+import AllBrands from "./component/AllBrands";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return !!localStorage.getItem("customer_token");
   });
 
- const [refreshNavbar, setRefreshNavbar] = useState(false);
+  const [refreshNavbar, setRefreshNavbar] = useState(false);
 
   const openLoginModal = () => {
     const modalEl = document.getElementById("deal-box");
@@ -47,8 +53,18 @@ function App() {
         refreshNavbar={refreshNavbar}
         openLoginModal={openLoginModal}
       />
+      <ScrollToTop />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <Home
+              isLoggedIn={isLoggedIn}
+              openLoginModal={openLoginModal}
+              setRefreshNavbar={setRefreshNavbar}
+            />
+          }
+        />
         <Route
           path="/shop/category/:categoryId"
           element={
@@ -120,7 +136,15 @@ function App() {
           }
         />
         <Route path="/view-cart" element={<ViewCart />} />
+        <Route
+          path="/view-wishlist"
+          element={<Wishlist refreshNavbar={refreshNavbar} />}
+        />
+        <Route path="/view-brands" element={<AllBrands />} />
         <Route path="/checkout" element={<CheckOut />} />
+        <Route path="/invoice/:id" element={<Invocie />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/sign-up" element={<Signup />} />
         <Route
           path="*"
           element={<h2 className="text-center mt-5">404 - Page Not Found</h2>}

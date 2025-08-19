@@ -192,7 +192,7 @@
   border: 1px solid #d34b0b;
   color: #d34b0b;
   padding: 5px 12px;
-  border-radius: 6px;
+  border-radius: 17px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -257,9 +257,11 @@
 .fix-height {
   display: flex;
   flex-direction: column;
-  align-items: self-start;
-  height: 250px;
-  /* Or your fixed height */
+  align-items: flex-start;
+  /* 'self-start' is invalid */
+  min-height: 260px;
+  /* Minimum height */
+  max-height: auto;
   text-align: center;
 }
 
@@ -438,4 +440,112 @@ footer .main-footer {
 
 .custom-tooltip:hover .tooltip-text {
   visibility: visible;
+}
+
+.product-packs {
+  width: 100%;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.pack-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  /* border: 1px solid #d34b0b; */
+  background-color: transparent;
+  color: #1d1c1c;
+  /* padding: 8px 0; */
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* .pack-item:hover {
+  background-color: #d34b0b;
+  color: #fff;
+} */
+
+.select-h {
+  height: calc(51px + 3 * (100vw - 320px) / 1600);
+}
+
+.blink-message {
+  color: rgb(10, 100, 10);
+  font-weight: bold;
+  border-radius: 1px rgb(100, 10, 40);
+  ;
+}
+
+.product-card {
+  position: relative;
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border: 0px solid #a9a9a9;
+  /* border around button */
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.wishlist-btn i {
+  color: #fff;
+  /* white heart */
+  font-size: 16px;
+  -webkit-text-stroke: 1px #a9a9a9;
+}
+
+.wishlist-btn:hover {
+  transform: scale(1.1);
+}
+
+
+
+.saving-tiers {
+  text-align: left;
+  display: block;
+
+  /* each tier in a new line */
+  background: whitesmoke;
+  border: 1px solid #a9a9a9;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tire-bg {
+  border-radius: 8px;
+
+
+  width: 100%;
+}
+
+.tire-line {
+  border-radius: 8px;
+  color: #256FEF;
+  padding: 0px 11px 10px 18px;
+  background-color: #F7FAFF;
+  width: 100%;
+}
+
+.line-tire {
+  display: inline-block;
+  width: 77%;
+  height: 1px;
+  margin-bottom: 12px;
+  margin-top: 16px;
+}
+
+.add-qty-c {
+  color: #d34b0b;
+
 }

@@ -147,6 +147,39 @@ export default function ProductDetail({
 
   return (
     <>
+      {/* Breadcrumb Section Start */}
+      <section className="breadcrumb-section pt-0">
+        <div className="container-fluid-lg">
+          <div className="row">
+            <div className="col-12">
+              <div className="breadcrumb-contain">
+                <nav style={{ marginLeft: "inherit" }}>
+                  <ol className="breadcrumb mb-0">
+                    <li className="breadcrumb-item active">
+                      <Link to="/">Home</Link>
+                    </li>
+                    <li className="breadcrumb-item  active">
+                      <Link to={`/shop/category/${product.category_id}`}>
+                        {toTitleCase(product.category)}
+                      </Link>
+                    </li>
+                    <li className="breadcrumb-item active">
+                      <Link
+                        to={`/shop/category/${product.category_id}/subcategory/${product.sub_category_id}`}
+                      >
+                       {toTitleCase(product.sub_category)}
+                      </Link>
+                    </li>
+                    <li className="breadcrumb-item active">{toTitleCase(product.name)}</li>
+                  </ol>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Breadcrumb Section End */}
+
       {/* Product Detail */}
       <section className="product-section">
         <div className="container-fluid-lg">
@@ -176,7 +209,24 @@ export default function ProductDetail({
                         {product.category} → {product.sub_category}
                       </span>
                     </div>
-                    <p>{product.description}</p>
+                    <div className="product-contain">
+                      <p className="w-100">{product.description}</p>
+                    </div>
+
+                    <div className="product-title">
+                      <div>
+                        {/* {product.details?.length > 0 && (
+                          <div className="product-packs mb-2">
+                            {product.details.map((detail, index) => (
+                              <div key={index} className="pack-item small">
+                                {detail.qty} Qty - ₹
+                                {Number(detail.price).toFixed(2)}
+                              </div>
+                            ))}
+                          </div>
+                        )} */}
+                      </div>
+                    </div>
 
                     {quantity === 0 ? (
                       <button
@@ -199,13 +249,11 @@ export default function ProductDetail({
                             type="number"
                             value={quantity}
                             min="0"
-                            onChange={(e) =>
-                              setQuantity(Number(e.target.value))
-                            }
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault();
-                                handleQuantityUpdate();
+                            onChange={(e) => {
+                              const val = Number(e.target.value);
+                              setQuantity(val);
+                              if (val >= 0) {
+                                handleCartUpdate(product.id, val, null);
                               }
                             }}
                           />

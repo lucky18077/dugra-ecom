@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { toTitleCase } from "../Hooks/Helper";
 import { LIVE_URL } from "../Api/Route";
 
@@ -9,8 +10,8 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [wishlisted, setWishlisted] = useState([]);  
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const { categoryId, subcategoryId, brandId } = useParams();
   const sliderRef = useRef(null);
@@ -20,6 +21,7 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
   const query = new URLSearchParams(location.search);
   const searchQuery = query.get("q");
 
+  // Fetch categories & subcategories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -49,6 +51,7 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
     fetchSubcategories();
   }, [categoryId]);
 
+  // Fetch products & wishlist
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -65,63 +68,37 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
         console.error("Product fetch error:", err);
       }
     };
+
+    const fetchWishlist = async () => {
+      if (!token) return;
+      try {
+        const res = await axios.get(`${LIVE_URL}/whishlist-view`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const wishlistItems = res.data.data || []; 
+        const ids = wishlistItems.map((item) =>
+          item.product_id ? item.product_id : item.id
+        );
+        setWishlisted(ids);
+      } catch (err) {
+        console.error("Wishlist fetch error:", err);
+      }
+    };
+
     fetchProducts();
-  }, [categoryId, subcategoryId, brandId, searchQuery]);
+    fetchWishlist();
+  }, [categoryId, subcategoryId, brandId, searchQuery, token]);
 
-  const handleCategoryClick = (catId) => {
-    navigate(`/shop/category/${catId}`);
-  };
-
-  const handleSubcategoryClick = (subId, catId) => {
+  const handleCategoryClick = (catId) => navigate(`/shop/category/${catId}`);
+  const handleSubcategoryClick = (subId, catId) =>
     navigate(`/shop/category/${catId}/subcategory/${subId}`);
-  };
 
-  const handleSearch = () => {
-    if (searchTerm.trim() !== "") {
-      navigate(`/shop/search?q=${encodeURIComponent(searchTerm.trim())}`);
-    }
-  };
-
-  const scrollLeft = () => {
+  const scrollLeft = () =>
     sliderRef.current?.scrollBy({ left: -200, behavior: "smooth" });
-  };
-
-  const scrollRight = () => {
+  const scrollRight = () =>
     sliderRef.current?.scrollBy({ left: 200, behavior: "smooth" });
-  };
 
-  const increment = async (id) => {
-    if (!isLoggedIn) {
-      openLoginModal();
-      return;
-    }
-
-    const currentProduct = products.find((p) => p.id === id);
-    const newQty = currentProduct.quantity + 1;
-
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, quantity: newQty } : p))
-    );
-
-    await handleCartUpdate(id, newQty, "plus");
-  };
-
-  const decrement = async (id) => {
-    if (!isLoggedIn) {
-      openLoginModal();
-      return;
-    }
-
-    const currentProduct = products.find((p) => p.id === id);
-    const newQty = Math.max(0, currentProduct.quantity - 1);
-
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, quantity: newQty } : p))
-    );
-
-    await handleCartUpdate(id, newQty, "minus");
-  };
-
+  // ---------------- CART -----------------
   const handleCartUpdate = async (productId, qty = null, qtyType = null) => {
     try {
       await axios.post(
@@ -141,11 +118,28 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
     }
   };
 
+  const increment = async (id) => {
+    if (!isLoggedIn) return openLoginModal();
+    const currentProduct = products.find((p) => p.id === id);
+    const newQty = currentProduct.quantity + 1;
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, quantity: newQty } : p))
+    );
+    await handleCartUpdate(id, newQty, "plus");
+  };
+
+  const decrement = async (id) => {
+    if (!isLoggedIn) return openLoginModal();
+    const currentProduct = products.find((p) => p.id === id);
+    const newQty = Math.max(0, currentProduct.quantity - 1);
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, quantity: newQty } : p))
+    );
+    await handleCartUpdate(id, newQty, "minus");
+  };
+
   const updateQuantity = async (id, qty) => {
-    if (!isLoggedIn) {
-      openLoginModal();
-      return;
-    }
+    if (!isLoggedIn) return openLoginModal();
     if (qty < 1 || isNaN(qty)) return;
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, quantity: qty } : p))
@@ -154,22 +148,70 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
   };
 
   const handleAddToCart = async (id) => {
-    if (!isLoggedIn) {
-      openLoginModal();
-      return;
-    }
+    if (!isLoggedIn) return openLoginModal();
     setProducts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, quantity: 1 } : p))
     );
     await handleCartUpdate(id, 1);
   };
 
+  const handleTierClick = async (product, qty) => {
+    if (!isLoggedIn) return openLoginModal();
+    setProducts((prev) =>
+      prev.map((p) => (p.id === product.id ? { ...p, quantity: qty } : p))
+    );
+    await handleCartUpdate(product.id, qty);
+  };
+
+  // ---------------- WISHLIST -----------------
+  const handleWishlistToggle = async (productId) => {
+    if (!isLoggedIn) return openLoginModal();
+
+    const isWishlisted = wishlisted.includes(productId);
+    const url = isWishlisted
+      ? `${LIVE_URL}/remove-wishlist`
+      : `${LIVE_URL}/add-to-wishlist`;
+
+    try {
+      const response = await axios.post(
+        url,
+        { product_id: productId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        if (isWishlisted) {
+          toast.success("Removed from wishlist!");
+          setWishlisted((prev) => prev.filter((id) => id !== productId));
+        } else {
+          toast.success("Added to wishlist!");
+          setWishlisted((prev) => [...prev, productId]);
+        }
+      } else {
+        toast.error(response.data.message || "Something went wrong!");
+      }
+    } catch (error) {
+      console.error("Wishlist toggle error:", error);
+      toast.error("Failed to update wishlist!");
+    }
+  };
+
   const filteredSubcategories = subcategories.filter(
     (sub) => Number(sub.category_id) === Number(selectedCategoryId)
   );
 
+  // ---------------- UI -----------------
   return (
-    <section className="blog-section section-b-space" style={{ background: "#fff" }}>
+    <section
+      className="blog-section section-b-space"
+      style={{ background: "#fff" }}
+    >
       {/* Category Slider */}
       <div
         style={{
@@ -185,15 +227,23 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
           <div className="row g-sm-4 g-3">
             <div className="category-slider-wrapper d-flex align-items-center py-2">
               <button className="slider-btn left" onClick={scrollLeft}>
-                <img src="/assets/images/leftbtn.png" alt="Left" style={{ width: "50px", height: "40px" }} />
+                <img
+                  src="/assets/images/leftbtn.png"
+                  alt="Left"
+                  style={{ width: "50px", height: "40px" }}
+                />
               </button>
-
-              <div className="category-slider flex-nowrap overflow-auto" ref={sliderRef}>
+              <div
+                className="category-slider flex-nowrap overflow-auto"
+                ref={sliderRef}
+              >
                 {categories.map((cat) => (
                   <span
                     key={cat.id}
                     className={`category-item mx-3 ${
-                      Number(categoryId) === cat.id ? "fw-bold text-category" : ""
+                      Number(categoryId) === cat.id
+                        ? "fw-bold text-category"
+                        : ""
                     }`}
                     style={{ cursor: "pointer", fontSize: "18px" }}
                     onClick={() => handleCategoryClick(cat.id)}
@@ -202,20 +252,26 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                   </span>
                 ))}
               </div>
-
               <button className="slider-btn right" onClick={scrollRight}>
-                <img src="/assets/images/rightbtn.png" alt="Right" style={{ width: "50px", height: "40px" }} />
+                <img
+                  src="/assets/images/rightbtn.png"
+                  alt="Right"
+                  style={{ width: "50px", height: "40px" }}
+                />
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Subcategory and Products */}
+      {/* Subcategory + Products */}
       <div className="container-fluid-lg mt-5">
         <div className="row g-sm-4 g-3">
-          {/* Sidebar for Subcategories */}
-          <div className="col-xxl-4 col-xl-4 col-lg-4 d-lg-block d-none sidebar-shop sticky-top" style={{ height: "675px", top: "170px", zIndex: 1 }}>
+          {/* Sidebar */}
+          <div
+            className="col-xxl-4 col-xl-4 col-lg-4 d-lg-block d-none sidebar-shop sticky-top"
+            style={{ height: "675px", top: "170px", zIndex: 1 }}
+          >
             <div className="left-sidebar-box">
               <div className="accordion left-accordion-box">
                 <div className="accordion-item">
@@ -226,9 +282,16 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                           <div className="recent-post-box" key={sub.id}>
                             <div
                               className={`recent-box d-flex ${
-                                Number(subcategoryId) === sub.id ? "text-category" : ""
+                                Number(subcategoryId) === sub.id
+                                  ? "text-category"
+                                  : ""
                               }`}
-                              onClick={() => handleSubcategoryClick(sub.id, selectedCategoryId)}
+                              onClick={() =>
+                                handleSubcategoryClick(
+                                  sub.id,
+                                  selectedCategoryId
+                                )
+                              }
                               style={{ cursor: "pointer" }}
                             >
                               <div className="py-1">
@@ -245,13 +308,17 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                                 />
                               </div>
                               <div className="recent-detail">
-                                <h5 className="recent-name">{toTitleCase(sub.name)}</h5>
+                                <h5 className="recent-name">
+                                  {toTitleCase(sub.name)}
+                                </h5>
                               </div>
                             </div>
                           </div>
                         ))
                       ) : (
-                        <p className="text-muted">No subcategories available.</p>
+                        <p className="text-muted">
+                          No subcategories available.
+                        </p>
                       )}
                     </div>
                   </div>
@@ -261,11 +328,31 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
           </div>
 
           {/* Product Grid */}
-          <div className="product-section col-xxl-8 col-xl-8 col-lg-8 ratio_50" style={{ padding: 0 }}>
+          <div
+            className="product-section col-xxl-8 col-xl-8 col-lg-8 ratio_50"
+            style={{ padding: 0 }}
+          >
             <div className="row">
               {products.map((product) => (
                 <div className="col-6 col-sm-6 col-md-4 mb-2" key={product.id}>
                   <div className="product-card">
+                    <button
+                      className="wishlist-btn"
+                      onClick={() => handleWishlistToggle(product.id)}
+                    >
+                      <i
+                        className="fa fa-heart"
+                        style={{
+                          color: wishlisted.includes(product.id)
+                            ? "red"
+                            : "white",
+                          WebkitTextStroke: wishlisted.includes(product.id)
+                            ? "1px #ff0000"
+                            : "none",
+                        }}
+                      ></i>
+                    </button>
+
                     <div className="fix-height">
                       <Link to={`/product-detail/${product.id}`}>
                         <img
@@ -278,34 +365,95 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                           className="product-img"
                         />
                       </Link>
-                      <h6 className="product-title" style={{ color: "gray" }}>{product.category}</h6>
-                      <Link to={`/product-detail/${product.id}`} style={{ color: "black" }}>
-                        <h6 className="product-title" style={{ fontSize: "15px" }}>{toTitleCase(product.name)}</h6>
+                      <h6 className="product-title" style={{ color: "gray" }}>
+                        {product.category}
+                      </h6>
+                      <Link
+                        to={`/product-detail/${product.id}`}
+                        style={{ color: "black" }}
+                      >
+                        <h6
+                          className="product-title"
+                          style={{ fontSize: "15px" }}
+                        >
+                          {toTitleCase(product.name)}
+                        </h6>
                       </Link>
-                      <p className="product-qty">1 pc</p>
+                      <p className="product-qty">1 {product.uom}</p>
                     </div>
+
+                    {/* Tiers */}
+                    {product.details && product.details.length > 0 && (
+                      <div className="tire-bg mt-2">
+                        {product.details.slice(0, 3).map((tier, idx) => (
+                          <div
+                            key={idx}
+                            className="line-tire-wrapper d-flex tire-line"
+                            style={{ marginBottom: "6px", gap: "5px" }}
+                          >
+                            <div
+                              className="line-tire"
+                              style={{ fontSize: "13px" }}
+                              onClick={() => handleTierClick(product, tier.qty)}
+                            >
+                              Buy {tier.qty} & Save ₹
+                              {(
+                                product.base_price * tier.qty -
+                                tier.price * tier.qty
+                              ).toFixed(2)}
+                              <div className="sm-line"></div>
+                            </div>
+                            <div className="mt-3">
+                              <span
+                                className="add-qty-c"
+                                onClick={() =>
+                                  handleTierClick(product, tier.qty)
+                                }
+                                style={{ cursor: "pointer", fontSize: "13px" }}
+                              >
+                                Add <span className="plus">{tier.qty}</span>
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     <div className="line-light"></div>
                     <div className="price-action-wrap">
                       <div>
-                        <span className="price">₹{Number(product.base_price).toFixed(2)}</span>
+                        <span className="price">
+                          ₹{Number(product.base_price).toFixed(2)}
+                        </span>
                         {Number(product.mrp) > 0 && (
-                          <del className="mrp">₹{Number(product.mrp).toFixed(2)}</del>
+                          <del className="mrp">
+                            ₹{Number(product.mrp).toFixed(2)}
+                          </del>
                         )}
                       </div>
                       {product.quantity === 0 ? (
-                        <button className="add-btn w-800" onClick={() => handleAddToCart(product.id)}>
+                        <button
+                          className="add-btn w-800"
+                          onClick={() => handleAddToCart(product.id)}
+                        >
                           ADD <span className="plus">+</span>
                         </button>
                       ) : (
                         <div className="qty-controls">
-                          <button onClick={() => decrement(product.id)}>-</button>
+                          <button onClick={() => decrement(product.id)}>
+                            -
+                          </button>
                           <input
                             type="number"
                             min="1"
                             value={product.quantity}
-                            onChange={(e) => updateQuantity(product.id, Number(e.target.value))}
+                            onChange={(e) =>
+                              updateQuantity(product.id, Number(e.target.value))
+                            }
                           />
-                          <button onClick={() => increment(product.id)}>+</button>
+                          <button onClick={() => increment(product.id)}>
+                            +
+                          </button>
                         </div>
                       )}
                     </div>

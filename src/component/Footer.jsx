@@ -1,10 +1,26 @@
 import React, { useRef, useState, useEffect } from "react";
 import { toTitleCase } from "../Hooks/Helper";
+import axios from "axios";
 import Carousel from "react-bootstrap/Carousel";
+import { LIVE_URL } from "../Api/Route";
 
 export default function Footer() {
+  const [fBanner, setFbanner] = useState(null);
 
-   const carouselRef = useRef(null);
+  const fetchFooterBanner = async () => {
+    try {
+      const response = await axios.get(`${LIVE_URL}/get-footer-banner`);
+      const banner = response.data.data || [];
+      setFbanner(banner);
+    } catch (error) {
+      console.error("Error fetching footer banner:", error);
+    }
+  };
+  useEffect(() => {
+    fetchFooterBanner();
+  }, []);
+
+  const carouselRef = useRef(null);
   return (
     <>
       {/* Bottom Banner */}
@@ -17,28 +33,27 @@ export default function Footer() {
               indicators={false}
               interval={3000}
               pause={false}
+              ref={carouselRef}
             >
-              <Carousel.Item>
-                <img
-                  className="d-block w-100"
-                  src="/assets/images/ban1.png"
-                  alt="First slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  className="d-block w-100"
-                  src="/assets/images/ban2.png"
-                  alt="Second slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  className="d-block w-100"
-                  src="/assets/images/ban1.png"
-                  alt="Third slide"
-                />
-              </Carousel.Item>
+              {fBanner && fBanner.length > 0 ? (
+                fBanner.map((banner, index) => (
+                  <Carousel.Item key={index}>
+                    <img
+                      className="d-block w-100"
+                      src={`http://127.0.0.1:8000/sliders/${banner.image}`}
+                      alt={`Footer Banner ${index + 1}`}
+                    />
+                  </Carousel.Item>
+                ))
+              ) : (
+                <Carousel.Item>
+                  <img
+                    className="d-block w-100"
+                    src="/placeholder.jpg"
+                    alt="Default Footer Banner"
+                  />
+                </Carousel.Item>
+              )}
             </Carousel>
           </div>
         </div>
@@ -107,7 +122,7 @@ export default function Footer() {
               <div className="col-xl-3 col-lg-4 col-sm-6">
                 <div className="footer-logo">
                   <div className="theme-logo">
-                    <a href="index.html">
+                    <a href="#">
                       <img
                         src="/assets/images/logo.png"
                         className="blur-up lazyload"
@@ -186,17 +201,17 @@ export default function Footer() {
                       </a>
                     </li>
                     <li>
-                      <a href="about-us.html" className="text-content">
+                      <a href="#" className="text-content">
                         About Us
                       </a>
                     </li>
                     <li>
-                      <a href="blog-list.html" className="text-content">
+                      <a href="#" className="text-content">
                         Blog
                       </a>
                     </li>
                     <li>
-                      <a href="contact-us.html" className="text-content">
+                      <a href="#" className="text-content">
                         Contact Us
                       </a>
                     </li>
