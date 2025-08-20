@@ -15152,6 +15152,41 @@ input[type=number]::-webkit-outer-spin-button {
     padding: 8px;
     z-index: 1
 }
+.theme-modal .modal-dialog .modal-content .modal-header .right-btn-close {
+    position: absolute;
+    top: 15px;
+    right: 22px;
+    background-color: #fff;
+    opacity: 1;
+    background-image:#fff;
+    border-radius: 4px;
+    font-size: calc(20px + 2*(100vw - 320px)/1600);
+    color: #000;
+    margin: 0;
+    /* padding: 8px; */
+    z-index: 1;
+    border: none;
+}
+select.col-2.country-code.form-control {
+    width: 65px;
+    height: calc(40px + 3 * (100vw - 320px) / 1600) !important;
+    border: none;
+    padding-top: 0px !important;
+}
+input.PhoneInputInput {
+        margin-top: -6px;
+    border: none;
+    border-left: 1px solid !important;
+    height: calc(49px + 3 * (100vw - 320px) / 1600) !important;
+    border-left-color: #ced4da !important;
+    padding-left: 18px;
+}
+.log-in-form .phone-number-ipute .form-control:not(:placeholder-shown) {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    font-size: calc(15px + 2 * (100vw - 320px) / 1600);
+    font-weight: 500;
+}
 
 [dir=rtl] .theme-modal .modal-dialog .modal-content .modal-header .btn-close {
     right: unset;
@@ -45223,6 +45258,7 @@ body.rtl .question-answer li .question-box .link-dislike-box {
     }
 }
 
+
 .product-section .right-box-contain .pickup-box .pickup-detail h6 {
     margin-top: 4px
 }
@@ -47075,5 +47111,22 @@ body.rtl .theme-product-section .right-box-contain .license-list .accordion-item
 [dir=rtl] ul {
     padding-right: 0
 }
+p.mt-1.text-content a {
+    color: #007F2F !important;
+    text-transform: capitalize;
+}
+button.btn.btn-animation.w-100.justify-content-center.login{
+        background: #007F2F !important;
 
+}
+button.btn.btn-animation.w-100.justify-content-center.login.btn:hover::after {
+     background: #007F2F !important;
+}  
+.phone-number-email-view {
+    flex-direction: row;
+}  
+p.mt-1.text-center.forgot-txt {
+    padding: 15px;
+    border-bottom: 1px solid;
+}
 /*# sourceMappingURL=style.css.map */
