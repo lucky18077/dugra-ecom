@@ -1,37 +1,67 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { auth, sendOtp } from "./firebase";
 import { LIVE_URL } from "../Api/Route";
 
 export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
   const [number, setNumber] = useState("");
-  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState("number");
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [loading, setLoading] = useState(false); // ✅ button disable state
 
-  const handleLogin = async (e) => {
+  const handleSendOtp = async (e) => {
     e.preventDefault();
+    setMessage({ type: "", text: "" });
+    setLoading(true);
 
     try {
-      const response = await axios.post(`${LIVE_URL}/customer-login`, {
-        number: number,
-        password: password,
-      });
-
-      const result = response.data;
-
-      if (result.status && result.token) {
-        localStorage.setItem("customer_token", result.token);
-        setIsLoggedIn(true);
-        setRefreshNavbar((prev) => prev + 1);
-
-        const modalEl = document.getElementById("deal-box");
-        const modalInstance = bootstrap.Modal.getInstance(modalEl);
-        modalInstance.hide();
+      const response = await axios.post(`${LIVE_URL}/send-otp`, { number });
+      if (response.data.status) {
+        await sendOtp("+91" + number);
+        setStep("otp");
+        setMessage({ type: "success", text: "OTP sent successfully ✅" });
       } else {
-        alert("Invalid credentials");
+        setMessage({ type: "error", text: response.data.message });
       }
     } catch (error) {
-      console.error("Login error:", error);
-      alert("Something went wrong. Try again.");
+      console.error("Send OTP error:", error);
+      setMessage({ type: "error", text: "Failed to send OTP ❌" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setMessage({ type: "", text: "" });
+    setLoading(true);
+
+    try {
+      const confirmationResult = window.confirmationResult;
+      const result = await confirmationResult.confirm(otp);
+      if (result.user) {
+        const verifyRes = await axios.post(`${LIVE_URL}/verify-otp`, {
+          number,
+        });
+        if (verifyRes.data.status && verifyRes.data.token) {
+          localStorage.setItem("customer_token", verifyRes.data.token);
+          localStorage.setItem("customer_name", verifyRes.data.user.name);
+          setIsLoggedIn(true);
+          setRefreshNavbar((prev) => prev + 1);
+
+          const modalEl = document.getElementById("deal-box");
+          const modalInstance = bootstrap.Modal.getInstance(modalEl);
+          modalInstance.hide();
+        } else {
+          setMessage({ type: "error", text: "Verification failed ❌" });
+        }
+      }
+    } catch (error) {
+      console.error("OTP verification error:", error);
+      setMessage({ type: "error", text: "Invalid OTP ❌" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,16 +74,8 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
       <div className="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title w-100" id="deal_today">
-              Login
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              id="deal-close-btn"
-            >
+            <h5 className="modal-title w-100">Login with OTP</h5>
+            <button type="button" className="btn-close" data-bs-dismiss="modal">
               <i className="fa-solid fa-xmark" />
             </button>
           </div>
@@ -66,62 +88,69 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                 className="img-fluid"
                 style={{ height: "90px" }}
               />
+              <div className="input-box mt-2">
+                <form
+                  onSubmit={step === "number" ? handleSendOtp : handleVerifyOtp}
+                >
+                  <h3 className="mb-4">
+                    {step === "number" ? "Enter Mobile Number" : "Verify OTP"}
+                  </h3>
 
-              <div className="input-box mt-3">
-                <form className="row g-4" onSubmit={handleLogin}>
-                  <h3>Enter Mobile Number</h3>
+                  <div className="form-floating theme-form-floating log-in-form mb-3">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Phone"
+                      required
+                      value={number}
+                      onChange={(e) => {
+                        const input = e.target.value;
+                        if (input.length <= 10) setNumber(input);
+                      }}
+                      disabled={step === "otp"}
+                    />
+                    <label htmlFor="phone">Phone</label>
+                  </div>
 
-                  <div className="col-12">
-                    <div className="form-floating theme-form-floating log-in-form">
+                  {step === "otp" && (
+                    <div className="form-floating theme-form-floating log-in-form mb-3">
                       <input
                         type="number"
                         className="form-control"
-                        placeholder="Phone"
+                        placeholder="OTP"
                         required
-                        value={number}
-                        onChange={(e) => {
-                          const input = e.target.value;
-                          if (input.length <= 10) {
-                            setNumber(input);
-                          }
-                        }}
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
                       />
-                      <label htmlFor="phone">Phone</label>
+                      <label htmlFor="otp">OTP</label>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="col-12">
-                    <div className="form-floating theme-form-floating log-in-form">
-                      <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        placeholder="Password"
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
-                      <label htmlFor="password">Password</label>
-                    </div>
-                  </div>
+                  
+
+                  <div id="recaptcha-container" ></div>
                   <div>
-                    <p class="mt-1 text-content">
+                    <p className="mt-2 text-content">
                       Don't have an account?{" "}
                       <a href="/sign-up">
-                        <span style={{ color: "#d34b0b !important;" }}>
+                        <span style={{ color: "#d34b0b" }}>
                           Please Sign up!
                         </span>
                       </a>
                     </p>
                   </div>
-                  <div className="col-12">
-                    <button
-                      className="btn btn-animation w-100 justify-content-center"
-                      type="submit"
-                    >
-                      Log In
-                    </button>
-                  </div>
+                  <button
+                    className="btn btn-animation w-100 mt-2"
+                    type="submit"
+                  >
+                    {loading
+                      ? step === "number"
+                        ? "Sending..."
+                        : "Verifying..."
+                      : step === "number"
+                      ? "Send OTP"
+                      : "Verify OTP"}
+                  </button>
                 </form>
               </div>
             </div>

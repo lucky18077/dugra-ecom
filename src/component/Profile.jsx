@@ -72,6 +72,27 @@ export default function Profile() {
     orders: count,
   }));
 
+  const handleLogout = async () => {
+    const token = localStorage.getItem("customer_token");
+
+    try {
+      if (token) {
+        await axios.post(
+          `${LIVE_URL}/customer-logout`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      localStorage.removeItem("customer_token");
+      localStorage.removeItem("customer_name");
+      delete axios.defaults.headers?.common?.Authorization;
+      window.location.replace("/");
+    }
+  };
+
   return (
     <>
       {/* User Dashboard Section Start */}
@@ -169,17 +190,18 @@ export default function Profile() {
                       Wallet Ledger
                     </button>
                   </li>
-                  {/* <li className="nav-item" role="presentation">
+                  <li className="nav-item" role="presentation">
                     <button
                       className="nav-link"
                       id="pills-security-tab"
                       type="button"
                       role="tab"
+                      onClick={handleLogout}
                     >
                       <i data-feather="shield" />
                       Logout
                     </button>
-                  </li> */}
+                  </li>
                 </ul>
               </div>
             </div>
@@ -305,8 +327,7 @@ export default function Profile() {
                                     </div>
                                     <div className="order-detail">
                                       <h4>
-                                        #{order.id}{" "}
-                                        <span>{order.status}</span>
+                                        #{order.id} <span>{order.status}</span>
                                         {/* <Link to={`/invoice/${order.id}`}>
                                           {" "}
                                           <span
@@ -320,7 +341,7 @@ export default function Profile() {
                                           <span
                                             style={{ background: "#0213ffff" }}
                                           >
-                                             Bill
+                                            Bill
                                           </span>
                                         </Link>
                                       </h4>

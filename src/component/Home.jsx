@@ -277,7 +277,7 @@ export default function Home({
                   {group.map((category, index) => (
                     <div key={index}>
                       <div className="product-box product-white-bg">
-                        <div className="product-image" style={{ padding: "0" }}>
+                        <div className="product-image category-fix" style={{ padding: "0" }}>
                           <Link to={`/shop/category/${category.id}`}>
                             <img
                               src={
@@ -446,44 +446,45 @@ export default function Home({
 
                         {product.details && product.details.length > 0 && (
                           <div className="tire-bg mt-2">
-                            {product.details.slice(0, 3).map((tier, idx) => (
-                              <div
-                                key={idx}
-                                className="line-tire-wrapper  d-flex tire-line"
-                                style={{ marginBottom: "6px", gap: "5px" }}
-                              >
+                            {product.details.slice(0, 2).map((tier, idx) => {
+                              const perUnitSaving = (
+                                product.base_price - tier.price
+                              ).toFixed(2);
+                              return (
                                 <div
-                                  className="line-tire"
-                                  style={{
-                                    fontSize: "13px",
-                                  }}
-                                  onClick={() =>
-                                    handleTierClick(product, tier.qty)
-                                  }
+                                  key={idx}
+                                  className="line-tire-wrapper d-flex tire-line"
+                                  style={{ marginBottom: "6px", gap: "5px" }}
                                 >
-                                  Buy {tier.qty} & Save ₹
-                                  {(
-                                    product.base_price * tier.qty -
-                                    tier.price * tier.qty
-                                  ).toFixed(2)}
-                                  <div className="sm-line"></div>
-                                </div>
-                                <div className="mt-3">
-                                  <span
-                                    className="add-qty-c"
+                                  <div
+                                    className="line-tire"
+                                    style={{ fontSize: "13px" }}
                                     onClick={() =>
                                       handleTierClick(product, tier.qty)
                                     }
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "13px",
-                                    }}
                                   >
-                                    Add <span className="plus">{tier.qty}</span>
-                                  </span>
+                                    ₹{tier.price}/{product.uom} for{" "}
+                                    {tier.qty} {product.uom}+
+                                    <div className="sm-line"></div>
+                                  </div>
+                                  <div className="mt-3">
+                                    <span
+                                      className="add-qty-c"
+                                      onClick={() =>
+                                        handleTierClick(product, tier.qty)
+                                      }
+                                      style={{
+                                        cursor: "pointer",
+                                        fontSize: "13px",
+                                      }}
+                                    >
+                                      Add{" "}
+                                      <span className="plus">{tier.qty}</span>
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         )}
 
@@ -575,7 +576,7 @@ export default function Home({
                 <div className="row row-cols-xxl-6 row-cols-xl-6 row-cols-md-3 row-cols-2 g-sm-4 g-3">
                   {group.map((brand, index) => (
                     <div key={index}>
-                      <div className="product-box product-white-bg">
+                      <div className="product-box product-white-bg ">
                         <div className="product-image" style={{ padding: "0" }}>
                           <Link to={`/shop/brand/${brand.id}`}>
                             <img

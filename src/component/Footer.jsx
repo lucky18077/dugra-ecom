@@ -346,7 +346,8 @@ export default function Footer() {
           </div>
         </div>
       </footer>
-      <div
+
+      {/* <div
         className="modal fade theme-modal deal-modal"
         id="deal-box"
         tabIndex={-1}
@@ -415,7 +416,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

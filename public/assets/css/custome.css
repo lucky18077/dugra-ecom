@@ -204,6 +204,32 @@
   color: white;
 }
 
+.wish-btn {
+  background-color: #fff;
+  border: 1px solid #e3e0e0;
+  color: black;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Public Sans';
+}
+
+.wish-remove {
+  background-color: #fff;
+  border: 1px solid #e3e0e0;
+  color: #d34b0b;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Public Sans';
+}
+
 .add-btn .plus {
   font-weight: bold;
   margin-left: 4px;
@@ -259,7 +285,8 @@
   flex-direction: column;
   align-items: flex-start;
   /* 'self-start' is invalid */
-  min-height: 260px;
+  /* min-height: 260px; */
+  min-height: 240px;
   /* Minimum height */
   max-height: auto;
   text-align: center;
@@ -375,6 +402,8 @@
   cursor: pointer;
   white-space: nowrap;
 }
+
+
 
 .slider-btn {
   background: #f0f0f0;
@@ -539,7 +568,7 @@ footer .main-footer {
 
 .line-tire {
   display: inline-block;
-  width: 77%;
+  width: 76%;
   height: 1px;
   margin-bottom: 12px;
   margin-top: 16px;
@@ -547,5 +576,28 @@ footer .main-footer {
 
 .add-qty-c {
   color: #d34b0b;
+
+}
+
+.width-fix {
+  min-width: 100% !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-fix {
+  height: 140px;
+  padding: 0px;
+  width: 189px;
+}
+
+.brand-fix-size {
+  height: 150px !important;
+  width: 190px !important;
+}
+
+.shop-bg-fix {
+  background: #fff;
 
 }

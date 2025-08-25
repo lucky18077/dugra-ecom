@@ -35308,20 +35308,20 @@ body.rtl .menu-label {
 }
 
 .cart-table table tfoot tr td:first-child {
-    border: none
+    /* border: none */
 }
 
 .cart-table table tfoot tr td:nth-child(2) {
     font-size: 16px;
     font-weight: 500;
     padding: 16px;
-    border-left: 1px solid #ececec
+    /* border-left: 1px solid #ececec */
 }
 
 .cart-table table tfoot tr td:last-child {
     font-size: 16px;
     font-weight: 500;
-    border-right: 1px solid #ececec
+    /* border-right: 1px solid #ececec */
 }
 
 .summery-box {

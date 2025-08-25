@@ -2,75 +2,54 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import feather from "feather-icons";
 import axios from "axios";
+import { toTitleCase } from "../Hooks/Helper";
 import { LIVE_URL } from "../Api/Route";
 
 export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [cartQty, setCartQty] = useState(0);
+  const [customerName, setCustomerName] = useState(
+    localStorage.getItem("customer_name") || "Guest"
+  );
+
   const navigate = useNavigate();
 
   const fetchCartCount = async () => {
     const token = localStorage.getItem("customer_token");
-
     if (!token) {
       setCartQty(0);
       return;
     }
+
     try {
       const res = await axios.get(`${LIVE_URL}/get-cart`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.data && typeof res.data.total_qty === "number") {
-        setCartQty(res.data.total_qty);
-      } else {
-        setCartQty(0);
-      }
+      setCartQty(res.data?.total_qty || 0);
     } catch (err) {
       console.error("Cart fetch error:", err);
       setCartQty(0);
     }
   };
 
+  // Update cart count and customer name when login state or refreshNavbar changes
   useEffect(() => {
-    let interval;
     if (isLoggedIn) {
       fetchCartCount();
-      interval = setInterval(fetchCartCount, 2000);
+      setCustomerName(localStorage.getItem("customer_name") || "Guest");
+    } else {
+      setCustomerName("Guest");
+      setCartQty(0);
     }
-    return () => clearInterval(interval);
-  }, [isLoggedIn]);
+  }, [isLoggedIn, refreshNavbar]);
 
+  // Replace feather icons after every render
   useEffect(() => {
     feather.replace();
-  }, [cartQty]);
-
-  const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem("customer_token");
-
-      if (token) {
-        await fetch(`${LIVE_URL}/customer-logout`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      }
-      localStorage.removeItem("customer_token");
-      localStorage.removeItem("customer_user");
-      localStorage.removeItem("customer_id");
-      setIsLoggedIn(false);
-      setCartQty(0);
-      navigate("/");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
+  }, [cartQty, customerName]);
 
   const handleSearch = () => {
-    if (searchTerm.trim() !== "") {
+    if (searchTerm.trim()) {
       navigate(`/shop/search?q=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
@@ -82,7 +61,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
           <div className="container-fluid-lg">
             <div className="row">
               <div className="col-12">
-                <div className="navbar-top">
+                <div className="navbar-top d-flex align-items-center justify-content-between">
                   {/* Logo */}
                   <Link to="/" className="web-logo nav-logo">
                     <img
@@ -130,91 +109,46 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                     </div>
                   </div>
 
-                  {/* Contact Number */}
-                  {/* <div className="d-flex mobile-hide" style={{ gap: "20px" }}>
-                    <div className="delivery-icon">
-                      <i data-feather="phone-call" />
-                    </div>
-                    <div className="delivery-detail mt-1">
-                      <h5>+91 1234567890</h5>
-                    </div>
-                  </div> */}
-
-                  {/* Right Side Navigation */}
-                  <div className="rightside-box">
+                  {/* Right Side */}
+                  <div className="rightside-box d-flex align-items-center gap-3">
                     {!isLoggedIn ? (
-                      <div
-                        className="btn btn-animation mt-xxl-4 home-button mend-auto"
+                      <button
+                        className="btn btn-animation"
                         data-bs-toggle="modal"
                         data-bs-target="#deal-box"
                       >
-                        Login/Register
+                        Login/Register{" "}
                         <i className="fa-solid fa-right-long icon"></i>
-                      </div>
+                      </button>
                     ) : (
-                      <ul className="right-side-menu">
-                        <li className="right-side">
-                          <div className="delivery-login-box">
-                            <div className="delivery-icon">
-                              <div className="search-box">
-                                <i data-feather="search" />
-                              </div>
-                            </div>
-                          </div>
-                        </li>
+                      <>
+                        <Link
+                          to="/view-wishlist"
+                          className="btn p-0 position-relative"
+                        >
+                          <i data-feather="heart" />
+                        </Link>
 
-                        <li className="right-side">
-                          <Link
-                            to="/view-wishlist"
-                            className="btn p-0 position-relative header-wishlist"
-                          >
-                            <i data-feather="heart" />
-                          </Link>
-                        </li>
+                        <Link
+                          to="/view-cart"
+                          className="btn p-0 position-relative"
+                        >
+                          <i data-feather="shopping-cart" />
+                          <span className="position-absolute top-0 start-100 translate-middle badge bg-danger">
+                            {cartQty || 0}
+                          </span>
+                        </Link>
 
-                        {/* Cart Icon */}
-                        <li className="right-side">
-                          <Link
-                            to="/view-cart"
-                            className="btn p-0 position-relative header-wishlist"
-                          >
-                            <i data-feather="shopping-cart" />
-                            <span className="position-absolute top-0 start-100 translate-middle badge">
-                              {cartQty || 0}{" "}
-                              <span className="visually-hidden">
-                                cart quantity
-                              </span>
-                            </span>
-                          </Link>
-                        </li>
-
-                        {/* User Dropdown */}
-
-                        <li className="right-side">
-                          <Link
-                            to="/profile"
-                            className="btn p-0 position-relative header-wishlist"
-                          >
-                            <i data-feather="user" />
-                          </Link>
-                        </li>
-                        {/* <li className="right-side onhover-dropdown">
-                          <div className="delivery-login-box">
-                            <div className="delivery-icon">
-                              <i data-feather="user" />
-                            </div>
-                          </div>
-                          <div className="onhover-div onhover-div-login">
-                            <ul className="user-box-name">
-                              <li className="product-box-contain">
-                                <Link to="/" onClick={handleLogout}>
-                                  Log Out
-                                </Link>
-                              </li>
-                            </ul>
-                          </div>
-                        </li> */}
-                      </ul>
+                        <Link
+                          to="/profile"
+                          className="btn p-0 position-relative d-flex align-items-center gap-1"
+                        >
+                          <i data-feather="user" />
+                          <span style={{ fontSize: "14px", fontWeight: 500 }}>
+                            Welcome, {toTitleCase(customerName)}
+                          </span>
+                        </Link>
+                      </>
                     )}
                   </div>
                 </div>
@@ -226,22 +160,22 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
 
       {/* Mobile Bottom Menu */}
       <div className="mobile-menu d-md-none d-block mobile-cart">
-        <ul>
+        <ul className="d-flex justify-content-around">
           <li className="active">
             <Link to="/">
               <i className="iconly-Home icli" />
               <span>Home</span>
             </Link>
           </li>
-          <li className="mobile-category">
+          <li>
             <Link to="/categories">
-              <i className="iconly-Category icli js-link" />
+              <i className="iconly-Category icli" />
               <span>Category</span>
             </Link>
           </li>
           <li>
             <Link to="/view-cart">
-              <i className="iconly-Bag-2 icli fly-cate" />
+              <i className="iconly-Bag-2 icli" />
               <span>Cart</span>
             </Link>
           </li>

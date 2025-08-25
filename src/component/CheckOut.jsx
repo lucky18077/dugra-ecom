@@ -79,7 +79,8 @@ export default function CheckOut() {
       parseFloat(getSubtotal()) +
       parseFloat(getGSTTotal()) +
       parseFloat(getCessTotal())
-    ).toFixed(2);
+    ) 
+      .toFixed(2);
   };
 
   const handlePlaceOrder = async () => {
@@ -304,7 +305,7 @@ export default function CheckOut() {
                   </li>
                   <li>
                     <h4>CESS</h4>
-                    <h4 className="price">₹{getCessTotal()}</h4>
+                    <h4 className="price">₹{getCessTotal ()}</h4>
                   </li>
                   {/* <li>
                     <h4>Shipping</h4>

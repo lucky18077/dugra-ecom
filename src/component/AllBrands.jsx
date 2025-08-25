@@ -31,7 +31,7 @@ export default function AllBrands() {
                   brands.map((brand, index) => (
                     <div key={index} className="col-2 col-sm-3 col-md-2">
                       <div className="blog-box wow fadeInUp text-center">
-                        <div className="blog-image">
+                        <div className="blog-image brand-fix-size">
                           <a href={`/shop/brand/${brand.id}`}>
                             <img
                               src={

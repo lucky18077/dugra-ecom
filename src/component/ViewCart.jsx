@@ -157,29 +157,31 @@ export default function ViewCart() {
                                       item.details.length > 0 && (
                                         <div style={{ marginTop: "8px" }}>
                                           {item.details
-                                            .slice(0, 3)
-                                            .map((tier, idx) => (
-                                              <div
-                                                key={idx}
-                                                className="blink-message"
-                                                style={{
-                                                  cursor: "pointer",
-                                                  marginBottom: "4px",
-                                                }}
-                                                onClick={() =>
-                                                  handleTierClick(
-                                                    item,
-                                                    tier.qty
-                                                  )
-                                                }
-                                              >
-                                                Buy {tier.qty} & Save ₹
-                                                {(
-                                                  item.base_price * tier.qty -
-                                                  tier.price * tier.qty
-                                                ).toFixed(2)}
-                                              </div>
-                                            ))}
+                                            .slice(0, 2)
+                                            .map((tier, idx) => {
+                                              const perUnitSaving = (
+                                                item.base_price - tier.price
+                                              ).toFixed(2);
+                                              return (
+                                                <div
+                                                  key={idx}
+                                                  className="blink-message"
+                                                  style={{
+                                                    cursor: "pointer",
+                                                    marginBottom: "4px",
+                                                  }}
+                                                  onClick={() =>
+                                                    handleTierClick(
+                                                      item,
+                                                      tier.qty
+                                                    )
+                                                  }
+                                                >
+                                                  ₹{tier.price}/{item.uom}{" "}
+                                                  for {tier.qty} {item.uom}+
+                                                </div>
+                                              );
+                                            })}
                                         </div>
                                       )}
                                   </li>
@@ -187,7 +189,7 @@ export default function ViewCart() {
                               </div>
                             </div>
                           </td>
-                          <td className="price">
+                          <td className="price width-fix">
                             <h4 className="table-title text-content">Price</h4>
                             <h5>
                               ₹
@@ -196,11 +198,11 @@ export default function ViewCart() {
                               )}
                             </h5>
                           </td>
-                          <td className="gst">
+                          <td className="gst width-fix">
                             <h4 className="table-title text-content">GST</h4>
                             <h5>{parseFloat(item.gst || 0).toFixed(2)}%</h5>
                           </td>
-                          <td className="cess">
+                          <td className="cess width-fix">
                             <h4 className="table-title text-content">CESS</h4>
                             <h5>
                               {parseFloat(item.cess_tax || 0).toFixed(2)}%

@@ -154,6 +154,7 @@ function App() {
       <Login
         setIsLoggedIn={setIsLoggedIn}
         setRefreshNavbar={setRefreshNavbar}
+        openLoginModal={openLoginModal} // pass modal opener
       />
       <Footer />
     </BrowserRouter>

@@ -4,7 +4,9 @@
     /*=====================
     01. Image to background js
     ==========================*/
-    $(".bg-top").parent().addClass("b-top");
+    if ($(".bg-top").length) {
+        $(".bg-top").parent().addClass("b-top");
+    }
     $(".bg-bottom").parent().addClass("b-bottom");
     $(".bg-center").parent().addClass("b-center");
     $(".bg-left").parent().addClass("b-left");
@@ -279,15 +281,15 @@ $(".notifi-wishlist").on("click", function () {
 /*=====================
    14. Loader Js
    ==========================*/
-const loaderEl = document.getElementsByClassName("fullpage-loader")[0];
-document.addEventListener("readystatechange", (event) => {
-    const readyState = "complete";
-    if (document.readyState == readyState) {
-        loaderEl.classList.add("fullpage-loader--invisible");
-
-        setTimeout(() => {
-            loaderEl.parentNode.removeChild(loaderEl);
-        }, 100);
+document.addEventListener("readystatechange", () => {
+    if (document.readyState === "complete") {
+        const loaderEl = document.querySelector(".fullpage-loader");
+        if (loaderEl) {
+            loaderEl.classList.add("fullpage-loader--invisible");
+            setTimeout(() => {
+                loaderEl.parentNode.removeChild(loaderEl);
+            }, 100);
+        }
     }
 });
 
