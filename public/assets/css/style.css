@@ -47076,4 +47076,36 @@ body.rtl .theme-product-section .right-box-contain .license-list .accordion-item
     padding-right: 0
 }
 
+button.btn.btn-animation.w-100.justify-content-center.login{
+        background: #007F2F !important;
+
+}
+button.btn.btn-animation.w-100.justify-content-center.login.btn:hover::after {
+     background: #007F2F !important;
+} 
+p.mt-1.text-center.forgot-txt {
+    padding: 15px;
+    border-bottom: 1px solid;
+}
+.theme-modal .modal-dialog .modal-content .modal-header .right-btn-close {
+    position: absolute;
+    top: 15px;
+    right: 22px;
+    background-color: #fff;
+    opacity: 1;
+    background-image:#fff;
+    border-radius: 4px;
+    font-size: calc(20px + 2*(100vw - 320px)/1600);
+    color: #000;
+    margin: 0;
+    /* padding: 8px; */
+    z-index: 1;
+    border: none;
+}
+span.account {
+    color: #007F2F;
+}
+.padingLeft{
+padding-left: 10px !important;
+}
 /*# sourceMappingURL=style.css.map */
