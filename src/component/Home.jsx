@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { toTitleCase } from "../Hooks/Helper";
-import { LIVE_URL } from "../Api/Route";
+import { IMG_LIVE_URL, LIVE_URL } from "../Api/Route";
 
 export default function Home({
   isLoggedIn = false,
@@ -253,7 +253,7 @@ export default function Home({
       <section style={{ padding: 0, maxWidth: "1920px", margin: "0 auto" }}>
         {banner && (
           <img
-            src={`http://127.0.0.1:8000/sliders/${banner.image}`}
+            src={`${IMG_LIVE_URL}/sliders/${banner.image}`}
             alt="Home Banner"
             style={{ width: "100%", height: "450px" }}
           />
@@ -282,7 +282,7 @@ export default function Home({
                             <img
                               src={
                                 category.image
-                                  ? `http://127.0.0.1:8000/master images/${category.image}`
+                                  ? `${IMG_LIVE_URL}/master images/${category.image}`
                                   : "/assets/images/default.png"
                               }
                               className="img-fluid blur-up lazyload"
@@ -330,7 +330,7 @@ export default function Home({
                         <img
                           key={idx}
                           className="d-block w-50"
-                          src={`http://127.0.0.1:8000/sliders/${b.image}`}
+                          src={`${IMG_LIVE_URL}/sliders/${b.image}`}
                           alt={`Mid Banner ${index}-${idx}`}
                         />
                       ))}
@@ -417,7 +417,7 @@ export default function Home({
                             <img
                               src={
                                 product.image
-                                  ? `http://127.0.0.1:8000/product images/${product.image}`
+                                  ? `${IMG_LIVE_URL}/product images/${product.image}`
                                   : "/assets/images/shop7.png"
                               }
                               alt=""
@@ -582,7 +582,7 @@ export default function Home({
                             <img
                               src={
                                 brand.image
-                                  ? `http://127.0.0.1:8000/master images/${brand.image}`
+                                  ? `${IMG_LIVE_URL}/master images/${brand.image}`
                                   : "/assets/images/default.png"
                               }
                               className="img-fluid blur-up lazyload"

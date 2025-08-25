@@ -24,7 +24,8 @@ export default function Profile() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
+          Authorization: `Bearer 2c7a004cc74f7e139d6bc562f250cd30`,
         },
       })
       .then((res) => {
@@ -92,14 +93,14 @@ export default function Profile() {
       window.location.replace("/");
     }
   };
-
+console.log('profile',profile)
   return (
     <>
       {/* User Dashboard Section Start */}
       <section className="user-dashboard-section section-b-space">
         <div className="container-fluid-lg">
           <div className="row">
-            <div className="col-xxl-3 col-lg-4">
+            <div className="col-xxl-2 col-lg-3">
               <div className="dashboard-left-sidebar">
                 <div className="close-button d-flex d-lg-none">
                   <button className="close-sidebar">
@@ -205,7 +206,7 @@ export default function Profile() {
                 </ul>
               </div>
             </div>
-            <div className="col-xxl-9 col-lg-8">
+            <div className="col-xxl-12 col-lg-8">
               <button className="btn left-dashboard-show btn-animation btn-md fw-bold d-block mb-4 d-lg-none">
                 Show Menu
               </button>
@@ -222,7 +223,7 @@ export default function Profile() {
                       </div>
                       <div className="total-box">
                         <div className="row g-sm-4 g-3">
-                          <div className="col-xxl-4 col-lg-6 col-md-4 col-sm-6">
+                          <div className="col-xxl-4 col-lg-6 col-md-3 col-sm-6">
                             <div className="total-contain">
                               <img
                                 src="assets/images/order.svg"
@@ -240,7 +241,7 @@ export default function Profile() {
                               </div>
                             </div>
                           </div>
-                          <div className="col-xxl-4 col-lg-6 col-md-4 col-sm-6">
+                          <div className="col-xxl-4 col-lg-6 col-md-3 col-sm-6">
                             <div className="total-contain">
                               <img
                                 src="assets/images/pending.svg"
@@ -258,7 +259,7 @@ export default function Profile() {
                               </div>
                             </div>
                           </div>
-                          <div className="col-xxl-4 col-lg-6 col-md-4 col-sm-6">
+                          <div className="col-xxl-4 col-lg-6 col-md-3 col-sm-6">
                             <div className="total-contain">
                               <img
                                 src="assets/images/wishlist.svg"
@@ -304,15 +305,237 @@ export default function Profile() {
                     role="tabpanel"
                   >
                     <div className="dashboard-order">
-                      <div className="title">
+                      {/* <div className="title">
                         <h2>My Orders History</h2>
                         <span className="title-leaf title-leaf-gray">
                           <svg className="icon-width bg-gray">
                             <use xlinkHref="assets/leaf.svg#leaf" />
                           </svg>
                         </span>
+                      </div> */}
+                      <div className="container">
+                        <div className="row flex-nowrap overflow-hidden" style={{ overflowX: "auto", scrollbarWidth: "auto", msOverflowStyle: "auto" }}>
+                          <div className="col-md-3 margin border flex-shrink-0 flex-shrink-0 box-size-160">
+                            <span>Orders in Process</span><br />
+                            <span>
+                              3
+                            </span>
+                          </div>
+                          <div className="col-md-3 margin border flex-shrink-0 box-size-160">
+                            <span>Pending Payments</span><br />
+                            <span>
+                              ₹45.000
+                            </span>
+                          </div>
+                          <div className="col-md-3 margin border flex-shrink-0 box-size-160">
+                            <span>Available Credit</span><br />
+                            <span>
+                              ₹45.000
+                            </span>
+                          </div>
+                          <div className="col-md-3 margin border flex-shrink-0 box-size-160">
+                            <span> Saved Lists</span><br />
+                            <span>
+                              3
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="order-contain">
+                      <section id="tabs" className="project-tab">
+                        <div className="container">
+                          <div className="row">
+                            <div className="col-md-12">
+                              <nav>
+                                <div
+                                  className="nav nav-tabs nav-fill"
+                                  id="nav-tab"
+                                  role="tablist"
+                                >
+                                  <button
+                                    className="nav-item nav-link active"
+                                    id="nav-orders-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#nav-orders"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="nav-orders"
+                                    aria-selected="true"
+                                  >
+                                    Orders
+                                  </button>
+                                  <button
+                                    className="nav-item nav-link"
+                                    id="nav-ledger-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#nav-ledger"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="nav-ledger"
+                                    aria-selected="false"
+                                  >
+                                    Ledger
+                                  </button>
+                                  <button
+                                    className="nav-item nav-link"
+                                    id="nav-invoices-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#nav-invoices"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="nav-invoices"
+                                    aria-selected="false"
+                                  >
+                                    Bills & Invoices
+                                  </button>
+                                </div>
+                              </nav>
+
+                              {/* Cards above tables */}
+                              <div className="row g-3 my-3">
+                                {/* Outstanding Balance */}
+                                <div className="col-md-6">
+                                  <div className="d-flex justify-content-between align-items-center border rounded p-3 h-100">
+                                    <div>
+                                      <p className="mb-1 fw-medium text-muted">Outstanding Balance</p>
+                                      <h4 className="mb-0">₹45,000</h4>
+                                      <small className="text-secondary">Due on May 2024</small>
+                                    </div>
+                                    <button className="btn btn-success px-4" style={{ background: "#198754" }}>
+                                      Pay Now
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Invoices */}
+                                <div className="col-md-6">
+                                  <div className="d-flex justify-content-between align-items-center border rounded p-3 h-100">
+                                    <div>
+                                      <p className="mb-1 fw-medium text-muted">Invoices</p>
+                                      <small className="text-secondary">Mv:12 · Order</small>
+                                    </div>
+                                    <button
+                                      className="btn btn-outline-secondary rounded-pill px-3"
+                                      style={{ background: "#fff", border: "1px solid #545454" }}
+                                    >
+                                      Last 30 days
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Tab Content */}
+                              <div className="tab-content" id="nav-tabContent">
+                                {/* Orders Tab */}
+                                <div
+                                  className="tab-pane fade show active"
+                                  id="nav-orders"
+                                  role="tabpanel"
+                                  aria-labelledby="nav-orders-tab"
+                                >
+                                 <table className="table">
+  <thead>
+    <tr>
+      <th>Order Id</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Debit</th>
+      <th>Credit</th>
+      <th>Balance</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      profile?.order_mst?.map((li,ind)=>{
+        return(
+            <tr key={ind}>
+              <td><a href="#">{`#${li?.id}`}</a></td>
+              <td>{`${li?.created_at}`}</td>
+              <td><span className="badge bg-warning text-dark">{`${li?.status}`}</span></td>
+              <td>{`₹${li?.total_amount}`}</td>
+              <td>-</td>
+              <td>{`₹${li?.subtotal}`}</td>
+            </tr>
+        )
+      })
+    }
+  </tbody>
+</table>
+
+                                </div>
+
+                                {/* Ledger Tab */}
+                                <div
+                                  className="tab-pane fade"
+                                  id="nav-ledger"
+                                  role="tabpanel"
+                                  aria-labelledby="nav-ledger-tab"
+                                >
+                                  <table className="table">
+                                    <thead>
+                                      <tr>
+                                        <th>Date</th>
+                                        <th>Invoice</th>
+                                        <th>Description</th>
+                                        <th>Debit</th>
+                                        <th>Balance</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {profile?.wallet_statement?.map((li,ind)=>{
+                                        return(
+                                     <tr key={ind}>
+                                        <td>25 Apr 24</td>
+                                        <td>{`${li?.invoice_no}`}</td>
+                                        <td>{`Order #${li?.id}`}</td>
+                                        <td className="text-danger fw-bold">{`₹${li?.amount}`}</td>
+                                        <td>{`${li?.balance}`}</td>
+                                      </tr>
+                                        )
+                                      })}
+                                     
+                                    </tbody>
+                                  </table>
+                                </div>
+
+                                {/* Invoices Tab */}
+                                <div
+                                  className="tab-pane fade"
+                                  id="nav-invoices"
+                                  role="tabpanel"
+                                  aria-labelledby="nav-invoices-tab"
+                                >
+                                  <table className="table">
+                                    <thead>
+                                      <tr>
+                                        <th>Invoice</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                     {profile?.wallet_statement?.map((li,ind)=>{
+                                        return(
+                                     <tr key={ind}>
+                                       <td>{`${li?.invoice_no}`}</td>
+                                        <td>25 Apr 24</td>
+                                         <td className="text-danger fw-bold">{`₹${li?.amount}`}</td>
+                                        <td>{`Paid`}</td>
+                                      </tr>
+                                        )
+                                      })}
+                                    
+                                     
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      {/* <div className="order-contain">
                         <div className="row">
                           {order_mst && order_mst.length > 0 ? (
                             order_mst.map((order) => (
@@ -336,7 +559,7 @@ export default function Profile() {
                                              Order
                                           </span>
                                         </Link> */}
-                                        <Link to={`/invoice/${order.id}`}>
+                                        {/* <Link to={`/invoice/${order.id}`}>
                                           {" "}
                                           <span
                                             style={{ background: "#0213ffff" }}
@@ -385,7 +608,7 @@ export default function Profile() {
                             <p>No orders found.</p>
                           )}
                         </div>
-                      </div>
+                      </div> */} 
                     </div>
                   </div>
                   <div
@@ -543,7 +766,7 @@ export default function Profile() {
                                   </thead>
                                   <tbody>
                                     {wallet_statement &&
-                                    wallet_statement.length > 0 ? (
+                                      wallet_statement.length > 0 ? (
                                       wallet_statement.map((wallet) => (
                                         <tr key={wallet.id}>
                                           {/* Date */}
