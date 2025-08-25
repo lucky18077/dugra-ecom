@@ -32,7 +32,15 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
     }
   };
 
-  // Update cart count and customer name when login state or refreshNavbar changes
+  useEffect(() => {
+    let interval;
+    if (isLoggedIn) {
+      fetchCartCount();
+      interval = setInterval(fetchCartCount, 2000);
+    }
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
+  
   useEffect(() => {
     if (isLoggedIn) {
       fetchCartCount();
