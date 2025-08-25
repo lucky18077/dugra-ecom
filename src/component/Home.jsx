@@ -6,7 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { toTitleCase } from "../Hooks/Helper";
-import { LIVE_URL } from "../Api/Route";
+import { IMG_LIVE_URL, LIVE_URL } from "../Api/Route";
 
 export default function Home({
   isLoggedIn = false,
@@ -282,7 +282,7 @@ export default function Home({
                             <img
                               src={
                                 category.image
-                                  ? `http://127.0.0.1:8000/master images/${category.image}`
+                                  ? `${IMG_LIVE_URL}/master images/${category.image}`
                                   : "/assets/images/default.png"
                               }
                               className="img-fluid blur-up lazyload"

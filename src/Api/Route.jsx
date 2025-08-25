@@ -6,3 +6,5 @@
 
 
 export const LIVE_URL = 'https://store.bulkbasketindia.com/api'; 
+export const IMG_LIVE_URL = 'https://store.bulkbasketindia.com'; 
+// 8219453988

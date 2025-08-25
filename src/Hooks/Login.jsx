@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import axios from "axios";
 import { auth, sendOtp } from "./firebase";
 import { LIVE_URL } from "../Api/Route";
@@ -9,7 +9,7 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
   const [step, setStep] = useState("number");
   const [message, setMessage] = useState({ type: "", text: "" });
   const [loading, setLoading] = useState(false); // ✅ button disable state
-
+const inputs = useRef([]);
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
@@ -64,7 +64,24 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
       setLoading(false);
     }
   };
+ const handleChange = (e, index) => {
+    const value = e.target.value;
+    
+    // Allow only one character
+    if (value.length > 1) {
+      e.target.value = value.charAt(value.length - 1);
+    }
 
+    // Move to next input if value entered
+    if (value && index < inputs.current.length - 1) {
+      inputs.current[index + 1].focus();
+    }
+
+    // Move back if deleted
+    if (!value && index > 0) {
+      inputs.current[index - 1].focus();
+    }
+  };
   return (
     <div
       className="modal fade theme-modal deal-modal"
@@ -124,12 +141,12 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                         const input = e.target.value;
                         if (input.length <= 10) setNumber(input);
                       }}
-                      disabled={step === "otp"}
+                      // disabled={step !== "otp"}
                     />
                     {/* <label htmlFor="phone">Phone</label> */}
                   </div>
                   </div>  
-                  {step === "otp" && (
+                  {/* {step !== "otp" && (
                     <div className="form-floating theme-form-floating log-in-form mb-3">
                       <input
                         type="number"
@@ -141,7 +158,7 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                       />
                       <label htmlFor="otp">OTP</label>
                     </div>
-                  )}
+                  )} */}
 
                   
 
@@ -163,14 +180,15 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                   >
                     {loading
                       ? step === "number"
-                        ? "Sending..."
+                        ? "GET OTP"
                         : "Verifying..."
-                      : step === "number"
-                      ? "GET OTP"
+                      : step === "otp"
+                      ? "SEND OTP"
                       : "Verify OTP"}
                   </button>
                 </form>
                   <div>
+                    
                      <p class="mt-1 text-center forgot-txt" style={{padding:'15px;',
                       borderBottomWidth: '0.5px solid;', borderColor:'#ececec'}}>
                       Forgot Password?{" "}
@@ -186,6 +204,49 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                         </span>
                       </a>
                     </p>
+                   {step == "otp"&& <p>
+                      <span className="pt-3">We've sent a 6-digit OTP to your mobile number.</span>
+                     </p>}
+                     <div className="position-relative">
+                     {step == "otp"&& <>
+                 <div className="cardd">
+           
+                      <div id="otp" className="inputs d-flex flex-row r mt-2 col-11">
+                        {[...Array(5)].map((_, i) => (
+                            <input key={i} className="m-2 text-center form-control rounded" 
+                            type="text" maxlength="1"
+                              ref={(el) => (inputs.current[i] = el)}
+                          onChange={(e) => handleChange(e, i)} />
+
+                        ))}
+                    </div>
+                  <div>
+                    <div className="col-12 phone-number-email-view" style={{ flexDirection:  "row",display:'flex' }}>
+                    <div  className="col-6" style={{ flexDirection:  "row" }}>
+                     <span class="contact-number"><h5>Resend in 30 s</h5>
+                      </span>
+                    </div>
+                    <div className="col-6"  style={{ textAlign: 'right',alignSelf:'flex-end'}}>
+                     <a href="/#">
+                        <h4  className="account" style={{ color: "#007F2F !important;" }}>
+                         Resend OTP
+                        </h4>
+                      </a>
+                    </div>
+                  </div>
+                    <p class="mt-1 text-content pt-4">
+                      Already have an account?{" "}
+                      <a href="/#">
+                        <span  className="account" style={{ color: "#007F2F !important;" }}>
+                         Log in
+                        </span>
+                      </a>
+                    </p>
+                  </div>
+                  </div>
+                   </>}
+
+                  </div>
                   </div>
                    <div className="col-12 phone-number-email-view" style={{ flexDirection:  "row",display:'flex' }}>
                     <div  className="col-6" style={{ flexDirection:  "row" }}>

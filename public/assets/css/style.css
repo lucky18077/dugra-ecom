@@ -47075,7 +47075,7 @@ body.rtl .theme-product-section .right-box-contain .license-list .accordion-item
 [dir=rtl] ul {
     padding-right: 0
 }
-
+/************************     custome   ***********************/
 button.btn.btn-animation.w-100.justify-content-center.login{
         background: #007F2F !important;
 
@@ -47107,5 +47107,42 @@ span.account {
 }
 .padingLeft{
 padding-left: 10px !important;
+}
+
+.inputs input {
+    width: 50px;
+    height: 50px
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0
+}
+
+.card-2 {
+    background-color: #fff;
+    padding: 10px;
+    width: 350px;
+    height: 100px;
+    bottom: -50px;
+    left: 20px;
+    position: absolute;
+    border-radius: 5px
+}
+
+.card-2 .content {
+    margin-top: 50px
+}
+
+.card-2 .content a {
+    color: #eb722e
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border: 2px solid #eb722e
 }
 /*# sourceMappingURL=style.css.map */

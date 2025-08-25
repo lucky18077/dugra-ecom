@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { toTitleCase } from "../Hooks/Helper";
-import { LIVE_URL } from "../Api/Route";
+import { IMG_LIVE_URL, LIVE_URL } from "../Api/Route";
 
 export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
   const token = localStorage.getItem("customer_token");
@@ -409,7 +409,7 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                           <img
                             src={
                               product.image
-                                ? `http://127.0.0.1:8000/product images/${product.image}`
+                                ? `${IMG_LIVE_URL}/product images/${product.image}`
                                 : "/assets/images/shop7.png"
                             }
                             alt=""
