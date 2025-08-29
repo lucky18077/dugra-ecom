@@ -17,6 +17,7 @@ import Profile from "./component/Profile";
 import Signup from "./component/Signup";
 import Wishlist from "./component/Wishlist";
 import AllBrands from "./component/AllBrands";
+import BrandItem from "./component/BrandItem";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -113,6 +114,28 @@ function App() {
           }
         />
         <Route
+          path="/brand/:brandName/:brandId"
+          element={
+            <BrandItem
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+              refreshNavbar={refreshNavbar}
+              openLoginModal={openLoginModal}
+              setRefreshNavbar={setRefreshNavbar}
+            />
+          }
+        />
+        <Route
+          path="/brand/:brandName/:brandId/subcategory/:subId"
+          element={
+            <BrandItem
+              isLoggedIn={isLoggedIn}
+              openLoginModal={openLoginModal}
+              setRefreshNavbar={setRefreshNavbar}
+            />
+          }
+        />
+        <Route
           path="/shop/search"
           element={
             <Shop
@@ -156,7 +179,7 @@ function App() {
         setRefreshNavbar={setRefreshNavbar}
         openLoginModal={openLoginModal} // pass modal opener
       />
-      <Footer />
+      <Footer isLoggedIn={isLoggedIn} openLoginModal={openLoginModal} />
     </BrowserRouter>
   );
 }

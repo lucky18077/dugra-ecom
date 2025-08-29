@@ -42,7 +42,7 @@
 }
 
 .shop-now-btn {
-  background-color: #d34b0b;
+  background-color: #437a3a;
   color: white;
   padding: 10px 24px;
   border: none;
@@ -54,7 +54,7 @@
 }
 
 .shop-now-btn:hover {
-  background-color: #d34b0b;
+  background-color: #437a3a;
 }
 
 /* Responsive */
@@ -98,7 +98,7 @@
 }
 
 .on-scroll::-webkit-scrollbar-thumb {
-  background-color: #d34b0b;
+  background-color: #437a3a;
   border-radius: 10px;
 }
 
@@ -127,14 +127,16 @@
 
 .discount-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 16px;
+  right: 50px;
   background: #2962ff;
   color: white;
   font-size: 12px;
   padding: 2px 6px;
   border-radius: 6px;
   font-weight: bold;
+  z-index: 10;
+  /* Make sure it's above the image */
 }
 
 .product-img {
@@ -189,8 +191,8 @@
 
 .add-btn {
   background-color: #fff;
-  border: 1px solid #d34b0b;
-  color: #d34b0b;
+  border: 1px solid #437a3a;
+  color: #437a3a;
   padding: 5px 12px;
   border-radius: 17px;
   font-size: 13px;
@@ -200,7 +202,7 @@
 }
 
 .add-btn:hover {
-  background-color: #d34b0b;
+  background-color: #437a3a;
   color: white;
 }
 
@@ -220,7 +222,7 @@
 .wish-remove {
   background-color: #fff;
   border: 1px solid #e3e0e0;
-  color: #d34b0b;
+  color: #437a3a;
   padding: 10px 16px;
   border-radius: 4px;
   font-size: 17px;
@@ -415,7 +417,7 @@
 }
 
 .text-category {
-  color: #d34b0b !important;
+  color: #437a3a !important;
 }
 
 @media screen and (max-width: 767px) {
@@ -425,7 +427,7 @@
 }
 
 footer .main-footer {
-  border-top: 1px dashed #c1c1c1;
+  /* border-top: 1px dashed #c1c1c1; */
 }
 
 @media (max-width: 991.98px) {
@@ -435,7 +437,7 @@ footer .main-footer {
 }
 
 .icon-color {
-  color: #d34b0b;
+  color: #437a3a;
 }
 
 .theme-colors {
@@ -481,7 +483,7 @@ footer .main-footer {
   display: block;
   width: 100%;
   text-align: left;
-  /* border: 1px solid #d34b0b; */
+  /* border: 1px solid #437a3a; */
   background-color: transparent;
   color: #1d1c1c;
   /* padding: 8px 0; */
@@ -493,7 +495,7 @@ footer .main-footer {
 }
 
 /* .pack-item:hover {
-  background-color: #d34b0b;
+  background-color: #437a3a;
   color: #fff;
 } */
 
@@ -575,7 +577,7 @@ footer .main-footer {
 }
 
 .add-qty-c {
-  color: #d34b0b;
+  color: #437a3a;
 
 }
 
@@ -611,4 +613,15 @@ footer .main-footer {
   height: 50px;
   font-size: 20px;
   text-align: center;
+}
+
+.tooltip-inner {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+  border-bottom-color: #ffc107 !important;
 }

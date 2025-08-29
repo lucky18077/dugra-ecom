@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import { toTitleCase } from "../Hooks/Helper";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import Carousel from "react-bootstrap/Carousel";
 import { LIVE_URL } from "../Api/Route";
+import { BASE_LIVE_URL } from "../Api/Route";
 
-export default function Footer() {
+export default function Footer({ isLoggedIn, openLoginModal }) {
   const [fBanner, setFbanner] = useState(null);
 
   const fetchFooterBanner = async () => {
@@ -58,73 +60,16 @@ export default function Footer() {
           </div>
         </div>
       </section>
-      <footer className="section-t-space">
+      <footer className="section-t-space" style={{ backgroundColor: "black" }}>
         <div className="container-fluid-lg">
-          <div className="service-section">
-            <div className="row g-3">
-              <div className="col-12">
-                <div className="service-contain">
-                  <div className="service-box">
-                    <div className="service-image">
-                      <img
-                        src="/assets/images/product.svg"
-                        className="blur-up lazyload"
-                        alt=""
-                      />
-                    </div>
-                    <div className="service-detail">
-                      <h5>Every Fresh Products</h5>
-                    </div>
-                  </div>
-                  <div className="service-box">
-                    <div className="service-image">
-                      <img
-                        src="/assets/images/delivery.svg"
-                        className="blur-up lazyload"
-                        alt=""
-                      />
-                    </div>
-                    <div className="service-detail">
-                      <h5>Free Delivery For Order Over $50</h5>
-                    </div>
-                  </div>
-                  <div className="service-box">
-                    <div className="service-image">
-                      <img
-                        src="/assets/images/discount.svg"
-                        className="blur-up lazyload"
-                        alt=""
-                      />
-                    </div>
-                    <div className="service-detail">
-                      <h5>Daily Mega Discounts</h5>
-                    </div>
-                  </div>
-                  <div className="service-box">
-                    <div className="service-image">
-                      <img
-                        src="/assets/images/market.svg"
-                        className="blur-up lazyload"
-                        alt=""
-                      />
-                    </div>
-                    <div className="service-detail">
-                      <h5>Best Price On The Market</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div className="main-footer section-b-space section-t-space">
             <div className="row g-md-4 g-3">
-              <div className="col-xl-3 col-lg-4 col-sm-6">
+              <div className="col-xl-3 col-lg-3 col-sm-6">
                 <div className="footer-logo">
                   <div className="theme-logo">
                     <a href="#">
                       <img
-                        src="/assets/images/logo.png"
+                        src="/assets/images/bulk-basket.png"
                         className="blur-up lazyload"
                         alt=""
                       />
@@ -138,127 +83,166 @@ export default function Footer() {
                     <ul className="address">
                       <li>
                         <i data-feather="home" />
-                        <a href="javascript:void(0)">
-                          Sushma infinium, zirakpur
-                        </a>
+                        <a href="javascript:void(0)">Chandigarh</a>
+                      </li>
+                      <li>
+                        <i data-feather="phone" />
+                        <a href="javascript:void(0)">+91 9876521909</a>
                       </li>
                       <li>
                         <i data-feather="mail" />
-                        <a href="javascript:void(0)">durga@gmail.com</a>
+                        <a href="javascript:void(0)">
+                          info@bulkbasketindia.com
+                        </a>
                       </li>
                     </ul>
                   </div>
                 </div>
               </div>
-              <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+              <div className="col-xl-3 col-lg-3  col-sm-6">
                 <div className="footer-title">
-                  <h4>Top Categories</h4>
+                  <h4>Shop By Categories</h4>
                 </div>
                 <div className="footer-contain">
                   <ul>
                     <li>
-                      <a href="#" className="text-content">
-                        {toTitleCase(" EDIBLE OIL & FATS")}
-                      </a>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/1`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("Edible Oil & Fats")}
+                      </Link>
                     </li>
                     <li>
-                      <a href="#" className="text-content">
-                        {toTitleCase(" ATTA, MAIDA & FLOURS")}
-                      </a>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/2`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("ATTA, MAIDA & FLOURS")}
+                      </Link>
                     </li>
                     <li>
-                      <a href="#" className="text-content">
-                        {toTitleCase(" TEA , COFFEE , SUGAR & SALT")}
-                      </a>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/7`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("TEA , COFFEE , SUGAR & SALT")}
+                      </Link>
                     </li>
                     <li>
-                      <a href="#" className="text-content">
-                        {toTitleCase("  DAIRY & RELATED PRODUCTS")}
-                      </a>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/12`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("DAIRY & RELATED PRODUCTS")}
+                      </Link>
                     </li>
                     <li>
-                      <a href="#" className="text-content">
-                        {toTitleCase(" SPICES")}
-                      </a>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/9`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("SPICES")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/13`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("Frozen Products")}
+                      </Link>
                     </li>
                   </ul>
                 </div>
               </div>
-              <div className="col-xl col-lg-2 col-sm-3">
+              <div className="col-xl-3 col-lg-3 col-sm-6">
                 <div className="footer-title">
                   <h4>Useful Links</h4>
                 </div>
                 <div className="footer-contain">
                   <ul>
                     <li>
-                      <a href="/" className="text-content">
-                        Home
-                      </a>
+                      {isLoggedIn ? (
+                        <Link to="profile" className="text-contents">
+                          My Account
+                        </Link>
+                      ) : (
+                        <a
+                          href="#"
+                          onClick={openLoginModal}
+                          className="text-contents"
+                        >
+                          My Account
+                        </a>
+                      )}
                     </li>
+
                     <li>
-                      <a href="#" className="text-content">
-                        Shop
-                      </a>
+                      {isLoggedIn ? (
+                        <Link to="view-wishlist" className="text-contents">
+                          Wish List
+                        </Link>
+                      ) : (
+                        <a
+                          href="#"
+                          onClick={openLoginModal}
+                          className="text-contents"
+                        >
+                          Wish List
+                        </a>
+                      )}
                     </li>
+
                     <li>
-                      <a href="#" className="text-content">
-                        About Us
-                      </a>
+                      {isLoggedIn ? (
+                        <Link to="view-cart" className="text-contents">
+                          View Cart
+                        </Link>
+                      ) : (
+                        <a
+                          href="#"
+                          onClick={openLoginModal}
+                          className="text-contents"
+                        >
+                          View Cart
+                        </a>
+                      )}
                     </li>
+
                     <li>
-                      <a href="#" className="text-content">
-                        Blog
-                      </a>
+                      <Link to="/returns" className="text-contents">
+                        Returns And Refunds
+                      </Link>
                     </li>
+
                     <li>
-                      <a href="#" className="text-content">
-                        Contact Us
-                      </a>
+                      <Link to="/privacy" className="text-contents">
+                        Privacy Policy
+                      </Link>
                     </li>
                   </ul>
                 </div>
               </div>
-              <div className="col-xl-2 col-sm-3">
+              <div className="col-xl-3 col-lg-3 col-sm-6">
                 <div className="footer-title">
-                  <h4>Help Center</h4>
-                </div>
-                <div className="footer-contain">
-                  <ul>
-                    <li>
-                      <a href="#" className="text-content">
-                        Your Order
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="text-content">
-                        Your Account
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="text-content">
-                        Track Order
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="text-content">
-                        Search
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="col-xl-3 col-lg-4 col-sm-6">
-                <div className="footer-title">
-                  <h4>Contact Us</h4>
+                  <h4>Get Our App</h4>
                 </div>
                 <div className="footer-contact">
                   <ul>
                     <li>
                       <div className="footer-number">
+                        <i data-feather="home" />
+                        <div className="contact-number">
+                          <h5>Chandigarh</h5>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="footer-number">
                         <i data-feather="phone" />
                         <div className="contact-number">
-                          <h6 className="text-content">Hotline 24/7 :</h6>
-                          <h5>+91 1234567890</h5>
+                          <h5>+91 9876521909</h5>
                         </div>
                       </div>
                     </li>
@@ -266,13 +250,12 @@ export default function Footer() {
                       <div className="footer-number">
                         <i data-feather="mail" />
                         <div className="contact-number">
-                          <h6 className="text-content">Email Address :</h6>
-                          <h5>durga@gmail.com</h5>
+                          <h5>info@bulkbasketindia.com</h5>
                         </div>
                       </div>
                     </li>
                     <li className="social-app mb-0">
-                      <h5 className="mb-2 text-content">Download App :</h5>
+                      <h5 className="mb-2 text-contents">Download App :</h5>
                       <ul>
                         <li className="mb-0">
                           <a
@@ -307,8 +290,8 @@ export default function Footer() {
           </div>
           <div className="sub-footer section-small-space">
             <div className="reserve">
-              <h6 className="text-content">
-                ©2025 Bulk Basket All rights reserved
+              <h6 className="text-contents">
+                ©2025 Bulk Basket India All rights reserved
               </h6>
             </div>
             <div className="payment">
@@ -319,7 +302,7 @@ export default function Footer() {
               />
             </div>
             <div className="social-link">
-              <h6 className="text-content">Stay connected :</h6>
+              <h6 className="text-contents">Stay connected :</h6>
               <ul>
                 <li>
                   <a href="https://www.facebook.com/" target="_blank">

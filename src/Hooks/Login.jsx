@@ -6,24 +6,52 @@ import { LIVE_URL } from "../Api/Route";
 export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
   const [number, setNumber] = useState("");
   const [otp, setOtp] = useState("");
+  const [password, setPassword] = useState("");
   const [step, setStep] = useState("number");
+  const [mode, setMode] = useState("otp");
   const [message, setMessage] = useState({ type: "", text: "" });
   const [loading, setLoading] = useState(false);
+
+  const storeUserData = (token, user, number) => {
+    if (token) {
+      sessionStorage.setItem("customer_token", token);
+      localStorage.setItem("customer_token", token);
+    }
+    if (user?.name) {
+      sessionStorage.setItem("customer_name", user.name);
+      localStorage.setItem("customer_name", user.name);
+    }
+    if (number) {
+      sessionStorage.setItem("customer_number", number);
+      localStorage.setItem("customer_number", number);
+    }
+  };
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
+    setStep("otp");
     setLoading(true);
 
     try {
       const response = await axios.post(`${LIVE_URL}/send-otp`, { number });
 
       if (response.data.status) {
-        await sendOtp("+91" + number);
-        setStep("otp");
+        sessionStorage.setItem("customer_number", number);
+        localStorage.setItem("customer_number", number); 
+        sendOtp("+91" + number)
+          .then(() => {
+            console.log("Firebase OTP sent successfully");
+          })
+          .catch((err) => {
+            console.error("Firebase OTP error:", err);
+            setMessage({
+              type: "error",
+              text: "Failed to send OTP via Firebase",
+            });
+          });
       }
 
-      // 🔥 Always show API message
       setMessage({
         type: response.data.status ? "success" : "error",
         text: response.data.message,
@@ -32,13 +60,15 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
       console.error("Send OTP error:", error);
       setMessage({
         type: "error",
-        text: error.response?.data?.message || "Something went wrong ❌",
+        text: error.response?.data?.message || "Failed to send OTP",
       });
+      setStep("number"); 
     } finally {
       setLoading(false);
     }
   };
 
+  // 🔹 OTP Flow: Verify OTP
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
@@ -52,28 +82,62 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
         const verifyRes = await axios.post(`${LIVE_URL}/verify-otp`, {
           number,
         });
+        const { status, message, token, user, redirect } = verifyRes.data;
 
-        if (verifyRes.data.status && verifyRes.data.token) {
-          localStorage.setItem("customer_token", verifyRes.data.token);
-          localStorage.setItem("customer_name", verifyRes.data.user.name);
+        setMessage({ type: status ? "success" : "error", text: message });
+
+        if (status && token) {
+          storeUserData(token, user, number);
           setIsLoggedIn(true);
           setRefreshNavbar((prev) => prev + 1);
-
-          const modalEl = document.getElementById("deal-box");
-          const modalInstance = bootstrap.Modal.getInstance(modalEl);
-          modalInstance.hide();
+          window.location.href = "/";
+        } else {
+          if (redirect === "signup") {
+            window.location.href = "/sign-up";
+          } else if (redirect === "pending") {
+            window.location.href = "/";
+          } else if (redirect === "inactive") {
+            window.location.href = "/";
+          }
         }
-
-        setMessage({
-          type: verifyRes.data.status ? "success" : "error",
-          text: verifyRes.data.message,
-        });
       }
     } catch (error) {
       console.error("OTP verification error:", error);
       setMessage({
         type: "error",
-        text: error.response?.data?.message || "Something went wrong ❌",
+        text: error.response?.data?.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Password Login
+  const handlePasswordLogin = async (e) => {
+    e.preventDefault();
+    setMessage({ type: "", text: "" });
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${LIVE_URL}/customer-login`, {
+        number,
+        password,
+      });
+
+      const { status, message, token, user } = response.data;
+      setMessage({ type: status ? "success" : "error", text: message });
+
+      if (status && token) {
+        storeUserData(token, user, number);
+        setIsLoggedIn(true);
+        setRefreshNavbar((prev) => prev + 1);
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Password login error:", error);
+      setMessage({
+        type: "error",
+        text: error.response?.data?.message || "Login failed",
       });
     } finally {
       setLoading(false);
@@ -90,10 +154,10 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
         <div className="modal-content">
           <div className="modal-header padingLeft">
             <img
-              src="/assets/images/login-logo.png"
+              src="/assets/images/bulk-basket.png"
               alt="Login Logo"
               className="img-fluid"
-              style={{ height: "90px" }}
+              style={{ height: "60px" }}
             />
             <button
               type="button"
@@ -109,19 +173,26 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
           <div className="modal-body">
             <div className="deal-offer-box">
               <h3 className="modal-title w-100" id="deal_today text-left">
-                Login
+                Login & Sign Up
               </h3>
               <div className="input-box mt-2">
                 <form
-                  onSubmit={step === "number" ? handleSendOtp : handleVerifyOtp}
+                  onSubmit={
+                    mode === "otp"
+                      ? step === "number"
+                        ? handleSendOtp
+                        : handleVerifyOtp
+                      : handlePasswordLogin
+                  }
                 >
                   <h5 className="mb-4">
-                    {step === "number"
-                      ? "Enter your mobile number"
-                      : "Verify OTP"}
+                    {mode === "otp"
+                      ? step === "number"
+                        ? "Enter your mobile number"
+                        : "Verify OTP"
+                      : "Login with Phone & Password"}
                   </h5>
 
-                  {/* ✅ Alert messages */}
                   {message.text && (
                     <div
                       className={`alert ${
@@ -132,52 +203,14 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                     >
                       <div className="alert-content d-flex align-items-center">
                         <span className="alert-icon me-2">
-                          {message.type === "success" ? (
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                              height="20"
-                              width="20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 
-                                16zm3.707-9.293a1 1 0 00-1.414-1.414L9 
-                                10.586 7.707 9.293a1 1 0 
-                                00-1.414 1.414l2 2a1 1 0 001.414 
-                                0l4-4z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          ) : (
-                            <svg
-                              stroke="currentColor"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                              height="20"
-                              width="20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 
-                                16zM8.707 7.293a1 1 0 
-                                00-1.414 1.414L8.586 10l-1.293 
-                                1.293a1 1 0 101.414 1.414L10 
-                                11.414l1.293 1.293a1 1 0 
-                                001.414-1.414L11.414 10l1.293-1.293a1 
-                                1 0 00-1.414-1.414L10 8.586 
-                                8.707 7.293z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          )}
+                          {message.type === "success" ? "✔️" : "❌"}
                         </span>
                         <div>{message.text}</div>
                       </div>
                     </div>
                   )}
 
+                  {/* 📱 Phone number */}
                   <div className="col-12">
                     <div className="form-floating theme-form-floating log-in-form mb-3">
                       <input
@@ -190,12 +223,31 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                           const input = e.target.value;
                           if (input.length <= 10) setNumber(input);
                         }}
-                        disabled={step === "otp"}
+                        disabled={mode === "otp" && step === "otp"}
                       />
+                      <label>Phone</label>
                     </div>
                   </div>
 
-                  {step === "otp" && (
+                  {/* 🔑 Password input (only if password mode) */}
+                  {mode === "password" && (
+                    <div className="col-12">
+                      <div className="form-floating theme-form-floating log-in-form mb-3">
+                        <input
+                          type="password"
+                          className="form-control"
+                          placeholder="Password"
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <label>Password</label>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 🔢 OTP inputs (only if otp step) */}
+                  {mode === "otp" && step === "otp" && (
                     <div className="otp-input-container d-flex mb-3">
                       {Array(6)
                         .fill("")
@@ -228,35 +280,38 @@ export default function Login({ setIsLoggedIn, setRefreshNavbar }) {
                     type="submit"
                   >
                     {loading
+                      ? mode === "otp"
+                        ? step === "number"
+                          ? "Sending..."
+                          : "Verifying..."
+                        : "Logging in..."
+                      : mode === "otp"
                       ? step === "number"
-                        ? "Sending..."
-                        : "Verifying..."
-                      : step === "number"
-                      ? "GET OTP"
-                      : "Verify OTP"}
+                        ? "GET OTP"
+                        : "Verify OTP"
+                      : "Login"}
                   </button>
                 </form>
 
-                <div>
+                {/* Toggle login mode */}
+                <div className="text-center">
                   <p
-                    className="mt-1 text-center forgot-txt"
-                    style={{
-                      padding: "15px",
-                      borderBottom: "0.5px solid #ececec",
+                    className="mt-3 text-content"
+                    style={{ color: "#d34b0b", cursor: "pointer" }}
+                    onClick={() => {
+                      setMode(mode === "otp" ? "password" : "otp");
+                      setStep("number");
                     }}
-                  ></p>
-                  <p className="mt-1 text-content">
-                    New Customer?{" "}
-                    <a href="/sign-up">
-                      <span className="account" style={{ color: "#007F2F" }}>
-                        Create an account
-                      </span>
-                    </a>
+                  >
+                    {mode === "otp"
+                      ? "Login With Password?"
+                      : "Login With OTP?"}
                   </p>
                 </div>
 
+                {/* Footer contact info */}
                 <div
-                  className="col-12 phone-number-email-view d-flex"
+                  className="col-12 phone-number-email-view d-flex mt-3"
                   style={{ flexDirection: "row" }}
                 >
                   <div className="col-6 d-flex align-items-center">

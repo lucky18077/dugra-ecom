@@ -32,7 +32,9 @@ export default function AllBrands() {
                     <div key={index} className="col-2 col-sm-3 col-md-2">
                       <div className="blog-box wow fadeInUp text-center">
                         <div className="blog-image brand-fix-size">
-                          <a href={`/shop/brand/${brand.id}`}>
+                          <a href={`/brand/${brand.name.toLowerCase()}/${
+                              brand.id
+                            }`}>
                             <img
                               src={
                                 brand.image
@@ -45,7 +47,9 @@ export default function AllBrands() {
                           </a>
                         </div>
                         <div className="blog-contain mt-2">
-                          <a href={`/shop/brand/${brand.id}`}>
+                          <a href={`/brand/${brand.name.toLowerCase()}/${
+                              brand.id
+                            }`}>
                             <h6 className="text-truncate">{brand.name}</h6>
                           </a>
                         </div>

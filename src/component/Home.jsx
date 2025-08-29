@@ -261,7 +261,10 @@ export default function Home({
       </section>
 
       {/* Category Section */}
-      <section className="section-b-space" style={{ backgroundColor: "#fff" }}>
+      <section
+        className="section-b-space"
+        style={{ backgroundColor: "#fff4e842" }}
+      >
         <div className="container-fluid-lg">
           <div className="row">
             <div className="col-xxl-12 col-lg-12">
@@ -277,7 +280,10 @@ export default function Home({
                   {group.map((category, index) => (
                     <div key={index}>
                       <div className="product-box product-white-bg">
-                        <div className="product-image category-fix" style={{ padding: "0" }}>
+                        <div
+                          className="product-image category-fix"
+                          style={{ padding: "0" }}
+                        >
                           <Link to={`/shop/category/${category.id}`}>
                             <img
                               src={
@@ -463,8 +469,8 @@ export default function Home({
                                       handleTierClick(product, tier.qty)
                                     }
                                   >
-                                    ₹{tier.price}/{product.uom} for{" "}
-                                    {tier.qty} {product.uom}+
+                                    ₹{tier.price}/{product.uom} for {tier.qty}{" "}
+                                    {product.uom}+
                                     <div className="sm-line"></div>
                                   </div>
                                   <div className="mt-3">
@@ -578,7 +584,11 @@ export default function Home({
                     <div key={index}>
                       <div className="product-box product-white-bg ">
                         <div className="product-image" style={{ padding: "0" }}>
-                          <Link to={`/shop/brand/${brand.id}`}>
+                          <Link
+                            to={`/brand/${brand.name.toLowerCase()}/${
+                              brand.id
+                            }`}
+                          >
                             <img
                               src={
                                 brand.image
@@ -591,7 +601,11 @@ export default function Home({
                           </Link>
                         </div>
                         <div className="product-detail position-relative">
-                          <Link to={`/shop/brand/${brand.id}`}>
+                          <Link
+                            to={`/brand/${brand.name.toLowerCase()}/${
+                              brand.id
+                            }`}
+                          >
                             <h6 className="name" style={{ fontSize: "15px" }}>
                               {toTitleCase(brand.name)}
                             </h6>

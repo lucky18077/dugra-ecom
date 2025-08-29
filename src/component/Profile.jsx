@@ -99,7 +99,7 @@ export default function Profile() {
       <section className="user-dashboard-section section-b-space">
         <div className="container-fluid-lg">
           <div className="row">
-            <div className="col-xxl-3 col-lg-4">
+            <div className="col-xxl-2 col-lg-2">
               <div className="dashboard-left-sidebar">
                 <div className="close-button d-flex d-lg-none">
                   <button className="close-sidebar">
@@ -205,7 +205,7 @@ export default function Profile() {
                 </ul>
               </div>
             </div>
-            <div className="col-xxl-9 col-lg-8">
+            <div className="col-xxl-10 col-lg-10">
               <button className="btn left-dashboard-show btn-animation btn-md fw-bold d-block mb-4 d-lg-none">
                 Show Menu
               </button>

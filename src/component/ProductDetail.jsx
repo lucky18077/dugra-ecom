@@ -167,10 +167,12 @@ export default function ProductDetail({
                       <Link
                         to={`/shop/category/${product.category_id}/subcategory/${product.sub_category_id}`}
                       >
-                       {toTitleCase(product.sub_category)}
+                        {toTitleCase(product.sub_category)}
                       </Link>
                     </li>
-                    <li className="breadcrumb-item active">{toTitleCase(product.name)}</li>
+                    <li className="breadcrumb-item active">
+                      {toTitleCase(product.name)}
+                    </li>
                   </ol>
                 </nav>
               </div>
@@ -202,9 +204,11 @@ export default function ProductDetail({
                     <h6 className="offer-top">30% Off</h6>
                     <h2 className="name">{toTitleCase(product.name)}</h2>
                     <div className="price-rating">
-                      <h3 className="theme-color price">
-                        ₹{product.base_price}
-                      </h3>
+                      {isLoggedIn && (
+                        <h3 className="theme-color price">
+                          ₹{product.base_price}
+                        </h3>
+                      )}
                       <span className="review">
                         {product.category} → {product.sub_category}
                       </span>
@@ -399,8 +403,9 @@ export default function ProductDetail({
                           <p className="product-qty">1 pc</p>
                           <div className="price-action-wrap">
                             <span className="price">
-                              ₹{reproduct.base_price}
+                              {isLoggedIn && <>₹{reproduct.base_price}</>}
                             </span>
+
                             {reproduct.quantity === 0 ? (
                               <button
                                 className="add-btn"

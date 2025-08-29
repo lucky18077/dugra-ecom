@@ -112,6 +112,7 @@ export default function ViewCart() {
       setCartItems((prev) =>
         prev.filter((item) => item.product_id !== productId)
       );
+      await fetchCart();
     } catch (error) {
       console.error("Remove item error:", error?.response?.data || error);
     }
@@ -177,8 +178,8 @@ export default function ViewCart() {
                                                     )
                                                   }
                                                 >
-                                                  ₹{tier.price}/{item.uom}{" "}
-                                                  for {tier.qty} {item.uom}+
+                                                  ₹{tier.price}/{item.uom} for{" "}
+                                                  {tier.qty} {item.uom}+
                                                 </div>
                                               );
                                             })}

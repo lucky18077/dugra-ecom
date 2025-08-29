@@ -40,7 +40,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
     }
     return () => clearInterval(interval);
   }, [isLoggedIn]);
-  
+
   useEffect(() => {
     if (isLoggedIn) {
       fetchCartCount();
@@ -71,9 +71,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
               <div className="col-12">
                 <div className="navbar-top d-flex align-items-center justify-content-between">
                   {/* Logo */}
-                  <Link to="/" className="web-logo nav-logo">
+                  <Link to="/" className="web-logo nav-logo" style={{ padding:"15px" }}>
                     <img
-                      src="/assets/images/logo.png"
+                      src="/assets/images/bulk-basket.png"
                       className="img-fluid blur-up lazyload"
                       alt="Logo"
                     />
@@ -150,6 +150,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                         <Link
                           to="/profile"
                           className="btn p-0 position-relative d-flex align-items-center gap-1"
+                          title="Profile"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="bottom"
                         >
                           <i data-feather="user" />
                           <span style={{ fontSize: "14px", fontWeight: 500 }}>
