@@ -15,7 +15,7 @@ export default function BrandItem({
   const [products, setProducts] = useState([]);
   const [wishlisted, setWishlisted] = useState([]);
 
-  const { brandName, brandId, subcategoryId } = useParams();
+  const { brandName, brandId, subId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const searchQuery = new URLSearchParams(location.search).get("q");
@@ -24,15 +24,20 @@ export default function BrandItem({
     const fetchData = async () => {
       try {
         let res;
-        if (subcategoryId) {
+        if (subId) {
+          // Fetch products for a specific subcategory
           res = await axios.get(
-            `${LIVE_URL}/get-brands/${brandId}/brands/${subcategoryId}`
+            `${LIVE_URL}/get-brands/${brandId}/brands/${subId}`
           );
         } else {
+          // Fetch all brand products + subcategories
           res = await axios.get(`${LIVE_URL}/get-brands/${brandId}/brands`);
         }
+
         const products = res.data.products || [];
         const subcategories = res.data.subcategories || [];
+
+        // fetch cart items if logged in
         let cartItems = [];
         if (token) {
           try {
@@ -49,15 +54,17 @@ export default function BrandItem({
           return { ...p, quantity: cartItem ? cartItem.qty : 0 };
         });
 
-        setSubcategories(subcategories);
         setProducts(mergedProducts);
+        if (!subId) {
+          setSubcategories(subcategories);
+        }
       } catch (err) {
         console.error("Fetch error:", err);
       }
     };
 
     fetchData();
-  }, [brandId, subcategoryId, token, searchQuery]);
+  }, [brandId, subId, token, searchQuery]);
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -207,9 +214,7 @@ export default function BrandItem({
                         <div className="recent-post-box" key={sub.id}>
                           <div
                             className={`recent-box d-flex ${
-                              Number(subcategoryId) === sub.id
-                                ? "text-category"
-                                : ""
+                              Number(subId) === sub.id ? "text-category" : ""
                             }`}
                             onClick={() => handleSubcategoryClick(sub.id)}
                             style={{ cursor: "pointer" }}
@@ -227,7 +232,7 @@ export default function BrandItem({
                               />
                             </div>
                             <div className="recent-detail">
-                              <h5 className="recent-name">{sub.name}</h5>
+                              <h5 className="recent-name"> {toTitleCase(sub.name)}</h5>
                             </div>
                           </div>
                         </div>
