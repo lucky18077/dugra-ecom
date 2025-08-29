@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Country, State, City } from "country-state-city";
-import axios from "axios";
 import { LIVE_URL } from "../Api/Route";
+import axios from "axios";
 import Swal from "sweetalert2";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
+    supplier_id: "",
     type: "",
     customer_type: "",
     company_name: "",
@@ -23,55 +23,20 @@ export default function Signup() {
     number: "",
     address: "",
     city: "",
-    reciver_contact: "",
     district: "",
     state: "",
     pincode: "",
   });
 
   const [loading, setLoading] = useState(false);
-
-  const [states, setStates] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [cities, setCities] = useState([]);
-
   useEffect(() => {
-    // load states of India (ISO Code = "IN")
-    const indiaStates = State.getStatesOfCountry("IN");
-    setStates(indiaStates);
+    const savedNumber =
+      sessionStorage.getItem("customer_number") ||
+      localStorage.getItem("customer_number");
+    if (savedNumber) {
+      setFormData((prev) => ({ ...prev, number: savedNumber }));
+    }
   }, []);
-
-  const handleStateChange = (e) => {
-    const stateCode = e.target.value;
-    const stateObj = states.find((s) => s.isoCode === stateCode);
-
-    setFormData((prev) => ({
-      ...prev,  
-      state: stateObj?.name || "",
-      district: "",
-      city: "",
-    }));
-
-    // load districts (in India, these are represented as "cities" with different filters)
-    const distList = City.getCitiesOfState("IN", stateCode);
-    setDistricts(distList);
-    setCities([]); // reset cities until district is selected
-  };
-
-  const handleDistrictChange = (e) => {
-    const districtCode = e.target.value;
-    const districtObj = districts.find((d) => d.name === districtCode);
-
-    setFormData((prev) => ({
-      ...prev,
-      district: districtObj?.name || "",
-      city: "",
-    }));
-
-    // Many APIs don’t give a 2-level (district + city) hierarchy for India,
-    // If your package doesn’t support district→city, you can directly treat "districts" as "cities".
-    setCities([districtObj?.name]);
-  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -81,17 +46,72 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const payload = {
         ...formData,
         number: formData.number || localStorage.getItem("customer_number"),
       };
+
       const response = await axios.post(`${LIVE_URL}/customer-signup`, payload);
+
       if (response.data.status) {
-        Swal.fire("Success 🎉", response.data.message, "success");
+        Swal.fire({
+          icon: "success",
+          title: "Success 🎉",
+          text: response.data.message,
+          confirmButtonText: "Okay",
+        });
+
+        setFormData((prev) => ({
+          supplier_id: "",
+          type: "",
+          customer_type: "",
+          company_name: "",
+          company_number: "",
+          company_email: "",
+          company_gst: "",
+          company_address: "",
+          company_city: "",
+          company_district: "",
+          company_state: "",
+          company_pincode: "",
+          name: "",
+          number: prev.number,
+          email: "",
+          password: "",
+          address: "",
+          city: "",
+          district: "",
+          state: "",
+          pincode: "",
+        }));
       }
     } catch (error) {
-      Swal.fire("Error", "Something went wrong!", "error");
+      if (error.response && error.response.data) {
+        const apiData = error.response.data;
+
+        if (apiData.errors) {
+          const allErrors = Object.values(apiData.errors).flat().join("\n");
+          Swal.fire({
+            icon: "error",
+            title: "Validation Error",
+            text: allErrors,
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: apiData.message || "Something went wrong",
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Please check your connection.",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -113,13 +133,29 @@ export default function Signup() {
           <div className="col-xxl-8 col-xl-8 col-lg-8 col-sm-8 mx-auto">
             <div className="log-in-box">
               <div className="log-in-title">
-                <h3>Welcome To Bulk Basket India</h3>
-                <h4>Account Registration</h4>
+                <h3>Welcome To DSP Super Store</h3>
+                <h4>Company Details</h4>
               </div>
               <div className="input-box">
                 <form className="row g-4" onSubmit={handleSubmit}>
+                  {/* Supplier */}
+                  <div className="col-6">
+                    <label htmlFor="supplier_id">Supplier</label>
+                    <select
+                      id="supplier_id"
+                      className="form-control select-h"
+                      value={formData.supplier_id}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">-- Select Supplier --</option>
+                      <option value={1}>DURGA PROVISION STORE</option>
+                    </select>
+                  </div>
+
                   {/* Business Type */}
                   <div className="col-6">
+                    <label htmlFor="type">Business Type:</label>
                     <select
                       id="type"
                       className="form-control select-h"
@@ -174,7 +210,7 @@ export default function Signup() {
                       type="text"
                       id="company_number"
                       className="form-control"
-                      placeholder="Company Mobile No."
+                      placeholder="Company Number"
                       value={formData.company_number}
                       onChange={handleChange}
                       required
@@ -239,85 +275,12 @@ export default function Signup() {
                     />
                   </div>
 
-                  {/* Pincode */}
-                  <div className="col-6">
-                    <input
-                      type="text"
-                      id="pincode"
-                      className="form-control"
-                      placeholder="PIN Code"
-                      value={formData.pincode}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="col-6">
-                    <label htmlFor="state">State</label>
-                    <select
-                      id="state"
-                      className="form-control"
-                      onChange={handleStateChange}
-                      required
-                    >
-                      <option value="">-- Select State --</option>
-                      {states.map((s) => (
-                        <option key={s.isoCode} value={s.isoCode}>
-                          {s.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* District Dropdown */}
-                  <div className="col-6">
-                    <label htmlFor="district">District</label>
-                    <select
-                      id="district"
-                      className="form-control"
-                      onChange={handleDistrictChange}
-                      required
-                    >
-                      <option value="">-- Select District --</option>
-                      {districts.map((d) => (
-                        <option key={d.name} value={d.name}>
-                          {d.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* City */}
-                  <div className="col-6">
-                    <input
-                      type="text"
-                      id="city"
-                      className="form-control"
-                      placeholder="City"
-                      value={formData.city}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-
-                  {/* Reciver Contact */}
-                  <div className="col-6">
-                    <input
-                      type="text"
-                      id="reciver_contact"
-                      className="form-control"
-                      placeholder="Receiver Contact"
-                      value={formData.reciver_contact}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-
                   {/* Address */}
                   <div className="col-12">
                     <textarea
                       className="form-control"
                       id="address"
-                      placeholder="Billing Address"
+                      placeholder="Delivery Address"
                       value={formData.address}
                       onChange={handleChange}
                       required
