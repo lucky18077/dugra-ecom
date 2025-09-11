@@ -62,7 +62,6 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
 
         const res = await axios.get(`${LIVE_URL}/get-all-products`, { params });
         const productData = res.data.data || [];
-
         let cartItems = [];
         if (token) {
           try {
@@ -312,7 +311,7 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
 
         {/* Subcategory + Products */}
         <div className="container-fluid-lg mt-5 ">
-          <div className="row g-sm-4 g-3 ">
+          <div className="row ">
             {/* Sidebar */}
             <div
               className="col-xxl-4 col-xl-4 col-lg-4 d-lg-block d-none sidebar-shop sticky-top"
@@ -349,14 +348,14 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                                     className="img-fluid blur-up lazyload"
                                     style={{
                                       background: "#f5f5f5",
-                                      width: "75px",
-                                      height: "70px",
+                                      width: "60px",
+                                      height: "60px",
                                       borderRadius: "50%",
                                     }}
                                   />
                                 </div>
                                 <div className="recent-detail">
-                                  <h5 className="recent-name">
+                                  <h5 className="recent-name" style={{fontSize:"18px"}}>
                                     {toTitleCase(sub.name)}
                                   </h5>
                                 </div>
@@ -378,75 +377,101 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
             {/* Product Grid */}
             <div
               className="product-section col-xxl-8 col-xl-8 col-lg-8 ratio_50"
-              style={{ padding: 0 }}
+              style={{ padding: 0,width:"73%" }}
             >
               <div className="row">
-                {products.map((product) => (
-                  <div
-                    className="col-6 col-sm-6 col-md-4 mb-2"
-                    key={product.id}
-                  >
-                    <div className="product-card ">
-                      {/* <span className="discount-badge">{product.discount}%</span> */}
-                      <button
-                        className="wishlist-btn"
-                        onClick={() => handleWishlistToggle(product.id)}
-                      >
-                        <i
-                          className="fa fa-heart"
-                          style={{
-                            color: wishlisted.includes(product.id)
-                              ? "red"
-                              : "white",
-                            WebkitTextStroke: wishlisted.includes(product.id)
-                              ? "1px #ff0000"
-                              : "none",
-                          }}
-                        ></i>
-                      </button>
+                {products.map((product) => {
+                  // check if discount is really applied
+                  const hasTierDiscount =
+                    product.details &&
+                    product.details.length > 0 &&
+                    Number(
+                      product.details[product.details.length - 1].final_price
+                    ) <
+                      Number(product.details[product.details.length - 1].price);
 
-                      <div className="fix-height">
-                        <Link to={`/product-detail/${product.id}`}>
-                          <img
-                            src={
-                              product.image
-                                ? `http://127.0.0.1:8000/product images/${product.image}`
-                                : "/assets/images/shop7.png"
-                            }
-                            alt=""
-                            className="product-img"
-                          />
-                        </Link>
-                        <h6 className="product-title" style={{ color: "gray" }}>
-                          {product.category}
-                        </h6>
-                        <Link
-                          to={`/product-detail/${product.id}`}
-                          style={{ color: "black" }}
+                  const hasBaseDiscount =
+                    (!product.details || product.details.length === 0) &&
+                    Number(product.final_price) < Number(product.base_price);
+
+                  return (
+                    <div
+                      className="col-6 col-sm-6 col-md-4 mb-2"
+                      key={product.id}
+                    >
+                      <div className="product-card ">
+                        {/* Discount badge only if discount really applied */}
+                        {product.is_discount === 1 &&
+                          (hasTierDiscount || hasBaseDiscount) && (
+                            <span className="discount-badge">
+                              {product.discount}%
+                            </span>
+                          )}
+
+                        {/* Wishlist button */}
+                        <button
+                          className="wishlist-btn"
+                          onClick={() => handleWishlistToggle(product.id)}
                         >
+                          <i
+                            className="fa fa-heart"
+                            style={{
+                              color: wishlisted.includes(product.id)
+                                ? "red"
+                                : "white",
+                              WebkitTextStroke: wishlisted.includes(product.id)
+                                ? "1px #ff0000"
+                                : "none",
+                            }}
+                          ></i>
+                        </button>
+
+                        {/* Product Image + Title */}
+                        <div className="fix-height">
+                          <Link to={`/product-detail/${product.id}`}>
+                            <img
+                              src={
+                                product.image
+                                  ? `https://store.bulkbasketindia.com/product images/${product.image}`
+                                  : "/assets/images/shop7.png"
+                              }
+                              alt=""
+                              className="product-img"
+                            />
+                          </Link>
                           <h6
                             className="product-title"
-                            style={{ fontSize: "15px" }}
+                            style={{ color: "black" }}
                           >
-                            {toTitleCase(product.name)}
+                            {toTitleCase(product.category)}
                           </h6>
-                        </Link>
-                        <p className="product-qty">1 {product.uom}</p>
-                      </div>
-
-                      {isLoggedIn &&
-                        product.details &&
-                        product.details.length > 0 && (
-                          <div className="tire-bg mt-2">
-                            {product.details.slice(0, 2).map((tier, idx) => {
-                              const perUnitSaving = (
-                                product.base_price - tier.price
-                              ).toFixed(2);
-                              return (
+                          <Link
+                            to={`/product-detail/${product.id}`}
+                            style={{ color: "black" }}
+                          >
+                            <h6
+                              className="product-title"
+                              style={{ fontSize: "15px" }}
+                            >
+                              {toTitleCase(product.name)}
+                            </h6>
+                          </Link>
+                          <p className="product-qty">1 {product.uom}</p>
+                        </div>
+                        <div className="line-light"></div>
+                        {/* Tier Pricing (only if logged in & details exist) */}
+                        {isLoggedIn &&
+                          product.details &&
+                          product.details.length > 0 && (
+                            <div
+                              className="tire-bg mt-2"
+                              style={{ marginLeft: "28px" }}
+                            >
+                              {product.details.slice(0, 2).map((tier, idx) => (
                                 <div
                                   key={idx}
                                   className="line-tire-wrapper d-flex tire-line"
-                                  style={{ marginBottom: "6px", gap: "5px" }}
+                                  style={{ marginBottom: "6px" }}
                                 >
                                   <div
                                     className="line-tire"
@@ -455,8 +480,7 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                                       handleTierClick(product, tier.qty)
                                     }
                                   >
-                                    ₹{tier.price}/{product.uom} for {tier.qty}{" "}
-                                    {product.uom}+
+                                    ₹{tier.final_price}/{product.uom} +
                                     <div className="sm-line"></div>
                                   </div>
                                   <div className="mt-3">
@@ -475,60 +499,78 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                                     </span>
                                   </div>
                                 </div>
-                              );
-                            })}
-                          </div>
-                        )}
+                              ))}
+                            </div>
+                          )}
 
-                      {/* Price + Add to Cart (only when logged in) */}
-                      {isLoggedIn && (
-                        <>
-                          <div className="line-light"></div>
-                          <div className="price-action-wrap">
-                            <div>
-                              <span className="price">
-                                ₹{Number(product.base_price).toFixed(2)}
-                              </span>
-                              {Number(product.mrp) > 0 && (
-                                <del className="mrp">
-                                  ₹{Number(product.mrp).toFixed(2)}
-                                </del>
+                        {/* Price + Add to Cart (only when logged in) */}
+                        {isLoggedIn && (
+                          <>
+                            <div
+                              className="price-action-wrap"
+                              style={{ background: "#e8f1e6" }}
+                            >
+                              <div>
+                                {hasBaseDiscount ? (
+                                  <>
+                                    <span className="price">
+                                      ₹{Number(product.final_price).toFixed(2)}
+                                    </span>
+                                    <del className="mrp">
+                                      ₹{Number(product.base_price).toFixed(2)}
+                                    </del>
+                                  </>
+                                ) : (
+                                  <span className="price">
+                                    ₹{Number(product.base_price).toFixed(2)}
+                                  </span>
+                                )}
+
+                                {/* {Number(product.mrp) > 0 &&
+                                  Number(product.mrp) >
+                                    Number(product.base_price) && (
+                                    <del className="mrp">
+                                      ₹{Number(product.mrp).toFixed(2)}
+                                    </del>
+                                  )} */}
+                              </div>
+
+                              {/* Add to Cart / Qty controls */}
+                              {product.quantity === 0 ? (
+                                <button
+                                  className="add-btn w-800"
+                                  onClick={() => handleAddToCart(product.id)}
+                                >
+                                  ADD <span className="plus">+</span>
+                                </button>
+                              ) : (
+                                <div className="qty-controls">
+                                  <button onClick={() => decrement(product.id)}>
+                                    -
+                                  </button>
+                                  <input
+                                    type="number"
+                                    min="1"
+                                    value={product.quantity}
+                                    onChange={(e) =>
+                                      updateQuantity(
+                                        product.id,
+                                        Number(e.target.value)
+                                      )
+                                    }
+                                  />
+                                  <button onClick={() => increment(product.id)}>
+                                    +
+                                  </button>
+                                </div>
                               )}
                             </div>
-                            {product.quantity === 0 ? (
-                              <button
-                                className="add-btn w-800"
-                                onClick={() => handleAddToCart(product.id)}
-                              >
-                                ADD <span className="plus">+</span>
-                              </button>
-                            ) : (
-                              <div className="qty-controls">
-                                <button onClick={() => decrement(product.id)}>
-                                  -
-                                </button>
-                                <input
-                                  type="number"
-                                  min="1"
-                                  value={product.quantity}
-                                  onChange={(e) =>
-                                    updateQuantity(
-                                      product.id,
-                                      Number(e.target.value)
-                                    )
-                                  }
-                                />
-                                <button onClick={() => increment(product.id)}>
-                                  +
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </>
-                      )}
+                          </>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 {products.length === 0 && (
                   <div className="text-center mt-5">
                     <h5>No products found for the selected filters.</h5>

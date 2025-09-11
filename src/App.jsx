@@ -9,6 +9,7 @@ import ProductDetail from "./component/ProductDetail";
 import ViewCart from "./component/ViewCart";
 import CheckOut from "./component/CheckOut";
 import Invocie from "./component/Invocie";
+import InvoiceBill from "./component/InvoiceBill";
 import toastr from "toastr";
 import "toastr/build/toastr.min.css";
 import Login from "./Hooks/Login";
@@ -166,6 +167,7 @@ function App() {
         <Route path="/view-brands" element={<AllBrands />} />
         <Route path="/checkout" element={<CheckOut />} />
         <Route path="/invoice/:id" element={<Invocie />} />
+        <Route path="/invoice-bill/:id" element={<InvoiceBill />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/sign-up" element={<Signup />} />
         <Route

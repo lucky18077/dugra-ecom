@@ -279,7 +279,7 @@ export default function BrandItem({
                           <img
                             src={
                               product.image
-                                ? `http://127.0.0.1:8000/product images/${product.image}`
+                                ? `https://store.bulkbasketindia.com/product images/${product.image}`
                                 : "/assets/images/shop7.png"
                             }
                             alt=""

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import feather from "feather-icons";
 import axios from "axios";
+import { toTitleCase } from "../Hooks/Helper";
 import { LIVE_URL } from "../Api/Route";
 import {
   BarChart,
@@ -15,10 +15,11 @@ import {
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [orderSearch, setOrderSearch] = useState("");
   const token = localStorage.getItem("customer_token");
 
   useEffect(() => {
+    if (!token) return;
     axios
       .get(`${LIVE_URL}/customer-detail`, {
         headers: {
@@ -28,30 +29,22 @@ export default function Profile() {
         },
       })
       .then((res) => {
-        console.log(res.data.status);
         if (res.data.status) {
           setProfile(res.data.data);
         }
-        setLoading(false);
       })
-      .catch((err) => {
-        console.error("Error fetching profile:", err);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
-  if (!profile)
-    return <p style={{ textAlign: "center" }}>Profile not found.</p>;
+      .catch(() => {});
+  }, [token]);
 
   const {
-    company,
-    customer_details,
-    order_count,
-    monthlyOrders,
-    wallet_statement,
-    order_mst,
-  } = profile;
+    company = {},
+    customer_details = {},
+    order_count = {},
+    monthlyOrders = [],
+    wallet_statement = [],
+    order_mst = [],
+  } = profile || {};
+
   const monthNames = [
     "Jan",
     "Feb",
@@ -74,7 +67,6 @@ export default function Profile() {
 
   const handleLogout = async () => {
     const token = localStorage.getItem("customer_token");
-
     try {
       if (token) {
         await axios.post(
@@ -83,8 +75,7 @@ export default function Profile() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
       }
-    } catch (err) {
-      console.error("Logout error:", err);
+    } catch {
     } finally {
       localStorage.removeItem("customer_token");
       localStorage.removeItem("customer_name");
@@ -93,13 +84,20 @@ export default function Profile() {
     }
   };
 
+  // Filtered orders based on search
+  const filteredOrders = order_mst.filter(
+    (order) =>
+      order.id.toString().includes(orderSearch) ||
+      order.invoice_no?.toLowerCase().includes(orderSearch.toLowerCase()) ||
+      order.order_status?.toLowerCase().includes(orderSearch.toLowerCase())
+  );
   return (
     <>
       {/* User Dashboard Section Start */}
       <section className="user-dashboard-section section-b-space">
         <div className="container-fluid-lg">
           <div className="row">
-            <div className="col-xxl-2 col-lg-2">
+            <div className="col-xxl-3 col-lg-3">
               <div className="dashboard-left-sidebar">
                 <div className="close-button d-flex d-lg-none">
                   <button className="close-sidebar">
@@ -107,25 +105,9 @@ export default function Profile() {
                   </button>
                 </div>
                 <div className="profile-box">
-                  <div className="cover-image">
-                    <img
-                      src="assets/images/cover-img.jpg"
-                      className="img-fluid blur-up lazyload"
-                      alt=""
-                    />
-                  </div>
                   <div className="profile-contain">
-                    <div className="profile-image">
-                      <div className="position-relative">
-                        <img
-                          src="assets/images/user.jpg"
-                          className="blur-up lazyload update_img"
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                    <div className="profile-name">
-                      <h3>{customer_details?.name}</h3>
+                    <div className="profile-name" style={{ textAlign: "left" }}>
+                      <h3>{toTitleCase(customer_details?.name)}</h3>
                       <h6 className="text-content">
                         +91-{customer_details?.number}
                       </h6>
@@ -162,6 +144,19 @@ export default function Profile() {
                     >
                       <i data-feather="shopping-bag" />
                       Order
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link"
+                      id="pills-address-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-address"
+                      type="button"
+                      role="tab"
+                    >
+                      <i data-feather="user" />
+                      Address
                     </button>
                   </li>
                   <li className="nav-item" role="presentation">
@@ -205,7 +200,7 @@ export default function Profile() {
                 </ul>
               </div>
             </div>
-            <div className="col-xxl-10 col-lg-10">
+            <div className="col-xxl-9 col-lg-9">
               <button className="btn left-dashboard-show btn-animation btn-md fw-bold d-block mb-4 d-lg-none">
                 Show Menu
               </button>
@@ -222,66 +217,115 @@ export default function Profile() {
                       </div>
                       <div className="total-box">
                         <div className="row g-sm-4 g-3">
-                          <div className="col-xxl-4 col-lg-6 col-md-4 col-sm-6">
+                          <div className="col-xxl-3 col-lg-6 col-md-3 col-sm-6">
                             <div className="total-contain">
-                              <img
-                                src="assets/images/order.svg"
-                                className="img-1 blur-up lazyload"
-                                alt=""
-                              />
-                              <img
-                                src="assets/images/order.svg"
-                                className="blur-up lazyload"
-                                alt=""
-                              />
                               <div className="total-detail">
-                                <h5>Total Order</h5>
-                                <h3>{order_count?.total_order}</h3>
+                                <h5 style={{ fontSize: "20px" }}>
+                                  Total Order
+                                </h5>
+                                <h3>{order_count?.total_order || 0}</h3>
                               </div>
                             </div>
                           </div>
-                          <div className="col-xxl-4 col-lg-6 col-md-4 col-sm-6">
+                          <div className="col-xxl-3 col-lg-6 col-md-3 col-sm-6">
                             <div className="total-contain">
-                              <img
-                                src="assets/images/pending.svg"
-                                className="img-1 blur-up lazyload"
-                                alt=""
-                              />
-                              <img
-                                src="assets/images/pending.svg"
-                                className="blur-up lazyload"
-                                alt=""
-                              />
                               <div className="total-detail">
-                                <h5>Total Pending Order</h5>
-                                <h3>{order_count?.pending_order}</h3>
+                                <h5 style={{ fontSize: "20px" }}>
+                                  Pending Order
+                                </h5>
+                                <h3>{order_count?.pending_order || 0}</h3>
                               </div>
                             </div>
                           </div>
-                          <div className="col-xxl-4 col-lg-6 col-md-4 col-sm-6">
+                          <div className="col-xxl-3 col-lg-6 col-md-3 col-sm-6">
                             <div className="total-contain">
-                              <img
-                                src="assets/images/wishlist.svg"
-                                className="img-1 blur-up lazyload"
-                                alt=""
-                              />
-                              <img
-                                src="assets/images/wishlist.svg"
-                                className="blur-up lazyload"
-                                alt=""
-                              />
                               <div className="total-detail">
-                                <h5>Complete</h5>
-                                <h3>{order_count?.complete_order}</h3>
+                                <h5 style={{ fontSize: "20px" }}>Complete</h5>
+                                <h3>{order_count?.complete_order || 0}</h3>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-xxl-3 col-lg-6 col-md-3 col-sm-6">
+                            <div className="total-contain">
+                              <div className="total-detail">
+                                <h5 style={{ fontSize: "20px" }}>
+                                  Active Amount
+                                </h5>
+                                <h3 style={{ color: "green" }}>
+                                  ₹{" "}
+                                  {(
+                                    Number(company?.wallet) -
+                                    Number(company?.used_wallet) || 0
+                                  ).toFixed(2)}
+                                </h3>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-xxl-3 col-lg-6 col-md-3 col-sm-6">
+                            <div className="total-contain">
+                              <div className="total-detail">
+                                <h5 style={{ fontSize: "20px" }}>
+                                  Hold Amount
+                                </h5>
+                                <h3 style={{ color: "red" }}>
+                                  ₹ {company?.hold_amount || 0}
+                                </h3>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div className="dashboard-title">
-                        <h3>Month Wise Order Report (2025)</h3>
+                        <h3>Recent Orders</h3>
+                      </div>
+                      <div className="download-table">
+                        <div className="table-responsive">
+                          <table className="table table-bordered table-striped">
+                            <thead className="table-dark">
+                              <tr>
+                                <th>Order No</th>
+                                <th>Date</th>
+                                <th>Order Amount</th>
+                                <th>Invoice No.</th>
+                                <th>Order Status</th>
+                                <th>Payment</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {order_mst && order_mst.length > 0 ? (
+                                order_mst.map((order) => (
+                                  <tr key={order.id}>
+                                    <td>#{order.id}</td>
+                                    <td>
+                                      {new Date(
+                                        order.created_at
+                                      ).toLocaleDateString("en-GB")}
+                                    </td>
+                                    <td>₹{order.total_amount}</td>
+                                    <td>
+                                      {order.is_invoice === 1
+                                        ? order.invoice_no
+                                        : ""}
+                                    </td>
+                                    <td>{toTitleCase(order.status)}</td>
+                                    <td>{toTitleCase(order.payment_status)}</td>
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan="7" className="text-center">
+                                    No Order found.
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
 
+                      <div className="dashboard-title">
+                        <h3>Month Wise Order Report (2025)</h3>
+                      </div>
                       <div style={{ width: "100%", height: 300 }}>
                         <ResponsiveContainer>
                           <BarChart
@@ -292,7 +336,7 @@ export default function Profile() {
                             <XAxis dataKey="month" />
                             <YAxis allowDecimals={false} />
                             <Tooltip />
-                            <Bar dataKey="orders" fill="#d34b0b" barSize={40} />
+                            <Bar dataKey="orders" fill="#437a3a" barSize={40} />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
@@ -304,86 +348,262 @@ export default function Profile() {
                     role="tabpanel"
                   >
                     <div className="dashboard-order">
-                      <div className="title">
+                      <div className="title d-flex justify-content-between align-items-center">
                         <h2>My Orders History</h2>
-                        <span className="title-leaf title-leaf-gray">
-                          <svg className="icon-width bg-gray">
-                            <use xlinkHref="assets/leaf.svg#leaf" />
-                          </svg>
-                        </span>
+                        <input
+                          type="text"
+                          placeholder="Search Orders..."
+                          value={orderSearch}
+                          onChange={(e) => setOrderSearch(e.target.value)}
+                          style={{
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            border: "1px solid #ccc",
+                            width: "250px",
+                          }}
+                        />
                       </div>
-                      <div className="order-contain">
-                        <div className="row">
-                          {order_mst && order_mst.length > 0 ? (
-                            order_mst.map((order) => (
-                              <div className="col-6 mb-3">
-                                <div
-                                  className="order-box dashboard-bg-box"
-                                  key={order.id}
-                                >
-                                  <div className="order-container">
-                                    <div className="order-icon">
-                                      <i data-feather="box" />
-                                    </div>
-                                    <div className="order-detail">
-                                      <h4>
-                                        #{order.id} <span>{order.status}</span>
-                                        {/* <Link to={`/invoice/${order.id}`}>
-                                          {" "}
-                                          <span
-                                            style={{ background: "#1da2aa" }}
-                                          >
-                                             Order
-                                          </span>
-                                        </Link> */}
-                                        <Link to={`/invoice/${order.id}`}>
-                                          {" "}
-                                          <span
-                                            style={{ background: "#0213ffff" }}
-                                          >
-                                            Bill
-                                          </span>
-                                        </Link>
-                                      </h4>
-                                      <h6 className="text-content mb-1">
-                                        Order Date:{" "}
-                                        {new Date(
-                                          order.created_at
-                                        ).toLocaleDateString("en-GB")}
-                                      </h6>
-                                      <p className="text-content">
-                                        Pay Mode: {order.pay_mode} || Total: ₹
-                                        {order.total_amount}
-                                      </p>
-                                    </div>
-                                    <table className="table">
-                                      <tbody>
-                                        <tr>
-                                          <td colSpan={2}>
-                                            {customer_details?.name}
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Address :</td>
-                                          <td>
-                                            <p>{customer_details?.address}</p>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Phone :</td>
-                                          <td>
-                                            +91 {customer_details?.number}
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </div>
+                      <div className="download-table mt-3">
+                        <div className="table-responsive">
+                          <table className="table table-bordered table-striped">
+                            <thead className="table-dark">
+                              <tr>
+                                <th>Order No</th>
+                                <th>Date</th>
+                                <th>Order Amount</th>
+                                <th>Invoice No.</th>
+                                <th>Order Status</th>
+                                <th>Payment</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filteredOrders && filteredOrders.length > 0 ? (
+                                filteredOrders.map((order) => (
+                                  <tr key={order.id}>
+                                    <td>#{order.id}</td>
+                                    <td>
+                                      {new Date(
+                                        order.created_at
+                                      ).toLocaleDateString("en-GB")}
+                                    </td>
+                                    <td>₹{order.total_amount}</td>
+                                    <td>
+                                      {order.is_invoice === 1
+                                        ? order.invoice_no
+                                        : ""}
+                                    </td>
+                                    <td>{toTitleCase(order.status)}</td>
+                                    <td>{toTitleCase(order.payment_status)}</td>
+                                    <td>
+                                      <Link
+                                        to={`/invoice/${order.id}`}
+                                        className="btn btn-sm btn-primary"
+                                      >
+                                        Estimate View
+                                      </Link>
+                                      <Link
+                                        to={`/invoice-bill/${order.id}`}
+                                        className="btn btn-sm btn-primary"
+                                      >
+                                        Bill View
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan="7" className="text-center">
+                                    No Order found.
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className="tab-pane fade"
+                    id="pills-address"
+                    role="tabpanel"
+                  >
+                    <div className="dashboard-address">
+                      <div className="title title-flex">
+                        <div>
+                          <h2>Shipping Address </h2>
+                          <span className="title-leaf">
+                            <svg className="icon-width bg-gray">
+                              <use xlinkHref="/assets/images/leaf.svg#leaf" />
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="row g-sm-4 g-3">
+                        <div className="col-xxl-6 col-xl-6 col-lg-12 col-md-6">
+                          <div className="address-box">
+                            <div>
+                              <div className="table-responsive address-table">
+                                <table className="table">
+                                  <tbody>
+                                    <tr>
+                                      <td colSpan={2}>Jack Jennas</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Address :</td>
+                                      <td>
+                                        <p>
+                                          8424 James Lane South San Francisco,
+                                          CA 94080
+                                        </p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Pin Code :</td>
+                                      <td>+380</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Phone :</td>
+                                      <td>+ 812-710-3798</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </div>
-                            ))
-                          ) : (
-                            <p>No orders found.</p>
-                          )}
+                            </div>
+                            <div className="button-group">
+                              <button
+                                className="btn btn-sm add-button w-100"
+                                data-bs-toggle="modal"
+                                data-bs-target="#removeProfile"
+                              >
+                                <i data-feather="trash-2" />
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-xxl-6 col-xl-6 col-lg-12 col-md-6">
+                          <div className="address-box">
+                            <div>
+                              <div className="table-responsive address-table">
+                                <table className="table">
+                                  <tbody>
+                                    <tr>
+                                      <td colSpan={2}>Terry S. Sutton</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Address :</td>
+                                      <td>
+                                        <p>2280 Rose Avenue Kenner, LA 70062</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Pin Code :</td>
+                                      <td>+25</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Phone :</td>
+                                      <td>+ 504-228-0969</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                            <div className="button-group">
+                              <button
+                                className="btn btn-sm add-button w-100"
+                                data-bs-toggle="modal"
+                                data-bs-target="#removeProfile"
+                              >
+                                <i data-feather="trash-2" />
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-xxl-6 col-xl-6 col-lg-12 col-md-6">
+                          <div className="address-box">
+                            <div>
+                              <div className="table-responsive address-table">
+                                <table className="table">
+                                  <tbody>
+                                    <tr>
+                                      <td colSpan={2}>Juan M. McKeon</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Address :</td>
+                                      <td>
+                                        <p>
+                                          1703 Carson Street Lexington, KY 40593
+                                        </p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Pin Code :</td>
+                                      <td>+78</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Phone :</td>
+                                      <td>+ 859-257-0509</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                            <div className="button-group">
+                              <button
+                                className="btn btn-sm add-button w-100"
+                                data-bs-toggle="modal"
+                                data-bs-target="#removeProfile"
+                              >
+                                <i data-feather="trash-2" />
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-xxl-6 col-xl-6 col-lg-12 col-md-6">
+                          <div className="address-box">
+                            <div>
+                              <div className="table-responsive address-table">
+                                <table className="table">
+                                  <tbody>
+                                    <tr>
+                                      <td colSpan={2}>Gary M. Bailey</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Address :</td>
+                                      <td>
+                                        <p>
+                                          2135 Burning Memory Lane Philadelphia,
+                                          PA 19135
+                                        </p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Pin Code :</td>
+                                      <td>+26</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Phone :</td>
+                                      <td>+ 215-335-9916</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                            <div className="button-group">
+                              <button
+                                className="btn btn-sm add-button w-100"
+                                data-bs-toggle="modal"
+                                data-bs-target="#removeProfile"
+                              >
+                                <i data-feather="trash-2" />
+                                Remove
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

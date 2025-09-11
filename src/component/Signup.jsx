@@ -113,7 +113,7 @@ export default function Signup() {
           <div className="col-xxl-8 col-xl-8 col-lg-8 col-sm-8 mx-auto">
             <div className="log-in-box">
               <div className="log-in-title">
-                <h3>Welcome To Bulk Basket India</h3>
+                <h3 style={{ color:"#477a37" }}>Welcome To Bulk Basket India</h3>
                 <h4>Account Registration</h4>
               </div>
               <div className="input-box">

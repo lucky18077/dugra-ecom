@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import feather from "feather-icons";
 import axios from "axios";
@@ -7,11 +7,15 @@ import { LIVE_URL } from "../Api/Route";
 
 export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [results, setResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [cartQty, setCartQty] = useState(0);
+  const [wallet, setWallet] = useState(null);
   const [customerName, setCustomerName] = useState(
     localStorage.getItem("customer_name") || "Guest"
   );
 
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   const fetchCartCount = async () => {
@@ -20,7 +24,6 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
       setCartQty(0);
       return;
     }
-
     try {
       const res = await axios.get(`${LIVE_URL}/get-cart`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -29,6 +32,27 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
     } catch (err) {
       console.error("Cart fetch error:", err);
       setCartQty(0);
+    }
+  };
+
+  const fetchWallet = async () => {
+    const token = localStorage.getItem("customer_token");
+    if (!token) {
+      setWallet(null);
+      return;
+    }
+    try {
+      const reswallet = await axios.get(`${LIVE_URL}/customer-detail`, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setWallet(reswallet.data.data.company);
+    } catch (err) {
+      console.error("Wallet fetch error:", err);
+      setWallet(null);
     }
   };
 
@@ -43,24 +67,52 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetchCartCount();
+      fetchWallet();
       setCustomerName(localStorage.getItem("customer_name") || "Guest");
     } else {
       setCustomerName("Guest");
       setCartQty(0);
+      setWallet(null);
     }
   }, [isLoggedIn, refreshNavbar]);
 
-  // Replace feather icons after every render
   useEffect(() => {
     feather.replace();
   }, [cartQty, customerName]);
 
-  const handleSearch = () => {
-    if (searchTerm.trim()) {
-      navigate(`/shop/search?q=${encodeURIComponent(searchTerm.trim())}`);
-    }
-  };
+  useEffect(() => {
+    const delayDebounce = setTimeout(async () => {
+      if (!searchTerm.trim()) {
+        setResults([]);
+        setShowDropdown(false);
+        return;
+      }
+      try {
+        const response = await axios.get(`${LIVE_URL}/search-products`, {
+          params: { query: searchTerm },
+        });
+        const data = response.data?.data?.data || [];
+        setResults(data);
+        setShowDropdown(true);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setResults([]);
+        setShowDropdown(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -71,7 +123,11 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
               <div className="col-12">
                 <div className="navbar-top d-flex align-items-center justify-content-between">
                   {/* Logo */}
-                  <Link to="/" className="web-logo nav-logo" style={{ padding:"15px" }}>
+                  <Link
+                    to="/"
+                    className="web-logo nav-logo"
+                    style={{ padding: "15px" }}
+                  >
                     <img
                       src="/assets/images/bulk-basket.png"
                       className="img-fluid blur-up lazyload"
@@ -81,44 +137,82 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
 
                   {/* Search Box */}
                   <div className="middle-box" style={{ marginRight: "233px" }}>
-                    <div className="search-box">
-                      <div
-                        className="position-relative"
+                    <div
+                      className="search-box position-relative"
+                      ref={dropdownRef}
+                    >
+                      <input
+                        type="search"
+                        className="form-control pe-5"
+                        placeholder="Search By Product Name, Category, SKU"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ borderRadius: "12px", width: "440px" }}
+                      />
+                      <button
+                        className="btn position-absolute top-0 end-0 h-100"
+                        type="button"
+                        onClick={() => navigate(`/search?query=${searchTerm}`)}
                         style={{
-                          width: "440px",
-                          borderRadius: "12px",
+                          borderTopLeftRadius: 0,
+                          borderBottomLeftRadius: 0,
                         }}
                       >
-                        <input
-                          type="search"
-                          className="form-control pe-5" // padding right for button
-                          placeholder="Search By Product Name, Category, SKU"
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleSearch();
-                          }}
+                        <i data-feather="search" />
+                      </button>
+
+                      {/* Search Results Dropdown */}
+                      {showDropdown && (
+                        <div
+                          className="search-results position-absolute bg-white shadow p-2 mt-1"
                           style={{
+                            width: "440px",
                             borderRadius: "12px",
-                          }}
-                        />
-                        <button
-                          className="btn position-absolute top-0 end-0 h-100"
-                          type="button"
-                          onClick={handleSearch}
-                          style={{
-                            borderTopLeftRadius: 0,
-                            borderBottomLeftRadius: 0,
+                            zIndex: 999,
+                            maxHeight: "500px",
+                            overflowY: "auto",
                           }}
                         >
-                          <i data-feather="search" />
-                        </button>
-                      </div>
+                          {results.length > 0 ? (
+                            results.map((product) => (
+                              <div
+                                key={product.id}
+                                className="d-flex align-items-center p-2 border-bottom"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  navigate(
+                                    `/shop/category/${product.category_id}/subcategory/${product.sub_category_id}`
+                                  );
+                                  setShowDropdown(false);
+                                }}
+                              >
+                                <img
+                                  src={`https://store.bulkbasketindia.com/product images/${product.image}`}
+                                  alt={product.name}
+                                  style={{
+                                    width: "50px",
+                                    height: "50px",
+                                    objectFit: "cover",
+                                    borderRadius: "8px",
+                                  }}
+                                />
+                                <span className="ms-2">
+                                  {toTitleCase(product.name)}
+                                </span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="p-2 text-muted text-center">
+                              No products found
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   {/* Right Side */}
-                  <div className="rightside-box d-flex align-items-center gap-3">
+                  <div className="rightside-box d-flex align-items-center gap-4">
                     {!isLoggedIn ? (
                       <button
                         className="btn btn-animation"
@@ -130,32 +224,51 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                       </button>
                     ) : (
                       <>
+                        {/* Wallet */}
+                        <Link to="/profile">
+                          <div className="btn p-0 position-relative wallet-tooltip">
+                            <i data-feather="credit-card"></i>
+                            <span className="tooltip-box">
+                              💰 Wallet Balance: ₹
+                              {wallet
+                                ? (
+                                    Number(wallet.wallet) -
+                                    Number(wallet.used_wallet)
+                                  ).toFixed(2)
+                                : "0.00"}
+                            </span>
+                          </div>
+                        </Link>
+                        
+                        {/* Wishlist */}
                         <Link
                           to="/view-wishlist"
-                          className="btn p-0 position-relative"
+                          className="btn p-0 position-relative wallet-tooltip"
                         >
                           <i data-feather="heart" />
+                          <span className="tooltip-box">Wish List</span>
                         </Link>
 
+                        {/* Cart */}
                         <Link
                           to="/view-cart"
-                          className="btn p-0 position-relative"
+                          className="btn p-0 position-relative wallet-tooltip"
                         >
                           <i data-feather="shopping-cart" />
+                          <span className="tooltip-box">Cart</span>
                           <span className="position-absolute top-0 start-100 translate-middle badge bg-danger">
                             {cartQty || 0}
                           </span>
                         </Link>
 
+                        {/* Profile */}
                         <Link
                           to="/profile"
-                          className="btn p-0 position-relative d-flex align-items-center gap-1"
-                          title="Profile"
-                          data-bs-toggle="tooltip"
-                          data-bs-placement="bottom"
+                          className="btn p-0 position-relative d-flex align-items-center gap-1 wallet-tooltip"
                         >
                           <i data-feather="user" />
-                          <span style={{ fontSize: "14px", fontWeight: 500 }}>
+                          <span className="tooltip-box">Profile</span>
+                          <span style={{ fontSize: "16px", fontWeight: 500 }}>
                             Welcome, {toTitleCase(customerName)}
                           </span>
                         </Link>

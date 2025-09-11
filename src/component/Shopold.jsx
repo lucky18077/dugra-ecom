@@ -62,7 +62,6 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
 
         const res = await axios.get(`${LIVE_URL}/get-all-products`, { params });
         const productData = res.data.data || [];
-
         let cartItems = [];
         if (token) {
           try {
@@ -386,7 +385,8 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                     className="col-6 col-sm-6 col-md-4 mb-2"
                     key={product.id}
                   >
-                    <div className="product-card">
+                    <div className="product-card ">
+                      <span className="discount-badge">{product.discount}%</span>
                       <button
                         className="wishlist-btn"
                         onClick={() => handleWishlistToggle(product.id)}
@@ -433,90 +433,98 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                         <p className="product-qty">1 {product.uom}</p>
                       </div>
 
-                      {/* Tiers */}
-                      {product.details && product.details.length > 0 && (
-                        <div className="tire-bg mt-2">
-                          {product.details.slice(0, 2).map((tier, idx) => {
-                            const perUnitSaving = (
-                              product.base_price - tier.price
-                            ).toFixed(2);
-                            return (
-                              <div
-                                key={idx}
-                                className="line-tire-wrapper d-flex tire-line"
-                                style={{ marginBottom: "6px", gap: "5px" }}
-                              >
+                      {isLoggedIn &&
+                        product.details &&
+                        product.details.length > 0 && (
+                          <div className="tire-bg mt-2">
+                            {product.details.slice(0, 2).map((tier, idx) => {
+                              const perUnitSaving = (
+                                product.base_price - tier.price
+                              ).toFixed(2);
+                              return (
                                 <div
-                                  className="line-tire"
-                                  style={{ fontSize: "13px" }}
-                                  onClick={() =>
-                                    handleTierClick(product, tier.qty)
-                                  }
+                                  key={idx}
+                                  className="line-tire-wrapper d-flex tire-line"
+                                  style={{ marginBottom: "6px", gap: "5px" }}
                                 >
-                                  ₹{tier.price}/{product.uom} for {tier.qty}{" "}
-                                  {product.uom}+<div className="sm-line"></div>
-                                </div>
-                                <div className="mt-3">
-                                  <span
-                                    className="add-qty-c"
+                                  <div
+                                    className="line-tire"
+                                    style={{ fontSize: "13px" }}
                                     onClick={() =>
                                       handleTierClick(product, tier.qty)
                                     }
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "13px",
-                                    }}
                                   >
-                                    Add <span className="plus">{tier.qty}</span>
-                                  </span>
+                                    ₹{tier.price}/{product.uom} for {tier.qty}{" "}
+                                    {product.uom}+
+                                    <div className="sm-line"></div>
+                                  </div>
+                                  <div className="mt-3">
+                                    <span
+                                      className="add-qty-c"
+                                      onClick={() =>
+                                        handleTierClick(product, tier.qty)
+                                      }
+                                      style={{
+                                        cursor: "pointer",
+                                        fontSize: "13px",
+                                      }}
+                                    >
+                                      Add{" "}
+                                      <span className="plus">{tier.qty}</span>
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-
-                      <div className="line-light"></div>
-                      <div className="price-action-wrap">
-                        <div>
-                          <span className="price">
-                            ₹{Number(product.base_price).toFixed(2)}
-                          </span>
-                          {Number(product.mrp) > 0 && (
-                            <del className="mrp">
-                              ₹{Number(product.mrp).toFixed(2)}
-                            </del>
-                          )}
-                        </div>
-                        {product.quantity === 0 ? (
-                          <button
-                            className="add-btn w-800"
-                            onClick={() => handleAddToCart(product.id)}
-                          >
-                            ADD <span className="plus">+</span>
-                          </button>
-                        ) : (
-                          <div className="qty-controls">
-                            <button onClick={() => decrement(product.id)}>
-                              -
-                            </button>
-                            <input
-                              type="number"
-                              min="1"
-                              value={product.quantity}
-                              onChange={(e) =>
-                                updateQuantity(
-                                  product.id,
-                                  Number(e.target.value)
-                                )
-                              }
-                            />
-                            <button onClick={() => increment(product.id)}>
-                              +
-                            </button>
+                              );
+                            })}
                           </div>
                         )}
-                      </div>
+
+                      {/* Price + Add to Cart (only when logged in) */}
+                      {isLoggedIn && (
+                        <>
+                          <div className="line-light"></div>
+                          <div className="price-action-wrap">
+                            <div>
+                              <span className="price">
+                                ₹{Number(product.base_price).toFixed(2)}
+                              </span>
+                              {Number(product.mrp) > 0 && (
+                                <del className="mrp">
+                                  ₹{Number(product.mrp).toFixed(2)}
+                                </del>
+                              )}
+                            </div>
+                            {product.quantity === 0 ? (
+                              <button
+                                className="add-btn w-800"
+                                onClick={() => handleAddToCart(product.id)}
+                              >
+                                ADD <span className="plus">+</span>
+                              </button>
+                            ) : (
+                              <div className="qty-controls">
+                                <button onClick={() => decrement(product.id)}>
+                                  -
+                                </button>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  value={product.quantity}
+                                  onChange={(e) =>
+                                    updateQuantity(
+                                      product.id,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                                <button onClick={() => increment(product.id)}>
+                                  +
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}

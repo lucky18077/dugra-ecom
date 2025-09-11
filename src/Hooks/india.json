@@ -1,0 +1,75 @@
+{
+  "states": [
+    {
+      "name": "Andaman and Nicobar Islands",
+      "districts": [
+        {
+          "name": "All",
+          "cities": [
+            "Port Blair"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Andhra Pradesh",
+      "districts": [
+        {
+          "name": "All",
+          "cities": [
+            "Anantapur",
+            "Chittoor",
+            "East Godavari",
+            "Guntur",
+            "Krishna",
+            "Kurnool",
+            "Nellore",
+            "Prakasam",
+            "Srikakulam",
+            "Visakhapatnam",
+            "Vizianagaram",
+            "West Godavari",
+            "YSR Kadapa"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Arunachal Pradesh",
+      "districts": [
+        {
+          "name": "All",
+          "cities": [
+            "Anjaw",
+            "Changlang",
+            "Dibang Valley",
+            "East Kameng",
+            "East Siang",
+            "Itanagar",
+            "Kamle",
+            "Kra Daadi",
+            "Kurung Kumey",
+            "Lepa Rada",
+            "Lohit",
+            "Longding",
+            "Lower Dibang Valley",
+            "Lower Siang",
+            "Lower Subansiri",
+            "Namsai",
+            "Pakke-Kessang",
+            "Papum Pare",
+            "Shi Yomi",
+            "Siang",
+            "Tawang",
+            "Tirap",
+            "Upper Dibang Valley",
+            "Upper Siang",
+            "Upper Subansiri",
+            "West Kameng",
+            "West Siang"
+          ]
+        }
+      ]
+    }
+  ]
+}

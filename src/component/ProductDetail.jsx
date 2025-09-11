@@ -192,7 +192,7 @@ export default function ProductDetail({
                   <img
                     src={
                       product.image
-                        ? `http://127.0.0.1:8000/product images/${product.image}`
+                        ? `https://store.bulkbasketindia.com/product images/${product.image}`
                         : "/assets/images/shop7.png"
                     }
                     className="img-fluid"
@@ -382,7 +382,7 @@ export default function ProductDetail({
                             <img
                               src={
                                 reproduct.image
-                                  ? `http://127.0.0.1:8000/product images/${reproduct.image}`
+                                  ? `https://store.bulkbasketindia.com/product images/${reproduct.image}`
                                   : "/assets/images/shop7.png"
                               }
                               className="product-img"

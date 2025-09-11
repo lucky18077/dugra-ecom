@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toTitleCase } from "../Hooks/Helper";
 import { LIVE_URL } from "../Api/Route";
 
 export default function Wishlist({ setRefreshNavbar }) {
@@ -176,42 +177,47 @@ export default function Wishlist({ setRefreshNavbar }) {
     }
   };
   return (
-    <section className="cart-section section-b-space">
+    <section
+      className="cart-section section-b-space"
+      style={{ backgroundColor: "#fff4e842" }}
+    >
       <div className="container-fluid-lg">
         <div className="row g-sm-5 g-3">
-          <div className="cart-table">
-            <div className="table-responsive-xl">
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h4
-                  className="mb-0"
-                  style={{ fontWeight: "600", fontSize: "25px" }}
-                >
-                  My Products Wish List
-                </h4>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{ maxWidth: "300px" }}
-                />
+          <div className="cart-table table-padding">
+            <div className="table-responsive custom-table">
+              <div className="cart-header mb-4">
+                <div className="d-flex justify-content-between align-items-center header-bar">
+                  <h3 className="text-theme font-sm" style={{ color: "white" }}>
+                    My Products Wish List
+                  </h3>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search products..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{ maxWidth: "300px", marginRight: "65px" }}
+                  />
+                </div>
               </div>
-              <hr style={{ borderTop: "1px solid #ddd", margin: "20px 0" }} />
+
               {/* Table */}
               <table className="table">
                 <tbody>
-                  {filteredItems.map((item) => (
+                  {filteredItems.map((item, index) => (
                     <React.Fragment key={item.product_id}>
                       <tr className="product-box-contain">
                         {/* ✅ same table design — no change */}
-                        <td className="product-detail" style={{ width: "35%" }}>
+                        <td className="product-detail" style={{ width: "40%",paddingLeft:"60px" }}>
                           <div className="product border-0">
+                            <span style={{ marginRight: "10px" }}>
+                              {index + 1}
+                            </span>
                             <Link to="#" className="product-image">
                               <img
                                 src={
                                   item.image
-                                    ? `http://127.0.0.1:8000/product images/${item.image}`
+                                    ? `https://store.bulkbasketindia.com/product images/${item.image}`
                                     : "/assets/images/shop7.png"
                                 }
                                 className="img-fluid blur-up lazyload"
@@ -220,8 +226,11 @@ export default function Wishlist({ setRefreshNavbar }) {
                             </Link>
                             <div>
                               <ul>
-                                <li className="name custom-tooltip">
-                                  {item.name}
+                                <li
+                                  className="name custom-tooltip"
+                                  style={{ fontSize: "15px" }}
+                                >
+                                  {toTitleCase(item.name)}
                                   {item.details && item.details.length > 0 && (
                                     <div style={{ marginTop: "8px" }}>
                                       {" "}
@@ -264,7 +273,7 @@ export default function Wishlist({ setRefreshNavbar }) {
                           </h5>
                         </td>
                         <td className="quantity width-fix">
-                          <h4 className="table-title text-content">Qty</h4>
+                          <h4 className="table-title text-content">Quantity</h4>
                           <div
                             className="quantity-price"
                             style={{ width: "75%" }}
@@ -345,19 +354,25 @@ export default function Wishlist({ setRefreshNavbar }) {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan="1" className="text-end  ">
+                    <td colSpan="1" className="text-end ">
                       <h5 style={{ fontWeight: "600", fontSize: "20px" }}>
                         {" "}
                         Total Estimate:
                       </h5>
                     </td>
-                    <td className="2">₹{totalEstimate.toFixed(2)}</td>
+                    <td
+                      className="2"
+                      style={{ fontWeight: "600", fontSize: "20px" }}
+                    >
+                      ₹{totalEstimate.toFixed(2)}
+                    </td>
                     <td className=""> </td>
                     <td>
                       <button
                         className="wish-btn"
                         onClick={handleAddAllToCart}
                         disabled={isAddingAll}
+                        style={{ fontSize: "16px", marginLeft: "20px" }}
                       >
                         {isAddingAll ? "Adding..." : "Add All To Cart"}
                       </button>

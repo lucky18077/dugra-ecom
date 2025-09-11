@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toTitleCase } from "../Hooks/Helper";
 import { LIVE_URL } from "../Api/Route";
 
 export default function ViewCart() {
@@ -123,24 +124,40 @@ export default function ViewCart() {
 
   return (
     <section className="cart-section section-b-space">
-      <div className="container-fluid">
+      <div className="container">
         <div className="row g-sm-5 g-3">
           <div className="col-md-9">
             <div className="cart-table">
-              <div className="table-responsive-xl">
+              <div className="table-responsive-xl custom-table">
+                <div className="cart-header mb-4">
+                  <div className="d-flex justify-content-between align-items-center header-bar">
+                    <h3
+                      className="text-theme font-sm"
+                      style={{ color: "white" }}
+                    >
+                      My Cart
+                    </h3>
+                  </div>
+                </div>
                 <table className="table">
                   <tbody>
-                    {cartItems.map((item) => (
+                    {cartItems.map((item, index) => (
                       <React.Fragment key={item.product_id}>
                         {/* Actual product row */}
                         <tr className="product-box-contain">
                           <td className="product-detail">
-                            <div className="product border-0">
+                            <div
+                              className="product border-0"
+                              style={{ paddingLeft: "20px" }}
+                            >
+                              <span style={{ marginRight: "10px" }}>
+                                {index + 1}
+                              </span>
                               <Link to="#" className="product-image">
                                 <img
                                   src={
                                     item.image
-                                      ? `http://127.0.0.1:8000/product images/${item.image}`
+                                      ? `https://store.bulkbasketindia.com/product images/${item.image}`
                                       : "/assets/images/shop7.png"
                                   }
                                   className="img-fluid blur-up lazyload"
@@ -150,9 +167,11 @@ export default function ViewCart() {
                               <div className="product-detail">
                                 <ul>
                                   <li className="name custom-tooltip">
-                                    {item.name.length > 25
-                                      ? item.name.substring(0, 25) + "..."
-                                      : item.name}
+                                    {item.name.length > 35
+                                      ? toTitleCase(
+                                          item.name.substring(0, 35) + "..."
+                                        )
+                                      : toTitleCase(item.name)}
 
                                     {item.details &&
                                       item.details.length > 0 && (
@@ -248,7 +267,7 @@ export default function ViewCart() {
                             <h4 className="table-title text-content">Action</h4>
                             <button
                               type="button"
-                              className="remove close_button btn btn-link p-0"
+                              className="wish-remove"
                               onClick={() => removeItem(item.product_id)}
                             >
                               Remove
@@ -280,8 +299,11 @@ export default function ViewCart() {
 
           <div className="col-md-3">
             <div className="summery-box p-sticky">
-              <div className="summery-header">
-                <h3>Cart Total</h3>
+              <div
+                className="summery-header "
+                style={{ backgroundColor: "#4d7447" }}
+              >
+                <h3 style={{ color: "white" }}>Cart Total</h3>
               </div>
               <div className="summery-contain">
                 <ul>

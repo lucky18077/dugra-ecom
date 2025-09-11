@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { LIVE_URL } from "../Api/Route";
 
@@ -37,7 +37,7 @@ export default function Invoice() {
   if (!invoiceData)
     return <p style={{ textAlign: "center" }}>Invoice not found.</p>;
 
-  const { order_mst, orders_item } = invoiceData;
+  const { order_mst, orders_item, customer } = invoiceData;
 
   // Totals
   const subtotal = orders_item.reduce(
@@ -81,92 +81,56 @@ export default function Invoice() {
 
       {/* Invoice */}
       <div
+        className="invoice-print"
         style={{
-          border: "1px solid #000",
-          padding: "20px",
+          position: "relative",
+          border: "2px solid #000",
+          padding: "30px",
           maxWidth: "1000px",
           margin: "auto",
+          background: "#fff",
         }}
-        className="invoice-print"
       >
+        {/* Watermark */}
+        <div className="watermark">ESTIMATE</div>
+
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "10px" }}>
-          <h2 style={{ margin: 0 }}>DURGA PROVISION STORE</h2>
-          <p>
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <h2 style={{ margin: 0, letterSpacing: "1px" }}>
+            DURGA PROVISION STORE
+          </h2>
+          <p style={{ margin: "5px 0" }}>
             SCF 179 (Backside) Grain Market, Sector - 26, Chandigarh - 160019
             <br />
             Mob: +91-9876543210 | Email: durgastores@gmail.com
             <br />
             GSTIN : 04AHFPK9892H1ZZ | FSSAI No: 1301800001221
           </p>
-          <h3 style={{ textDecoration: "underline", marginTop: "10px" }}>
-            TAX INVOICE
+          <h3
+            style={{
+              textDecoration: "underline",
+              marginTop: "15px",
+              fontSize: "18px",
+            }}
+          >
+            Estimate Bill
           </h3>
         </div>
 
-        {/* Invoice Info */}
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginBottom: "15px",
-          }}
-        >
-          <tbody>
-            <tr>
-              <td style={tdBox}>
-                <strong>Invoice No:</strong> {order_mst.invoice_no}
-              </td>
-              <td style={tdBox}>
-                <strong>Date:</strong>{" "}
-                {new Date(order_mst.created_at).toLocaleDateString("en-GB")}
-              </td>
-              <td style={tdBox}>
-                <strong>Transport:</strong> ACTIVA
-              </td>
-              <td style={tdBox}>
-                <strong>Vehicle No:</strong> CH01BB0999
-              </td>
-            </tr>
-            <tr>
-              <td style={tdBox}>
-                <strong>Place of Supply:</strong> Haryana (06)
-              </td>
-              <td style={tdBox}>
-                <strong>Reverse Charge:</strong> N
-              </td>
-              <td style={tdBox}>
-                <strong>E-Way Bill No:</strong> 31206583248
-              </td>
-              <td style={tdBox}>
-                <strong>Station:</strong> Panchkula
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
         {/* Billing & Shipping */}
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginBottom: "20px",
-          }}
-        >
+        <table style={tableStyle}>
           <tbody>
             <tr>
               <td style={{ ...tdBox, width: "50%" }}>
                 <h4>Billed To:</h4>
                 <p>
-                  <strong>{order_mst.name}</strong>
+                  <strong>{customer.name}</strong>
                   <br />
-                  {order_mst.address}, {order_mst.pincode}
+                  {customer.address}, {customer.pincode}
                   <br />
-                  {order_mst.number}
+                  {customer.number}
                   <br />
-                  {order_mst.email}
-                  <br />
-                  {/* GSTIN/ UIN : 06AECAF435D1ZX */}
+                  {customer.email}
                 </p>
               </td>
               <td style={{ ...tdBox, width: "50%" }}>
@@ -179,8 +143,6 @@ export default function Invoice() {
                   {order_mst.number}
                   <br />
                   {order_mst.email}
-                  <br />
-                  {/* GSTIN/ UIN : 06AECAF435D1ZX */}
                 </p>
               </td>
             </tr>
@@ -188,15 +150,9 @@ export default function Invoice() {
         </table>
 
         {/* Items Table */}
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginBottom: "20px",
-          }}
-        >
+        <table style={tableStyle}>
           <thead>
-            <tr style={{ background: "#f2f2f2" }}>
+            <tr style={{ background: "#f8f8f8" }}>
               <th style={thBox}>S.No</th>
               <th style={thBox}>Description of Goods</th>
               <th style={thBox}>HSN</th>
@@ -231,7 +187,6 @@ export default function Invoice() {
                   <td style={tdBox}>0</td>
                   <td style={tdBox}>{gstPercent}%</td>
                   <td style={tdBox}>{cessPercent}%</td>
-                  {/* Amount = taxable + GST + Cess */}
                   <td style={tdBox}>{(total + gstAmt + cessAmt).toFixed(2)}</td>
                 </tr>
               );
@@ -240,7 +195,7 @@ export default function Invoice() {
         </table>
 
         {/* Totals */}
-        <div style={{ textAlign: "right", marginBottom: "20px" }}>
+        <div style={{ textAlign: "right", marginTop: "15px" }}>
           <p>
             <strong>Sub Total:</strong> ₹{subtotal.toFixed(2)}
           </p>
@@ -250,17 +205,13 @@ export default function Invoice() {
           <p>
             <strong>Cess:</strong> ₹{cessTotal.toFixed(2)}
           </p>
-          <h3>Grand Total: ₹{grandTotal.toFixed(2)}</h3>
+          <h3 style={{ marginTop: "10px" }}>
+            Grand Total: ₹{grandTotal.toFixed(2)}
+          </h3>
         </div>
 
         {/* Declaration */}
-        <div
-          style={{
-            borderTop: "1px solid #000",
-            paddingTop: "10px",
-            marginBottom: "20px",
-          }}
-        >
+        <div style={{ borderTop: "1px solid #000", paddingTop: "10px" }}>
           <h4>Declaration</h4>
           <p>
             We hereby certify that the particulars of this invoice are true and
@@ -268,21 +219,26 @@ export default function Invoice() {
           </p>
         </div>
 
-        {/* Footer with QR + Signature */}
+        {/* Footer with Bank + Signature */}
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: "30px",
+            marginTop: "40px",
           }}
         >
           <div>
-            <p>Bank Details:</p>
-            <p>HDFC BANK LTD, A/C No: 50200026076887, IFSC: HDFC0009034</p>
-            {/* <img src="/assets/images/qr.png" alt="QR Code" width="100" /> */}
+            <p>
+              <strong>Bank Details:</strong>
+            </p>
+            <p>HDFC BANK LTD</p>
+            <p>A/C No: 50200026076887</p>
+            <p>IFSC: HDFC0009034</p>
           </div>
           <div style={{ textAlign: "right" }}>
-            <p>For DURGA PROVISION STORE</p>
+            <p>
+              For <strong>DURGA PROVISION STORE</strong>
+            </p>
             <br />
             <br />
             <p>Authorised Signatory</p>
@@ -290,7 +246,20 @@ export default function Invoice() {
         </div>
       </div>
 
+      {/* Styles */}
       <style>{`
+        .watermark {
+          position: absolute;
+          top: 40%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-30deg);
+          font-size: 100px;
+          font-weight: bold;
+          color: rgba(0,0,0,0.08);
+          white-space: nowrap;
+          pointer-events: none;
+          user-select: none;
+        }
         @media print {
           body * { visibility: hidden; }
           .invoice-print, .invoice-print * { visibility: visible; }
@@ -305,14 +274,21 @@ export default function Invoice() {
   );
 }
 
+const tableStyle = {
+  width: "100%",
+  borderCollapse: "collapse",
+  marginBottom: "20px",
+};
+
 const thBox = {
   border: "1px solid #000",
-  padding: "5px",
+  padding: "6px",
   fontSize: "12px",
+  background: "#f2f2f2",
 };
 
 const tdBox = {
   border: "1px solid #000",
-  padding: "5px",
+  padding: "6px",
   fontSize: "12px",
 };

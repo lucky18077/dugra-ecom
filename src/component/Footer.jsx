@@ -26,7 +26,10 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
   return (
     <>
       {/* Bottom Banner */}
-      <section className="section-b-space">
+      <section
+        className="section-b-space"
+        style={{ backgroundColor: "#e8f1e6" }}
+      >
         <div className="container">
           <div className="row">
             <Carousel
@@ -42,7 +45,7 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   <Carousel.Item key={index}>
                     <img
                       className="d-block w-100"
-                      src={`http://127.0.0.1:8000/sliders/${banner.image}`}
+                      src={`https://store.bulkbasketindia.com/sliders/${banner.image}`}
                       alt={`Footer Banner ${index + 1}`}
                     />
                   </Carousel.Item>
@@ -60,7 +63,10 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
           </div>
         </div>
       </section>
-      <footer className="section-t-space" style={{ backgroundColor: "black" }}>
+      <footer
+        className="section-t-space"
+        style={{ backgroundColor: "#477a37" }}
+      >
         <div className="container-fluid-lg">
           <div className="main-footer section-b-space section-t-space">
             <div className="row g-md-4 g-3">
@@ -80,22 +86,35 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                       We are a friendly bar serving a variety of cocktails,
                       wines and beers. Our bar is a perfect place for a couple.
                     </p>
-                    <ul className="address">
-                      <li>
-                        <i data-feather="home" />
-                        <a href="javascript:void(0)">Chandigarh</a>
-                      </li>
-                      <li>
-                        <i data-feather="phone" />
-                        <a href="javascript:void(0)">+91 9876521909</a>
-                      </li>
-                      <li>
-                        <i data-feather="mail" />
-                        <a href="javascript:void(0)">
-                          info@bulkbasketindia.com
-                        </a>
-                      </li>
-                    </ul>
+                    <li className="social-app mb-0 mt-2">
+                      <h5 className="mb-2 text-contents">Download App :</h5>
+                      <ul>
+                        <li className="mb-0">
+                          <a
+                            href="https://play.google.com/store/apps"
+                            target="_blank"
+                          >
+                            <img
+                              src="/assets/images/playstore.svg"
+                              className="blur-up lazyload"
+                              alt=""
+                            />
+                          </a>
+                        </li>
+                        <li className="mb-0">
+                          <a
+                            href="https://www.apple.com/in/app-store/"
+                            target="_blank"
+                          >
+                            <img
+                              src="/assets/images/appstore.svg"
+                              className="blur-up lazyload"
+                              alt=""
+                            />
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
                   </div>
                 </div>
               </div>
@@ -156,7 +175,64 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   </ul>
                 </div>
               </div>
-              <div className="col-xl-3 col-lg-3 col-sm-6">
+              <div className="col-xl-3 col-lg-3  col-sm-6">
+                <div className="footer-title">
+                  <h4>Shop By Categories</h4>
+                </div>
+                <div className="footer-contain">
+                  <ul>
+                    <li>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/6`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("Imported Items")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/11`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("Instant Food")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/16`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("Dry Fruits, Nuts & Cereals")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/14`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("Disposables & Packaging Material")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/10`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("Pickle, Sauces & Seasoning")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`${BASE_LIVE_URL}/shop/category/4`}
+                        className="text-contents"
+                      >
+                        {toTitleCase("Bakery Essentials")}
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="col-xl-2 col-lg-2 col-sm-6">
                 <div className="footer-title">
                   <h4>Useful Links</h4>
                 </div>
@@ -224,7 +300,7 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   </ul>
                 </div>
               </div>
-              <div className="col-xl-3 col-lg-3 col-sm-6">
+              {/* <div className="col-xl-3 col-lg-3 col-sm-6">
                 <div className="footer-title">
                   <h4>Get Our App</h4>
                 </div>
@@ -254,38 +330,9 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                         </div>
                       </div>
                     </li>
-                    <li className="social-app mb-0">
-                      <h5 className="mb-2 text-contents">Download App :</h5>
-                      <ul>
-                        <li className="mb-0">
-                          <a
-                            href="https://play.google.com/store/apps"
-                            target="_blank"
-                          >
-                            <img
-                              src="/assets/images/playstore.svg"
-                              className="blur-up lazyload"
-                              alt=""
-                            />
-                          </a>
-                        </li>
-                        <li className="mb-0">
-                          <a
-                            href="https://www.apple.com/in/app-store/"
-                            target="_blank"
-                          >
-                            <img
-                              src="/assets/images/appstore.svg"
-                              className="blur-up lazyload"
-                              alt=""
-                            />
-                          </a>
-                        </li>
-                      </ul>
-                    </li>
                   </ul>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="sub-footer section-small-space">
