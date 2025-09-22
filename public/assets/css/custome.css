@@ -711,3 +711,114 @@ footer .main-footer {
   background: #ffffff;
   color: #000;
 }
+
+
+.search-inline {
+  height: 50px;
+  /* same height as category pill */
+  border: 1px solid #a3c59c;
+  /* subtle green border like category */
+  border-radius: 50px;
+  /* pill shape like category */
+  padding: 0 20px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-inline::placeholder {
+  color: #6c757d;
+}
+
+.search-inline:focus {
+  border-color: #612f51;
+  /* darken border on focus */
+  box-shadow: none;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #612f51;
+  /* green background */
+  border-radius: 6px;
+  /* rounded corners */
+  width: 40px;
+  height: 40px;
+  background-size: 40% 40%;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: invert(1);
+  /* make the default white icons stay white */
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: auto;
+  /* make them not full height */
+  padding: 10px;
+  /* space around icon */
+}
+
+.responsive-margin {
+  margin-top: 50px;
+}
+
+@media screen and (max-width: 1400px) {
+  .responsive-margin {
+    margin-top: 60px;
+  }
+}
+
+.top-postion-fix {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background-color: #fff;
+}
+
+@media screen and (max-width: 1400px) {
+  .top-postion-fix {
+    top: 100px;
+  }
+}
+
+.faq-tabs .faq-tab {
+  border: 1px solid #ddd;
+  background: #ffffff;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.faq-tabs .faq-tab:hover {
+  border-color: #437a3a;
+  color: #437a3a;
+}
+
+.faq-tabs .faq-tab.active {
+  border: 1px solid #437a3a;
+  color: #437a3a;
+  background: #437a3a12;
+}
+
+.profile-padding {
+  padding: 10px 10px 10px !important;
+}
+
+.active-step {
+  background: linear-gradient(135deg, #4CAF50, #2e5d2b);
+  color: #fff !important;
+}
+
+.active-step p,
+.active-step h4 {
+  color: #fff !important;
+}
+
+.color-pd {
+  color: #256FEF !important;
+}

@@ -171,7 +171,7 @@ export default function Signup() {
 
                   <div className="col-6">
                     <input
-                      type="text"
+                      type="number"
                       id="company_number"
                       className="form-control"
                       placeholder="Company Mobile No."

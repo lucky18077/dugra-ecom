@@ -29,8 +29,7 @@ export default function BrandItem({
           res = await axios.get(
             `${LIVE_URL}/get-brands/${brandId}/brands/${subId}`
           );
-        } else {
-          // Fetch all brand products + subcategories
+        } else { 
           res = await axios.get(`${LIVE_URL}/get-brands/${brandId}/brands`);
         }
 
@@ -210,6 +209,40 @@ export default function BrandItem({
                 <div className="accordion-item">
                   <div className="accordion-collapse collapse show">
                     <div className="accordion-body pt-0 on-scroll">
+                      <div className="recent-post-box">
+                        <div
+                          className={`recent-box d-flex ${
+                            !brandId ? "text-category" : ""
+                          }`}
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            navigate(`/brand/${brandName}/${brandId}`)
+                          }
+                        >
+                          <div className="py-1">
+                            <img
+                              src={"/assets/images/icon1.png"}
+                              alt=""
+                              className="img-fluid blur-up lazyload"
+                              style={{
+                                background: "#f5f5f5",
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                              }}
+                            />
+                          </div>
+                          <div className="recent-detail mt-3">
+                            <h5
+                              className="recent-name"
+                              style={{ fontSize: "15px" }}
+                            >
+                              All
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+
                       {subcategories.map((sub) => (
                         <div className="recent-post-box" key={sub.id}>
                           <div
@@ -225,14 +258,18 @@ export default function BrandItem({
                                 alt=""
                                 className="img-fluid blur-up lazyload"
                                 style={{
-                                  width: "75px",
-                                  height: "70px",
+                                  background: "#f5f5f5",
+                                  width: "50px",
+                                  height: "50px",
                                   borderRadius: "50%",
                                 }}
                               />
                             </div>
                             <div className="recent-detail">
-                              <h5 className="recent-name"> {toTitleCase(sub.name)}</h5>
+                              <h5 className="recent-name" style={{ fontSize:"15px" }}>
+                                {" "}
+                                {toTitleCase(sub.name)}
+                              </h5>
                             </div>
                           </div>
                         </div>
@@ -247,7 +284,7 @@ export default function BrandItem({
           {/* Product Grid */}
           <div
             className="product-section col-xxl-8 col-xl-8 col-lg-8 ratio_50"
-            style={{ padding: 0 }}
+            style={{ padding: 0,width:"69%" }}
           >
             <div className="row">
               {products.length > 0 ? (
@@ -345,7 +382,7 @@ export default function BrandItem({
                       {isLoggedIn && (
                         <>
                           <div className="line-light"></div>
-                          <div className="price-action-wrap">
+                          <div className="price-action-wrap"  style={{ background: "#e8f1e6" }}>
                             <div>
                               <span className="price">
                                 ₹{Number(product.base_price).toFixed(2)}

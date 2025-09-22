@@ -166,7 +166,7 @@ export default function ViewCart() {
                               </Link>
                               <div className="product-detail">
                                 <ul>
-                                  <li className="name custom-tooltip">
+                                  <li className="name custom-tooltip" style={{ fontSize:"15px" }}>
                                     {item.name.length > 35
                                       ? toTitleCase(
                                           item.name.substring(0, 35) + "..."

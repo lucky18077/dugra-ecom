@@ -75,7 +75,7 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   <div className="theme-logo">
                     <a href="#">
                       <img
-                        src="/assets/images/bulk-basket.png"
+                        src="/assets/images/footer-logo.png"
                         className="blur-up lazyload"
                         alt=""
                       />
@@ -86,6 +86,22 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                       We are a friendly bar serving a variety of cocktails,
                       wines and beers. Our bar is a perfect place for a couple.
                     </p>
+                    <ul className="address">
+                      <li>
+                        <i data-feather="home" />
+                        <a>
+                          Chandigarh
+                        </a>
+                      </li>
+                      <li>
+                        <i data-feather="phone" />
+                        <a>+91-9876521909</a>
+                      </li>
+                      <li>
+                        <i data-feather="mail" />
+                        <a>info@bulkbasketindia.com</a>
+                      </li>
+                    </ul>
                     <li className="social-app mb-0 mt-2">
                       <h5 className="mb-2 text-contents">Download App :</h5>
                       <ul>
@@ -118,7 +134,10 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   </div>
                 </div>
               </div>
-              <div className="col-xl-3 col-lg-3  col-sm-6">
+              <div
+                className="col-xl-3 col-lg-3  col-sm-6"
+                style={{ width: "20%" }}
+              >
                 <div className="footer-title">
                   <h4>Shop By Categories</h4>
                 </div>
@@ -175,10 +194,7 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   </ul>
                 </div>
               </div>
-              <div className="col-xl-3 col-lg-3  col-sm-6">
-                <div className="footer-title">
-                  <h4>Shop By Categories</h4>
-                </div>
+              <div className="col-xl-3 col-lg-3  col-sm-6 mt-5">
                 <div className="footer-contain">
                   <ul>
                     <li>
@@ -232,7 +248,7 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   </ul>
                 </div>
               </div>
-              <div className="col-xl-2 col-lg-2 col-sm-6">
+              <div className="col-xl-2 col-lg-3 col-sm-6">
                 <div className="footer-title">
                   <h4>Useful Links</h4>
                 </div>
@@ -300,39 +316,6 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   </ul>
                 </div>
               </div>
-              {/* <div className="col-xl-3 col-lg-3 col-sm-6">
-                <div className="footer-title">
-                  <h4>Get Our App</h4>
-                </div>
-                <div className="footer-contact">
-                  <ul>
-                    <li>
-                      <div className="footer-number">
-                        <i data-feather="home" />
-                        <div className="contact-number">
-                          <h5>Chandigarh</h5>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="footer-number">
-                        <i data-feather="phone" />
-                        <div className="contact-number">
-                          <h5>+91 9876521909</h5>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div className="footer-number">
-                        <i data-feather="mail" />
-                        <div className="contact-number">
-                          <h5>info@bulkbasketindia.com</h5>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div> */}
             </div>
           </div>
           <div className="sub-footer section-small-space">

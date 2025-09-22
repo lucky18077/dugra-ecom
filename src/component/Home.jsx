@@ -21,6 +21,8 @@ export default function Home({
   const [banner, setBanner] = useState(null);
   const [slider, setSlider] = useState(null);
   const [dealOfDaySlider, setDealOfDaySlider] = useState([]);
+  const [activeTab, setActiveTab] = useState("About us");
+  const [activeIndex, setActiveIndex] = useState(0);
   const token = localStorage.getItem("customer_token");
 
   const dealCarouselRef = useRef(null);
@@ -265,6 +267,90 @@ export default function Home({
       toast.error("Failed to update wishlist!");
     }
   };
+  const faqData = {
+    "About us": [
+      {
+        question: "What is Lorem Ipsum?",
+        answer:
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+      },
+      {
+        question: "Where does it come from?",
+        answer:
+          "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old",
+      },
+      {
+        question: "Why do we use it?",
+        answer:
+          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution",
+      },
+      {
+        question: "Where can I get some?",
+        answer:
+          "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+      },
+      {
+        question: "What is Lorem Ipsum?",
+        answer:
+          "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
+      },
+    ],
+    "Order related": [
+      {
+        question: "How long will delivery take?",
+        answer:
+          "Delivery time depends on your location, generally 2-3 working days.",
+      },
+      {
+        question: "Can I change my delivery address?",
+        answer:
+          "Yes, you can change your address before your order is shipped.",
+      },
+    ],
+    "Refund related": [
+      {
+        question: "How can I request a refund?",
+        answer:
+          "You can request a refund from your order details page within 7 days.",
+      },
+    ],
+    "Account related": [
+      {
+        question: "How can I reset my password?",
+        answer:
+          "Go to the login page and click on 'Forgot password' to reset it.",
+      },
+    ],
+    "Payment related": [
+      {
+        question: "What payment methods are accepted?",
+        answer: "We accept UPI, credit/debit cards, net banking and wallets.",
+      },
+    ],
+  };
+
+  const steps = [
+    {
+      title: "Farm collection centres",
+      desc: "We source directly from farmers, select the best produce at our collection centres, and deliver it fresh to your doorstep.",
+      img: "/assets/images/sign-up.png",
+    },
+    {
+      title: "State-of-the-art food park",
+      desc: "We co-create and innovate recipe solutions and then bring them to life through our high-tech Food Park.",
+      img: "/assets/images/sign-up.png",
+    },
+    {
+      title: "Food safety compliant warehouse",
+      desc: "We have a network of hygienic and sanitised warehouses that guarantee your supplies stay fresh and safe from start to finish.",
+      img: "/assets/images/sign-up.png",
+    },
+    {
+      title: "Frozen supply chain",
+      desc: "Our temperature-controlled rooms and smart fleet ensure uninterrupted cooling at every step.",
+      img: "/assets/images/sign-up.png",
+    },
+  ];
 
   return (
     <>
@@ -272,10 +358,11 @@ export default function Home({
       <section style={{ padding: 0, maxWidth: "1920px", margin: "0 auto" }}>
         {banner && banner.length > 0 && (
           <Carousel
-            controls={false}
+            controls={true}
             indicators={false}
-            interval={8000}
+            interval={5000}
             pause={false}
+            className="hover-carousel"
           >
             {banner.map((b, index) => (
               <Carousel.Item key={index}>
@@ -419,9 +506,7 @@ export default function Home({
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div className="title d-block mt-4 mb-4">
               <h2 className="text-theme font-sm mb-0"> Deal Of The Day</h2>
-              <p className="mb-0">
-                Special discounts, updated every day
-              </p>
+              <p className="mb-0">Special discounts, updated every day</p>
             </div>
             <div className="d-flex gap-2">
               <button
@@ -649,6 +734,61 @@ export default function Home({
         </div>
       </section>
 
+      {/* Qulity Section */}
+      <section className="fresh-vegetable-section section-lg-space">
+        <div className="container-fluid-lg">
+          <div className="row gx-xl-5 gy-xl-0 g-3 ratio_148_1">
+            <div className="title d-block mb-4 mt-4">
+              <h2 className="text-theme font-sm mb-0">Quality at every step</h2>
+              <p className="mb-0">Built on trust</p>
+            </div>
+
+            <div className="col-7">
+              <div className="fresh-contain p-center-left">
+                <ul className="delivery-box list-unstyled">
+                  {steps.map((step, index) => (
+                    <li
+                      key={index}
+                      className={`mb-3 p-3 rounded-3 shadow-sm ${
+                        activeIndex === index ? "active-step" : "bg-light"
+                      }`}
+                      style={{
+                        cursor: "pointer",
+                        border:
+                          activeIndex === index
+                            ? "2px solid #4CAF50"
+                            : "2px solid transparent",
+                        transition: "all 0.3s ease",
+                      }}
+                      onClick={() => setActiveIndex(index)}
+                    >
+                      <div className="delivery-detail">
+                        <h4 className="mb-2">{step.title}</h4>
+                        <p className="mb-0">{step.desc}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="col-5">
+              <div className="fresh-image-2 text-center">
+                <img
+                  src={steps[activeIndex].img}
+                  className="bg-img blur-up lazyload rounded-4 shadow-lg"
+                  alt={steps[activeIndex].title}
+                  style={{
+                    maxWidth: "100%",
+                    transition: "opacity 0.4s ease",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Brands */}
       <section
         className="section-b-space"
@@ -658,9 +798,7 @@ export default function Home({
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div className="title d-block mb-4 mt-4">
               <h2 className="text-theme font-sm mb-0">Shop By Brands</h2>
-              <p className="mb-0">
-               Your favorite brands in one place
-              </p>
+              <p className="mb-0">Your favorite brands in one place</p>
             </div>
             <div className="d-flex gap-2">
               <button
@@ -736,6 +874,73 @@ export default function Home({
             <Link to="/view-brands">
               <button className="btn btn-animation">View All</button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="faq-box-contain section-b-space">
+        <div className="container-fluid-lg">
+          <h2 className="text-center fw-bold mb-4">
+            Frequently asked questions
+          </h2>
+
+          {/* Tabs */}
+          <div className="faq-tabs d-flex justify-content-center flex-wrap gap-3 mb-5">
+            {Object.keys(faqData).map((tab) => (
+              <button
+                key={tab}
+                className={`faq-tab ${activeTab === tab ? "active" : ""}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Accordion */}
+          <div className="row">
+            <div className="col-8">
+              <div className="faq-accordion">
+                <div className="accordion" id="accordionExample">
+                  {faqData[activeTab].map((item, index) => (
+                    <div className="accordion-item" key={index}>
+                      <h2 className="accordion-header" id={`heading${index}`}>
+                        <button
+                          className={`accordion-button ${
+                            index === 0 ? "" : "collapsed"
+                          }`}
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target={`#collapse${index}`}
+                        >
+                          {item.question}
+                          <i className="fa-solid fa-angle-down" />
+                        </button>
+                      </h2>
+                      <div
+                        id={`collapse${index}`}
+                        className={`accordion-collapse collapse ${
+                          index === 0 ? "show" : ""
+                        }`}
+                        data-bs-parent="#accordionExample"
+                      >
+                        <div className="accordion-body">
+                          <p>{item.answer}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="col-4">
+              <img
+                src="assets/images/sign-up.png"
+                alt=""
+                className="img-fluid"
+              />
+            </div>
           </div>
         </div>
       </section>

@@ -19,6 +19,9 @@ import Signup from "./component/Signup";
 import Wishlist from "./component/Wishlist";
 import AllBrands from "./component/AllBrands";
 import BrandItem from "./component/BrandItem";
+import WalletLedger from "./component/WalletLedger";
+import OrderHistory from "./component/OrderHistory";
+import "./Api/axiosSetup";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -169,6 +172,8 @@ function App() {
         <Route path="/invoice/:id" element={<Invocie />} />
         <Route path="/invoice-bill/:id" element={<InvoiceBill />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/wallet-ledger" element={<WalletLedger />} />
+        <Route path="/order-list" element={<OrderHistory />} />
         <Route path="/sign-up" element={<Signup />} />
         <Route
           path="*"

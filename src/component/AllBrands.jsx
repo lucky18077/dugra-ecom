@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Carousel from "react-bootstrap/Carousel"; // ✅ Import Carousel
+import Carousel from "react-bootstrap/Carousel";  
+import { toTitleCase } from "../Hooks/Helper";
 import { LIVE_URL } from "../Api/Route";
 
 
@@ -56,8 +57,8 @@ export default function AllBrands() {
   return (
     <>
       {/* Slider Section */}
-      <section className="section-b-space" style={{ backgroundColor: "#e8f1e6" }}>
-        <div className="container">
+      <section className="section-b-space">
+        <div className="container-fluid">
           <div className="row">
             <Carousel
               data-bs-theme="dark"
@@ -130,7 +131,7 @@ export default function AllBrands() {
                         <div className="line-light"></div>
                         <div className="blog-contain mt-2">
                           <a href={`/brand/${brand.name.toLowerCase()}/${brand.id}`}>
-                            <h6 className="text-truncate" style={{ color:"#477a37",fontWeight:"600" }}>{brand.name}</h6>
+                            <h6 className="text-truncate" style={{ color:"#477a37",fontWeight:"600" }}>{toTitleCase(brand.name)}</h6>
                           </a>
                         </div>
                       </div>

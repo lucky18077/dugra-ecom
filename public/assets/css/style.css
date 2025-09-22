@@ -36983,7 +36983,7 @@ body.rtl .menu-label {
     background-color: #f8f8f8;
     border: 1px solid #dee2e6;
     /* padding: calc(14px + 15*(100vw - 320px)/1600) */
-    padding:0px 0px 15px
+    padding: 0px 0px 15px
 }
 
 .checkout-section-2 .right-side-summery-box .summery-box-2 .summery-header {
@@ -37166,7 +37166,7 @@ body.rtl .menu-label {
     display: block;
     font-weight: 400;
     font-size: 13px;
-    margin-top: 3px 
+    margin-top: 3px
 }
 
 .checkout-section-2 .right-side-summery-box .summery-box-2 .summery-contain li h4 span {
@@ -37609,7 +37609,7 @@ body.rtl .menu-label {
 }
 
 .log-in-section .log-in-box {
-    background-color:  rgb(232, 241, 230);
+    background-color: rgb(232, 241, 230);
     padding: calc(16px + 34*(100vw - 320px)/1600);
     border-radius: calc(8px + 4*(100vw - 320px)/1600)
 }
@@ -37946,8 +37946,8 @@ body.rtl .menu-label {
 
 .faq-box-contain .faq-accordion .accordion .accordion-item .accordion-header .accordion-button:not(.collapsed) {
     font-weight: 700;
-    color: var(--theme-color);
-    background-color: rgba(0, 0, 0, 0);
+    color: #437a3a;
+    background-color: rgb(232 241 230);
     -webkit-box-shadow: none;
     box-shadow: none
 }

@@ -18,6 +18,7 @@ export default function ProductDetail({
   const token = localStorage.getItem("customer_token");
   const carouselRef = useRef();
   const { id } = useParams();
+
   const groupByChunks = (array, size) => {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
@@ -25,8 +26,10 @@ export default function ProductDetail({
     }
     return result;
   };
+
   const handleNext = () => carouselRef.current?.next();
   const handlePrev = () => carouselRef.current?.prev();
+
   const handleCartUpdate = async (productId, qty = null, qtyType = null) => {
     try {
       await axios.post(
@@ -40,13 +43,12 @@ export default function ProductDetail({
           },
         }
       );
-      if (setRefreshNavbar) {
-        setRefreshNavbar((prev) => !prev);
-      }
+      if (setRefreshNavbar) setRefreshNavbar((prev) => !prev);
     } catch (error) {
       console.error("Cart update error:", error);
     }
   };
+
   const handleAddToCart = () => {
     if (!isLoggedIn) return openLoginModal();
     setQuantity(1);
@@ -66,22 +68,32 @@ export default function ProductDetail({
     if (!isLoggedIn) return openLoginModal();
     setQuantity((prev) => {
       const newQty = prev > 1 ? prev - 1 : 0;
-      if (newQty > 0) {
-        handleCartUpdate(product.id, null, "minus");
-      }
+      if (newQty > 0) handleCartUpdate(product.id, null, "minus");
       return newQty;
     });
   };
 
-  const handleQuantityUpdate = () => {
+  // ✅ Bulk Tier Click
+  const handleTierClick = (qty) => {
     if (!isLoggedIn) return openLoginModal();
-    if (quantity < 1) setQuantity(0);
-    else handleCartUpdate(product.id, quantity, null);
+    setQuantity(qty);
+    handleCartUpdate(product.id, qty, null);
+  };
+
+  // Related products qty controls
+  const updateQuantityRelated = (pid, value) => {
+    if (!isLoggedIn) return openLoginModal();
+    const num = Math.max(0, value);
+    setRelatedProducts((prev) =>
+      prev.map((group) =>
+        group.map((p) => (p.id === pid ? { ...p, quantity: num } : p))
+      )
+    );
+    handleCartUpdate(pid, num, null);
   };
 
   const handleAddToCartRelated = (pid) => {
     if (!isLoggedIn) return openLoginModal();
-
     setRelatedProducts((prev) =>
       prev.map((group) =>
         group.map((p) => (p.id === pid ? { ...p, quantity: 1 } : p))
@@ -89,9 +101,9 @@ export default function ProductDetail({
     );
     handleCartUpdate(pid, 1, null);
   };
+
   const incrementRelated = (pid) => {
     if (!isLoggedIn) return openLoginModal();
-
     setRelatedProducts((prev) =>
       prev.map((group) =>
         group.map((p) =>
@@ -101,9 +113,9 @@ export default function ProductDetail({
     );
     handleCartUpdate(pid, null, "plus");
   };
+
   const decrementRelated = (pid) => {
     if (!isLoggedIn) return openLoginModal();
-
     setRelatedProducts((prev) =>
       prev.map((group) =>
         group.map((p) =>
@@ -115,21 +127,12 @@ export default function ProductDetail({
     );
     handleCartUpdate(pid, null, "minus");
   };
-  const updateQuantityRelated = (pid, value) => {
-    if (!isLoggedIn) return openLoginModal();
-    const num = Math.max(0, value);
 
-    setRelatedProducts((prev) =>
-      prev.map((group) =>
-        group.map((p) => (p.id === pid ? { ...p, quantity: num } : p))
-      )
-    );
-    handleCartUpdate(pid, num, null);
-  };
+  // ✅ Fetch product + cart qty on mount
   useEffect(() => {
-    axios
-      .get(`${LIVE_URL}/get-product-detail/${id}`)
-      .then((res) => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${LIVE_URL}/get-product-detail/${id}`);
         const data = res.data.data;
         setProduct(data.product);
         setSupplier(data.supplier);
@@ -138,11 +141,28 @@ export default function ProductDetail({
           quantity: 0,
         }));
         setRelatedProducts(groupByChunks(products, 4));
-      })
-      .catch((err) => console.error("Product fetch error:", err));
 
-    feather.replace();
-  }, [id]);
+        // ✅ check if this product already in cart
+        if (token) {
+          const cartRes = await axios.get(`${LIVE_URL}/get-cart`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const cartItems = cartRes.data?.data || [];
+          const currentItem = cartItems.find((c) => c.product_id == id);
+          if (currentItem) {
+            setQuantity(currentItem.qty); // ✅ set saved qty
+          } else {
+            setQuantity(0);
+          }
+        }
+      } catch (err) {
+        console.error("Product fetch error:", err);
+      }
+      feather.replace();
+    };
+    fetchData();
+  }, [id, token]);
+
   if (!product) return <div className="text-center py-5">Loading...</div>;
 
   return (
@@ -201,7 +221,6 @@ export default function ProductDetail({
                 </div>
                 <div className="col-xl-6">
                   <div className="right-box-contain">
-                    <h6 className="offer-top">30% Off</h6>
                     <h2 className="name">{toTitleCase(product.name)}</h2>
                     <div className="price-rating">
                       {isLoggedIn && (
@@ -219,16 +238,25 @@ export default function ProductDetail({
 
                     <div className="product-title">
                       <div>
-                        {/* {product.details?.length > 0 && (
+                        {isLoggedIn && product.details?.length > 0 && (
                           <div className="product-packs mb-2">
                             {product.details.map((detail, index) => (
-                              <div key={index} className="pack-item small">
+                              <div
+                                key={index}
+                                className={`pack-item small color-pd ${
+                                  quantity === detail.qty ? "active" : ""
+                                }`}
+                                onClick={() => handleTierClick(detail.qty)}
+                              >
                                 {detail.qty} Qty - ₹
                                 {Number(detail.price).toFixed(2)}
+                                <span style={{ marginLeft: "20px" }}>
+                                  Add <span className="plus">{detail.qty}</span>
+                                </span>
                               </div>
                             ))}
                           </div>
-                        )} */}
+                        )}
                       </div>
                     </div>
 
@@ -307,7 +335,7 @@ export default function ProductDetail({
             </div>
 
             {/* Right Sidebar */}
-            <div className="col-xxl-3 col-xl-4 col-lg-5 d-none d-lg-block">
+            {/* <div className="col-xxl-3 col-xl-4 col-lg-5 d-none d-lg-block">
               <div className="right-sidebar-box">
                 <div className="vendor-box">
                   <div className="vendor-contain">
@@ -336,7 +364,7 @@ export default function ProductDetail({
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

@@ -114,6 +114,25 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogout = async () => {
+    const token = localStorage.getItem("customer_token");
+    try {
+      if (token) {
+        await axios.post(
+          `${LIVE_URL}/customer-logout`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+    } catch {
+    } finally {
+      localStorage.removeItem("customer_token");
+      localStorage.removeItem("customer_name");
+      delete axios.defaults.headers?.common?.Authorization;
+      window.location.replace("/");
+    }
+  };
+
   return (
     <>
       <header className="sticky-top bg-white z-3 nab-bottom">
@@ -136,7 +155,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                   </Link>
 
                   {/* Search Box */}
-                  <div className="middle-box" style={{ marginRight: "233px" }}>
+                  <div className="middle-box" style={{ marginRight: "80px" }}>
                     <div
                       className="search-box position-relative"
                       ref={dropdownRef}
@@ -225,7 +244,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                     ) : (
                       <>
                         {/* Wallet */}
-                        <Link to="/profile">
+                        <Link to="/wallet-ledger">
                           <div className="btn p-0 position-relative wallet-tooltip">
                             <i data-feather="credit-card"></i>
                             <span className="tooltip-box">
@@ -239,7 +258,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                             </span>
                           </div>
                         </Link>
-                        
+
                         {/* Wishlist */}
                         <Link
                           to="/view-wishlist"
@@ -272,6 +291,14 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                             Welcome, {toTitleCase(customerName)}
                           </span>
                         </Link>
+
+                        <button
+                          className="btn btn-sm wallet-tooltip"
+                          onClick={handleLogout} style={{ padding:"0px" }}
+                        >
+                          <i data-feather="log-out" className="me-1"></i>
+                          <span className="tooltip-box">Logout</span>
+                        </button>
                       </>
                     )}
                   </div>

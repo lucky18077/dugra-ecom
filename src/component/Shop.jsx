@@ -255,62 +255,73 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
         style={{ background: "#fff" }}
       >
         {/* Category Slider */}
-        <div
-          style={{
-            position: "fixed",
-            top: 100,
-            left: 0,
-            right: 0,
-            zIndex: 99,
-            backgroundColor: "#fff",
-          }}
-        >
+        <div className="top-postion-fix">
           <div className="container-fluid-lg">
             <div className="row g-sm-4 g-3 shop-bg-fix">
-              <div
-                className="category-slider-wrapper d-flex align-items-center py-2"
-                style={{ marginBottom: "20px" }}
-              >
-                <button className="slider-btn left" onClick={scrollLeft}>
-                  <img
-                    src="/assets/images/leftbtn.png"
-                    alt="Left"
-                    style={{ width: "50px", height: "40px" }}
-                  />
-                </button>
+              <div className="col-9">
                 <div
-                  className="category-slider flex-nowrap overflow-auto"
-                  ref={sliderRef}
+                  className="category-slider-wrapper d-flex align-items-center py-2"
+                  style={{ marginBottom: "20px" }}
                 >
-                  {categories.map((cat) => (
-                    <span
-                      key={cat.id}
-                      className={`category-item mx-3 ${
-                        Number(categoryId) === cat.id
-                          ? "fw-bold text-category"
-                          : ""
-                      }`}
-                      style={{ cursor: "pointer", fontSize: "18px" }}
-                      onClick={() => handleCategoryClick(cat.id)}
-                    >
-                      {toTitleCase(cat.name)}
-                    </span>
-                  ))}
+                  <button className="slider-btn left" onClick={scrollLeft}>
+                    <img
+                      src="/assets/images/leftbtn.png"
+                      alt="Left"
+                      style={{ width: "50px", height: "40px" }}
+                    />
+                  </button>
+                  <div
+                    className="category-slider flex-nowrap overflow-auto"
+                    ref={sliderRef}
+                  >
+                    {categories.map((cat) => (
+                      <span
+                        key={cat.id}
+                        className={`category-item mx-3 ${
+                          Number(categoryId) === cat.id
+                            ? "fw-bold text-category"
+                            : ""
+                        }`}
+                        style={{ cursor: "pointer", fontSize: "18px" }}
+                        onClick={() => handleCategoryClick(cat.id)}
+                      >
+                        {toTitleCase(cat.name)}
+                      </span>
+                    ))}
+                  </div>
+                  <button className="slider-btn right" onClick={scrollRight}>
+                    <img
+                      src="/assets/images/rightbtn.png"
+                      alt="Right"
+                      style={{ width: "50px", height: "40px" }}
+                    />
+                  </button>
                 </div>
-                <button className="slider-btn right" onClick={scrollRight}>
-                  <img
-                    src="/assets/images/rightbtn.png"
-                    alt="Right"
-                    style={{ width: "50px", height: "40px" }}
-                  />
-                </button>
+              </div>
+              <div className="col-3" style={{ marginTop: "30px" }}>
+                <input
+                  type="text"
+                  className="form-control search-inline"
+                  placeholder="Search products..."
+                  value={searchQuery || ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const params = new URLSearchParams(location.search);
+                    if (value) {
+                      params.set("q", value);
+                    } else {
+                      params.delete("q");
+                    }
+                    navigate(`${location.pathname}?${params.toString()}`);
+                  }}
+                />
               </div>
             </div>
           </div>
         </div>
 
         {/* Subcategory + Products */}
-        <div className="container-fluid-lg mt-5 ">
+        <div className="container-fluid-lg responsive-margin">
           <div className="row ">
             {/* Sidebar */}
             <div
@@ -322,6 +333,39 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                   <div className="accordion-item">
                     <div className="accordion-collapse collapse show">
                       <div className="accordion-body pt-0 on-scroll">
+                        <div className="recent-post-box">
+                          <div
+                            className={`recent-box d-flex ${
+                              !subcategoryId ? "text-category" : ""
+                            }`}
+                            style={{ cursor: "pointer" }}
+                            onClick={() =>
+                              navigate(`/shop/category/${selectedCategoryId}`)
+                            }
+                          >
+                            <div className="py-1">
+                              <img
+                                src={"/assets/images/icon1.png"}
+                                alt=""
+                                className="img-fluid blur-up lazyload"
+                                style={{
+                                  background: "#f5f5f5",
+                                  width: "50px",
+                                  height: "50px",
+                                  borderRadius: "50%",
+                                }}
+                              />
+                            </div>
+                            <div className="recent-detail mt-3">
+                              <h5
+                                className="recent-name"
+                                style={{ fontSize: "15px" }}
+                              >
+                                All
+                              </h5>
+                            </div>
+                          </div>
+                        </div>
                         {filteredSubcategories.length > 0 ? (
                           filteredSubcategories.map((sub) => (
                             <div className="recent-post-box" key={sub.id}>
@@ -348,14 +392,17 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                                     className="img-fluid blur-up lazyload"
                                     style={{
                                       background: "#f5f5f5",
-                                      width: "60px",
-                                      height: "60px",
+                                      width: "50px",
+                                      height: "50px",
                                       borderRadius: "50%",
                                     }}
                                   />
                                 </div>
                                 <div className="recent-detail">
-                                  <h5 className="recent-name" style={{fontSize:"18px"}}>
+                                  <h5
+                                    className="recent-name"
+                                    style={{ fontSize: "15px" }}
+                                  >
                                     {toTitleCase(sub.name)}
                                   </h5>
                                 </div>
@@ -377,7 +424,7 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
             {/* Product Grid */}
             <div
               className="product-section col-xxl-8 col-xl-8 col-lg-8 ratio_50"
-              style={{ padding: 0,width:"73%" }}
+              style={{ padding: 0, width: "73%" }}
             >
               <div className="row">
                 {products.map((product) => {
@@ -475,7 +522,10 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                                 >
                                   <div
                                     className="line-tire"
-                                    style={{ fontSize: "13px" }}
+                                    style={{
+                                      fontSize: "13px",
+                                      fontWeight: "700",
+                                    }}
                                     onClick={() =>
                                       handleTierClick(product, tier.qty)
                                     }
@@ -492,6 +542,7 @@ export default function Shop({ isLoggedIn, openLoginModal, setRefreshNavbar }) {
                                       style={{
                                         cursor: "pointer",
                                         fontSize: "13px",
+                                        fontWeight: "700",
                                       }}
                                     >
                                       Add{" "}
