@@ -10,8 +10,8 @@ import { LIVE_URL } from "../Api/Route";
 
 export default function Home({
   isLoggedIn = false,
-  openLoginModal = () => {},
-  setRefreshNavbar = () => {},
+  openLoginModal = () => { },
+  setRefreshNavbar = () => { },
 }) {
   const [categories, setCategories] = useState([]);
   const [groupedCategories, setGroupedCategories] = useState([]);
@@ -21,9 +21,11 @@ export default function Home({
   const [banner, setBanner] = useState(null);
   const [slider, setSlider] = useState(null);
   const [dealOfDaySlider, setDealOfDaySlider] = useState([]);
-  const [activeTab, setActiveTab] = useState("About us");
+  const [activeTab, setActiveTab] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
   const token = localStorage.getItem("customer_token");
+  const [faqData, setFaqData] = useState({});
+  const [steps, setSteps] = useState([]);
 
   const dealCarouselRef = useRef(null);
   const brandCarouselRef = useRef(null);
@@ -88,7 +90,6 @@ export default function Home({
     try {
       const response = await axios.get(`${LIVE_URL}/get-banner-deal-of-day`);
       if (response.data.success) {
-        console.log(response.data.data);
         setDealOfDaySlider(response.data.data || []);
       }
     } catch (error) {
@@ -112,6 +113,48 @@ export default function Home({
     }
   };
 
+  const fetchFaq = async () => {
+    try {
+      const { data } = await axios.get(`${LIVE_URL}/get-faq`);
+      if (data.success) {
+        const categories = data.faq_category || [];
+        const faqs = data.faqs || [];
+
+        const groupedData = {};
+        categories.forEach(cat => {
+          groupedData[cat.name] = {
+            image: cat.image,
+            faqs: faqs.filter(f => f.faq_cat_id === cat.id),
+          };
+        });
+        setFaqData(groupedData);
+
+        if (categories.length > 0) {
+          setActiveTab(categories[0].name);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching FAQ:", error);
+    }
+  };
+
+  const fetchSteps = async () => {
+    try {
+      const { data } = await axios.get(`${LIVE_URL}/quality-step`);
+      if (data.success) {
+        const formatted = data.data.map((item) => ({
+          title: item.question,
+          desc: item.answer,
+          img: `http://127.0.0.1:8000/quality-images/${item.image}`, 
+        }));
+        setSteps(formatted);
+      }
+    } catch (error) {
+      console.error("Error fetching steps:", error);
+    }
+  };
+
+
   useEffect(() => {
     fetchMainSlider();
     fetchCategories();
@@ -120,6 +163,8 @@ export default function Home({
     fetchWishlist();
     fetchSlider();
     fetchDealOfDaySlider();
+    fetchFaq();
+    fetchSteps();
   }, []);
 
   const groupedBrands = chunkArray(brands, 6);
@@ -200,6 +245,7 @@ export default function Home({
 
     await handleCartUpdate(id, 1, "plus");
   };
+
   const handleCartUpdate = async (productId, qty = null, qtyType = null) => {
     try {
       await axios.post(
@@ -218,6 +264,7 @@ export default function Home({
       console.error("Cart update error:", error);
     }
   };
+
   const handleTierClick = async (product, qty) => {
     if (!isLoggedIn) {
       openLoginModal();
@@ -230,6 +277,7 @@ export default function Home({
 
     await handleCartUpdate(product.id, qty);
   };
+
   const handleWishlistToggle = async (productId) => {
     if (!isLoggedIn) return openLoginModal();
 
@@ -267,90 +315,6 @@ export default function Home({
       toast.error("Failed to update wishlist!");
     }
   };
-  const faqData = {
-    "About us": [
-      {
-        question: "What is Lorem Ipsum?",
-        answer:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      },
-      {
-        question: "Where does it come from?",
-        answer:
-          "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old",
-      },
-      {
-        question: "Why do we use it?",
-        answer:
-          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution",
-      },
-      {
-        question: "Where can I get some?",
-        answer:
-          "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
-      },
-      {
-        question: "What is Lorem Ipsum?",
-        answer:
-          "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.",
-      },
-    ],
-    "Order related": [
-      {
-        question: "How long will delivery take?",
-        answer:
-          "Delivery time depends on your location, generally 2-3 working days.",
-      },
-      {
-        question: "Can I change my delivery address?",
-        answer:
-          "Yes, you can change your address before your order is shipped.",
-      },
-    ],
-    "Refund related": [
-      {
-        question: "How can I request a refund?",
-        answer:
-          "You can request a refund from your order details page within 7 days.",
-      },
-    ],
-    "Account related": [
-      {
-        question: "How can I reset my password?",
-        answer:
-          "Go to the login page and click on 'Forgot password' to reset it.",
-      },
-    ],
-    "Payment related": [
-      {
-        question: "What payment methods are accepted?",
-        answer: "We accept UPI, credit/debit cards, net banking and wallets.",
-      },
-    ],
-  };
-
-  const steps = [
-    {
-      title: "Farm collection centres",
-      desc: "We source directly from farmers, select the best produce at our collection centres, and deliver it fresh to your doorstep.",
-      img: "/assets/images/sign-up.png",
-    },
-    {
-      title: "State-of-the-art food park",
-      desc: "We co-create and innovate recipe solutions and then bring them to life through our high-tech Food Park.",
-      img: "/assets/images/sign-up.png",
-    },
-    {
-      title: "Food safety compliant warehouse",
-      desc: "We have a network of hygienic and sanitised warehouses that guarantee your supplies stay fresh and safe from start to finish.",
-      img: "/assets/images/sign-up.png",
-    },
-    {
-      title: "Frozen supply chain",
-      desc: "Our temperature-controlled rooms and smart fleet ensure uninterrupted cooling at every step.",
-      img: "/assets/images/sign-up.png",
-    },
-  ];
 
   return (
     <>
@@ -368,7 +332,7 @@ export default function Home({
               <Carousel.Item key={index}>
                 <a href={b.link || "#"}>
                   <img
-                    src={`https://store.bulkbasketindia.com/sliders/${b.image}`}
+                    src={`http://127.0.0.1:8000/sliders/${b.image}`}
                     alt={`Banner ${index + 1}`}
                     style={{
                       width: "100%",
@@ -410,7 +374,7 @@ export default function Home({
                             <img
                               src={
                                 category.image
-                                  ? `https://store.bulkbasketindia.com/master images/${category.image}`
+                                  ? `http://127.0.0.1:8000/master images/${category.image}`
                                   : "/assets/images/default.png"
                               }
                               className="img-fluid blur-up lazyload"
@@ -469,7 +433,7 @@ export default function Home({
                         <img
                           key={idx}
                           className="d-block w-50"
-                          src={`https://store.bulkbasketindia.com/sliders/${b.image}`}
+                          src={`http://127.0.0.1:8000/sliders/${b.image}`}
                           alt={`Mid Banner ${index}-${idx}`}
                         />
                       ))}
@@ -534,7 +498,7 @@ export default function Home({
                 {dealOfDaySlider.map((item, index) => (
                   <Carousel.Item key={index}>
                     <img
-                      src={`https://store.bulkbasketindia.com/sliders/${item.image}`}
+                      src={`http://127.0.0.1:8000/sliders/${item.image}`}
                       alt={item.title || `Slide ${index + 1}`}
                       style={{
                         width: "400px",
@@ -565,14 +529,14 @@ export default function Home({
                             product.details[product.details.length - 1]
                               .final_price
                           ) <
-                            Number(
-                              product.details[product.details.length - 1].price
-                            );
+                          Number(
+                            product.details[product.details.length - 1].price
+                          );
 
                         const hasBaseDiscount =
                           (!product.details || product.details.length === 0) &&
                           Number(product.final_price) <
-                            Number(product.base_price);
+                          Number(product.base_price);
 
                         return (
                           <div key={product.id} className="col">
@@ -603,7 +567,7 @@ export default function Home({
                                   <img
                                     src={
                                       product.image
-                                        ? `https://store.bulkbasketindia.com/product images/${product.image}`
+                                        ? `http://127.0.0.1:8000/product images/${product.image}`
                                         : "/assets/images/shop7.png"
                                     }
                                     alt=""
@@ -749,9 +713,8 @@ export default function Home({
                   {steps.map((step, index) => (
                     <li
                       key={index}
-                      className={`mb-3 p-3 rounded-3 shadow-sm ${
-                        activeIndex === index ? "active-step" : "bg-light"
-                      }`}
+                      className={`mb-3 p-3 rounded-3 shadow-sm ${activeIndex === index ? "active-step" : "bg-light"
+                        }`}
                       style={{
                         cursor: "pointer",
                         border:
@@ -773,17 +736,19 @@ export default function Home({
             </div>
 
             <div className="col-5">
-              <div className="fresh-image-2 text-center">
-                <img
-                  src={steps[activeIndex].img}
-                  className="bg-img blur-up lazyload rounded-4 shadow-lg"
-                  alt={steps[activeIndex].title}
-                  style={{
-                    maxWidth: "100%",
-                    transition: "opacity 0.4s ease",
-                  }}
-                />
-              </div>
+              {steps.length > 0 && (
+                <div className="fresh-image-2 text-center">
+                  <img
+                    src={steps[activeIndex].img}
+                    className="bg-img blur-up lazyload rounded-4 shadow-lg"
+                    alt={steps[activeIndex].title}
+                    style={{
+                      maxWidth: "100%",
+                      transition: "opacity 0.4s ease",
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -829,14 +794,13 @@ export default function Home({
                       <div className="product-box product-white-bg ">
                         <div className="product-image" style={{ padding: "0" }}>
                           <Link
-                            to={`/brand/${brand.name.toLowerCase()}/${
-                              brand.id
-                            }`}
+                            to={`/brand/${brand.name.toLowerCase()}/${brand.id
+                              }`}
                           >
                             <img
                               src={
                                 brand.image
-                                  ? `https://store.bulkbasketindia.com/master images/${brand.image}`
+                                  ? `http://127.0.0.1:8000/master images/${brand.image}`
                                   : "/assets/images/default.png"
                               }
                               className="img-fluid blur-up lazyload"
@@ -847,9 +811,8 @@ export default function Home({
                         <div className="line-light"></div>
                         <div className="product-detail position-relative">
                           <Link
-                            to={`/brand/${brand.name.toLowerCase()}/${
-                              brand.id
-                            }`}
+                            to={`/brand/${brand.name.toLowerCase()}/${brand.id
+                              }`}
                           >
                             <h6
                               className="name"
@@ -899,49 +862,49 @@ export default function Home({
           </div>
 
           {/* Accordion */}
-          <div className="row">
-            <div className="col-8">
-              <div className="faq-accordion">
-                <div className="accordion" id="accordionExample">
-                  {faqData[activeTab].map((item, index) => (
-                    <div className="accordion-item" key={index}>
-                      <h2 className="accordion-header" id={`heading${index}`}>
-                        <button
-                          className={`accordion-button ${
-                            index === 0 ? "" : "collapsed"
-                          }`}
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target={`#collapse${index}`}
+          {activeTab && faqData[activeTab] && (
+            <div className="row">
+              <div className="col-8">
+                <div className="faq-accordion">
+                  <div className="accordion" id="accordionExample">
+                    {faqData[activeTab].faqs.map((item, index) => (
+                      <div className="accordion-item" key={index}>
+                        <h2 className="accordion-header" id={`heading${index}`}>
+                          <button
+                            className={`accordion-button ${index === 0 ? "" : "collapsed"
+                              }`}
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target={`#collapse${index}`}
+                          >
+                            {item.question}
+                            <i className="fa-solid fa-angle-down" />
+                          </button>
+                        </h2>
+                        <div
+                          id={`collapse${index}`}
+                          className={`accordion-collapse collapse ${index === 0 ? "show" : ""
+                            }`}
+                          data-bs-parent="#accordionExample"
                         >
-                          {item.question}
-                          <i className="fa-solid fa-angle-down" />
-                        </button>
-                      </h2>
-                      <div
-                        id={`collapse${index}`}
-                        className={`accordion-collapse collapse ${
-                          index === 0 ? "show" : ""
-                        }`}
-                        data-bs-parent="#accordionExample"
-                      >
-                        <div className="accordion-body">
-                          <p>{item.answer}</p>
+                          <div className="accordion-body">
+                            <p>{item.answer}</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
+              <div className="col-4">
+                <img
+                  src={`http://127.0.0.1:8000/faq-images/${faqData[activeTab].image}`}
+                  alt={activeTab}
+                  className="img-fluid"
+                />
+              </div>
             </div>
-            <div className="col-4">
-              <img
-                src="assets/images/sign-up.png"
-                alt=""
-                className="img-fluid"
-              />
-            </div>
-          </div>
+          )}
         </div>
       </section>
     </>

@@ -72,7 +72,7 @@ export default function AllBrands() {
                   <Carousel.Item key={index}>
                     <img
                       className="d-block w-100"
-                      src={`https://store.bulkbasketindia.com/sliders/${banner.image}`}
+                      src={`http://127.0.0.1:8000/sliders/${banner.image}`}
                       alt={`Brand Banner ${index + 1}`}
                     />
                   </Carousel.Item>
@@ -120,7 +120,7 @@ export default function AllBrands() {
                             <img
                               src={
                                 brand.image
-                                  ? `https://store.bulkbasketindia.com/master images/${brand.image}`
+                                  ? `http://127.0.0.1:8000/master images/${brand.image}`
                                   : "/assets/images/default.png"
                               }
                               className="img-fluid blur-up lazyload"

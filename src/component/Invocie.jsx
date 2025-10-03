@@ -97,7 +97,7 @@ export default function Invoice() {
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
           <h2 style={{ margin: 0, letterSpacing: "1px" }}>
-            DURGA PROVISION STORE
+            Bulk Basket India
           </h2>
           <p style={{ margin: "5px 0" }}>
             SCF 179 (Backside) Grain Market, Sector - 26, Chandigarh - 160019
@@ -237,7 +237,7 @@ export default function Invoice() {
           </div>
           <div style={{ textAlign: "right" }}>
             <p>
-              For <strong>DURGA PROVISION STORE</strong>
+              For <strong>Bulk Basket India</strong>
             </p>
             <br />
             <br />

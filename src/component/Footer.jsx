@@ -45,7 +45,7 @@ export default function Footer({ isLoggedIn, openLoginModal }) {
                   <Carousel.Item key={index}>
                     <img
                       className="d-block w-100"
-                      src={`https://store.bulkbasketindia.com/sliders/${banner.image}`}
+                      src={`http://127.0.0.1:8000/sliders/${banner.image}`}
                       alt={`Footer Banner ${index + 1}`}
                     />
                   </Carousel.Item>

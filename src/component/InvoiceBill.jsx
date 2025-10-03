@@ -92,7 +92,7 @@ export default function InvoiceBill() {
       >
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "10px" }}>
-          <h2 style={{ margin: 0 }}>DURGA PROVISION STORE</h2>
+          <h2 style={{ margin: 0 }}>Bulk Basket India</h2>
           <p>
             SCF 179 (Backside) Grain Market, Sector - 26, Chandigarh - 160019
             <br />
@@ -283,7 +283,7 @@ export default function InvoiceBill() {
             {/* <img src="/assets/images/qr.png" alt="QR Code" width="100" /> */}
           </div>
           <div style={{ textAlign: "right" }}>
-            <p>For DURGA PROVISION STORE</p>
+            <p>For Bulk Basket India</p>
             <br />
             <br />
             <p>Authorised Signatory</p>

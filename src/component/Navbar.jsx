@@ -206,7 +206,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, refreshNavbar }) {
                                 }}
                               >
                                 <img
-                                  src={`https://store.bulkbasketindia.com/product images/${product.image}`}
+                                  src={`http://127.0.0.1:8000/product images/${product.image}`}
                                   alt={product.name}
                                   style={{
                                     width: "50px",

@@ -157,7 +157,7 @@ export default function ViewCart() {
                                 <img
                                   src={
                                     item.image
-                                      ? `https://store.bulkbasketindia.com/product images/${item.image}`
+                                      ? `http://127.0.0.1:8000/product images/${item.image}`
                                       : "/assets/images/shop7.png"
                                   }
                                   className="img-fluid blur-up lazyload"

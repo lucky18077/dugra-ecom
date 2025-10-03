@@ -20,7 +20,7 @@ export default function WalletLedger() {
       .then((res) => {
         if (res.data.status) setProfile(res.data.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [token]);
 
   const { wallet_statement = [] } = profile || {};
@@ -118,7 +118,15 @@ export default function WalletLedger() {
                             ? Number(wallet.amount).toFixed(2)
                             : "-"}
                         </td>
-                        <td>{Number(wallet.balance).toFixed(2)}</td>
+                        <td
+                          className={
+                            Number(wallet.balance) < 0 ? "text-danger fw-bold" : "text-success fw-bold"
+                          }
+                        >
+                          {Number(wallet.balance) < 0
+                            ? `(-)${Math.abs(wallet.balance).toFixed(2)}`
+                            : Number(wallet.balance).toFixed(2)}
+                        </td>
                       </tr>
                     ))
                   ) : (
